@@ -395,7 +395,7 @@ const PACK = 20;
 /* ============================================================
    BACKEND  (Appwrite cloud if configured, else on-device)
 ============================================================ */
-let aw=null, backend='local', authUser=null, stateDocId=null;
+let aw=null, backend='local', authUser=null, stateDocId=null, cloudError='';
 
 function ownerPerms(){
   const { Permission, Role } = Appwrite;
@@ -404,10 +404,10 @@ function ownerPerms(){
 }
 
 async function initBackend(){
-  const configured = APPWRITE_PROJECT && !APPWRITE_PROJECT.includes('PASTE')
-                     && !APPWRITE_ENDPOINT.includes('<REGION>')
-                     && typeof Appwrite!=='undefined';
-  if(!configured) return 'local';
+  cloudError='';
+  const hasKeys = APPWRITE_PROJECT && !APPWRITE_PROJECT.includes('PASTE') && !APPWRITE_ENDPOINT.includes('<REGION>');
+  if(!hasKeys){ cloudError='Config missing in this file — an old version may be deployed.'; return 'local'; }
+  if(typeof Appwrite==='undefined'){ cloudError='Appwrite SDK did not load (network/CDN blocked).'; return 'local'; }
   try{
     const client = new Appwrite.Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
     aw = { client, account:new Appwrite.Account(client), databases:new Appwrite.Databases(client) };
@@ -415,7 +415,8 @@ async function initBackend(){
     catch(_){ await aw.account.createAnonymousSession(); authUser = await aw.account.get(); }
     return 'cloud';
   }catch(e){
-    console.warn('Cloud sync unavailable — running on-device.', e && e.message);
+    cloudError = (e && e.message) ? e.message : String(e);
+    console.warn('Cloud sync unavailable — running on-device.', cloudError);
     aw=null; return 'local';
   }
 }
@@ -454,8 +455,18 @@ async function persistReset(){
 
 function updateSyncUI(){
   const el=document.getElementById('syncState'); if(!el) return;
-  if(backend==='cloud'){ el.textContent='Cloud · synced'; el.style.color='var(--leaf)'; }
-  else { el.textContent='This device only'; el.style.color='var(--muted)'; }
+  if(backend==='cloud'){
+    el.textContent='Cloud · synced'; el.style.color='var(--leaf)';
+    el.style.cursor='default'; el.onclick=null;
+  } else {
+    el.textContent='This device only — tap'; el.style.color='var(--muted)'; el.style.cursor='pointer';
+    el.onclick=()=>alert(
+      'Cloud sync is OFF.\n\n'+
+      'Reason: '+(cloudError||'unknown')+'\n\n'+
+      'This file is using —\nEndpoint: '+APPWRITE_ENDPOINT+'\nProject: '+APPWRITE_PROJECT+'\n\n'+
+      'Opened from: '+location.hostname
+    );
+  }
 }
 
 function todayKey(d=new Date()){
