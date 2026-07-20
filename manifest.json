@@ -1,0 +1,14 @@
+{
+  "name": "Still Here",
+  "short_name": "Still Here",
+  "description": "A living forest that grows while you keep your oath.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#241d33",
+  "theme_color": "#241d33",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
