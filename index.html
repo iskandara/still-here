@@ -477,28 +477,35 @@ async function load(){
   backend = await initBackend();
 
   if(backend==='cloud'){
-    const s = await cloudLoadState();
-    if(s && s.oath){
-      oath = s.oath;
-      logs = s.logs || [];
-      dayStatus = s.dayStatus || {};
-      prefs = s.prefs || { max:0 };
-    } else {
-      oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
-      logs = []; dayStatus = {}; prefs = { max:0 };
-      await cloudSaveState();   // create the initial document
+    try{
+      const s = await cloudLoadState();
+      if(s && s.oath){
+        oath = s.oath;
+        logs = s.logs || [];
+        dayStatus = s.dayStatus || {};
+        prefs = s.prefs || { max:0 };
+      } else {
+        oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
+        logs = []; dayStatus = {}; prefs = { max:0 };
+        await cloudSaveState();   // create the initial document
+      }
+      return;
+    }catch(e){
+      cloudError = 'Cloud data: '+((e && e.message) ? e.message : String(e));
+      console.warn('Cloud read/write failed — using device.', cloudError);
+      backend='local';
     }
-  } else {
-    // ---- on-device fallback (window.storage / in-memory) ----
-    oath = await store.get('oath');
-    if(!oath){
-      oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
-      await store.set('oath', oath);
-    }
-    logs = (await store.get('logs')) || [];
-    dayStatus = (await store.get('dayStatus')) || {};
-    prefs = (await store.get('prefs')) || { max:0 };
   }
+
+  // ---- on-device (default, and fallback if cloud failed) ----
+  oath = await store.get('oath');
+  if(!oath){
+    oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
+    await store.set('oath', oath);
+  }
+  logs = (await store.get('logs')) || [];
+  dayStatus = (await store.get('dayStatus')) || {};
+  prefs = (await store.get('prefs')) || { max:0 };
 }
 
 /* per-day stick counts derived from logs */
@@ -887,6 +894,7 @@ function px(x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(Math.round(x),Math.round(y
 
 let t0=performance.now();
 function draw(now){
+ try{
   const t=(now-t0)/1000;
   const weather = D? D.weather:'clear';
   const growth = D? D.growth:1;
@@ -981,7 +989,7 @@ function draw(now){
   for(const p of puffs){ p.x+=p.vx; p.y+=p.vy; p.life-=0.012;
     ctx.globalAlpha=Math.max(0,p.life)*0.7; px(p.x,p.y,3,3,'#d9d2e2'); ctx.globalAlpha=1; }
   puffs=puffs.filter(p=>p.life>0);
-
+ }catch(_e){ /* keep the loop alive even if one frame errors */ }
   requestAnimationFrame(draw);
 }
 
@@ -1045,13 +1053,16 @@ function drawStream(cx,gy,t){
    BOOT
 ============================================================ */
 (async function(){
-  await load();
-  updateSyncUI();
-  fit(); seedAmbient(); refresh();
+  try{ await load(); }
+  catch(e){
+    cloudError = 'Startup: '+((e && e.message) ? e.message : String(e));
+    backend='local';
+    if(!oath){ oath={ substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() }; logs=[]; dayStatus={}; prefs={max:0}; }
+  }
+  try{ updateSyncUI(); }catch(_){}
+  try{ fit(); seedAmbient(); refresh(); }catch(e){ console.error('render init failed', e); }
   requestAnimationFrame(draw);
-  // re-derive at midnight-ish and periodically (new day rollover, weather ease)
-  setInterval(refresh, 60000);
-  // welcome
-  setTimeout(()=>{ if(logs.length===0) toast('Welcome. Your forest starts as bare soil — every honest day is what grows it.'); }, 900);
+  setInterval(()=>{ try{ refresh(); }catch(_){} }, 60000);
+  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every honest day is what grows it.'); }catch(_){} }, 900);
 })();
 </script>
