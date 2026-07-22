@@ -56,7 +56,7 @@
   #stage{position:relative; flex:1 1 auto; min-height:0; overflow:hidden}
   #scene{
     position:absolute; inset:0; width:100%; height:100%;
-    image-rendering:pixelated; image-rendering:crisp-edges;
+    image-rendering:auto;
     display:block;
   }
   #stageTop{
@@ -240,13 +240,47 @@
   .cell.foggy{background:transparent; border:1px dashed var(--locked); color:var(--muted)}
   .cell.today{outline:2px solid var(--honey); outline-offset:1px}
   .cell.blank{background:transparent; border:none}
+
+  /* ---------- auth ---------- */
+  #auth{position:fixed; inset:0; z-index:50; display:none; flex-direction:column; justify-content:center;
+    padding:26px 22px calc(26px + env(safe-area-inset-bottom));
+    background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
+    overflow:auto}
+  #auth.show{display:flex}
+  #auth .logo{font-family:'Pixelify Sans'; font-size:26px; text-align:center; margin-bottom:4px}
+  #auth .tag{text-align:center; color:var(--muted); font-size:13px; margin-bottom:26px; line-height:1.5}
+  .authview{display:none; max-width:400px; width:100%; margin:0 auto}
+  .authview.on{display:block}
+  #auth label{display:block; font-weight:800; font-size:12px; color:var(--muted); margin:14px 2px 6px; letter-spacing:.3px}
+  #auth input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
+    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:13px 14px; outline:none}
+  #auth input:focus{border-color:var(--honey)}
+  #auth .big{width:100%; margin-top:20px; border:none; cursor:pointer;
+    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
+    font-family:'Nunito'; font-weight:800; font-size:16px; padding:15px; border-radius:14px;
+    box-shadow:0 5px 0 #b06d2e}
+  #auth .big:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
+  #auth .big:disabled{opacity:.6}
+  #auth .alt{width:100%; margin-top:11px; background:transparent; border:1px solid var(--line);
+    color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:14px; padding:13px; border-radius:12px; cursor:pointer}
+  #auth .link{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+    font-family:'Nunito'; font-weight:800; font-size:13px; margin-top:16px; cursor:pointer; text-decoration:underline}
+  #auth .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:14px; text-align:center; min-height:16px; line-height:1.4}
+  #auth .back{background:none;border:none;color:var(--muted);font-family:'Nunito';font-weight:800;font-size:13px;cursor:pointer;margin-bottom:6px;padding:2px 0}
+
+  .acctrow{display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line)}
+  .acctrow .lbl{font-weight:800;font-size:13.5px}
+  .acctrow .lbl small{display:block;color:var(--muted);font-weight:700;font-size:11px;margin-top:2px}
+  .acctbtn{border:1px solid var(--line);background:var(--plum3);color:var(--ink);font-family:'Nunito';
+    font-weight:800;font-size:12px;padding:9px 13px;border-radius:10px;cursor:pointer}
+  .acctbtn.primary{background:var(--honey);color:#3a2410;border-color:transparent}
 </style>
 
 <div id="app">
   <div id="stage">
     <canvas id="scene"></canvas>
     <div id="stageTop">
-      <div class="wordmark">Still Here<small>your quiet forest</small></div>
+      <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
       <div class="stagepill"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span></div>
     </div>
     <div id="toast"></div>
@@ -285,6 +319,41 @@
   </div>
 
   <div id="scrim" onclick="closeSheet()"></div>
+
+  <div id="auth">
+    <div class="logo">Still Here</div>
+    <div class="tag">A quiet forest that grows as you keep your oath.</div>
+
+    <div class="authview on" id="avWelcome">
+      <button class="big" onclick="showAuthView('register')">Create an account</button>
+      <button class="alt" onclick="showAuthView('login')">I already have one</button>
+      <button class="link" onclick="hideAuth()">Just explore for now</button>
+    </div>
+
+    <div class="authview" id="avRegister">
+      <button class="back" onclick="showAuthView('welcome')">‹ Back</button>
+      <label>Email</label>
+      <input id="rgEmail" type="email" autocomplete="email" placeholder="you@example.com">
+      <label>Password</label>
+      <input id="rgPass" type="password" autocomplete="new-password" placeholder="at least 8 characters">
+      <label>What should we call you?</label>
+      <input id="rgName" type="text" autocomplete="nickname" placeholder="e.g. Agung">
+      <label>Favourite animal</label>
+      <input id="rgAnimal" type="text" placeholder="e.g. fox">
+      <button class="big" id="rgBtn" onclick="submitRegister()">Create account</button>
+      <div class="err" id="rgErr"></div>
+    </div>
+
+    <div class="authview" id="avLogin">
+      <button class="back" onclick="showAuthView('welcome')">‹ Back</button>
+      <label>Email</label>
+      <input id="lgEmail" type="email" autocomplete="email" placeholder="you@example.com">
+      <label>Password</label>
+      <input id="lgPass" type="password" autocomplete="current-password" placeholder="your password">
+      <button class="big" id="lgBtn" onclick="submitLogin()">Log in</button>
+      <div class="err" id="lgErr"></div>
+    </div>
+  </div>
 
   <div class="sheet" id="trackerSheet">
     <div class="grab"></div>
@@ -351,6 +420,10 @@
         <div class="lbl">Sync<small>where your forest lives</small></div>
         <div class="lbl" id="syncState" style="color:var(--muted)">This device only</div>
       </div>
+      <div class="acctrow" id="acctRow">
+        <div class="lbl">Account<small id="acctStatus">Guest</small></div>
+        <div id="acctBtns"></div>
+      </div>
       <button class="reset" onclick="hardReset()">Start the forest over</button>
     </div>
   </div>
@@ -389,7 +462,7 @@ const store = {
 /* ============================================================
    STATE
 ============================================================ */
-let oath, logs, dayStatus, prefs;
+let oath, logs, dayStatus, prefs, profile;
 const PACK = 20;
 
 /* ============================================================
@@ -431,7 +504,7 @@ async function cloudLoadState(){
   return null;
 }
 async function cloudSaveState(){
-  const payload = JSON.stringify({ oath, logs, dayStatus, prefs });
+  const payload = JSON.stringify({ oath, logs, dayStatus, prefs, profile });
   if(stateDocId){
     await aw.databases.updateDocument(AW_DB, AW_STATE, stateDocId, { data:payload });
   } else {
@@ -477,20 +550,8 @@ async function load(){
   backend = await initBackend();
 
   if(backend==='cloud'){
-    try{
-      const s = await cloudLoadState();
-      if(s && s.oath){
-        oath = s.oath;
-        logs = s.logs || [];
-        dayStatus = s.dayStatus || {};
-        prefs = s.prefs || { max:0 };
-      } else {
-        oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
-        logs = []; dayStatus = {}; prefs = { max:0 };
-        await cloudSaveState();   // create the initial document
-      }
-      return;
-    }catch(e){
+    try{ await reloadStateFromCloud(); return; }
+    catch(e){
       cloudError = 'Cloud data: '+((e && e.message) ? e.message : String(e));
       console.warn('Cloud read/write failed — using device.', cloudError);
       backend='local';
@@ -506,6 +567,130 @@ async function load(){
   logs = (await store.get('logs')) || [];
   dayStatus = (await store.get('dayStatus')) || {};
   prefs = (await store.get('prefs')) || { max:0 };
+  profile = (await store.get('profile')) || { name:'', animal:'' };
+}
+
+// hydrate the in-memory forest from the current cloud account's document
+async function reloadStateFromCloud(){
+  const s = await cloudLoadState();
+  if(s && s.oath){
+    oath = s.oath;
+    logs = s.logs || [];
+    dayStatus = s.dayStatus || {};
+    prefs = s.prefs || { max:0 };
+    profile = s.profile || { name:'', animal:'' };
+  } else {
+    oath = { substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() };
+    logs = []; dayStatus = {}; prefs = { max:0 }; profile = { name:'', animal:'' };
+    await cloudSaveState();   // create the initial document
+  }
+}
+
+/* ============================================================
+   ACCOUNTS  (email register / login, anonymous by default)
+============================================================ */
+function accountIsGuest(){ return !(authUser && authUser.email); }
+
+// Register: create a permanent email account and MIGRATE the current forest into it
+async function doRegister(email, password, name, animal){
+  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — accounts need a connection.'};
+  const snapshot = { oath, logs, dayStatus, prefs, profile:{ name:(name||'').trim(), animal:(animal||'').trim() } };
+  try{
+    await aw.account.create(Appwrite.ID.unique(), email.trim(), password, (name||'').trim());
+    try{ await aw.account.deleteSession('current'); }catch(_){}
+    await aw.account.createEmailPasswordSession(email.trim(), password);
+    authUser = await aw.account.get();
+    stateDocId = null;                      // new account gets its own document
+    oath=snapshot.oath; logs=snapshot.logs; dayStatus=snapshot.dayStatus; prefs=snapshot.prefs; profile=snapshot.profile;
+    await cloudSaveState();                 // write the migrated forest + profile
+    return {ok:true};
+  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
+}
+
+// Login to an existing account and load its forest
+async function doLogin(email, password){
+  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — log in needs a connection.'};
+  try{
+    try{ await aw.account.deleteSession('current'); }catch(_){}
+    await aw.account.createEmailPasswordSession(email.trim(), password);
+    authUser = await aw.account.get();
+    stateDocId = null;
+    await reloadStateFromCloud();
+    return {ok:true};
+  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
+}
+
+// Log out → fall back to a fresh guest session so the app still works
+async function doLogout(){
+  if(backend!=='cloud') return;
+  try{ await aw.account.deleteSession('current'); }catch(_){}
+  try{ await aw.account.createAnonymousSession(); authUser = await aw.account.get(); }
+  catch(_){ authUser=null; }
+  stateDocId = null;
+  await reloadStateFromCloud();
+}
+
+function updateHeader(){
+  const w=document.getElementById('wordmark'); if(!w) return;
+  const nm = (profile && profile.name) ? (', '+profile.name) : '';
+  w.innerHTML = 'Still Here'+nm+'<small>your quiet forest</small>';
+}
+
+/* ---- auth screen control ---- */
+function showAuth(view){ showAuthView(view||'welcome'); document.getElementById('auth').classList.add('show'); }
+function hideAuth(){ document.getElementById('auth').classList.remove('show'); }
+function showAuthView(v){
+  for(const id of ['Welcome','Register','Login']) document.getElementById('av'+id).classList.toggle('on', id.toLowerCase()===v);
+  const err=v==='register'?document.getElementById('rgErr'):v==='login'?document.getElementById('lgErr'):null;
+  if(err) err.textContent='';
+}
+function val(id){ return (document.getElementById(id).value||'').trim(); }
+function friendlyAuthError(m){
+  m=(m||'').toLowerCase();
+  if(m.includes('already')) return 'That email is already registered — try logging in instead.';
+  if(m.includes('invalid credentials')||m.includes('invalid email or password')) return 'Email or password is incorrect.';
+  if(m.includes('password')) return 'Please use a stronger password (at least 8 characters).';
+  if(m.includes('rate')||m.includes('too many')) return 'Too many attempts — please wait a moment and try again.';
+  return m ? ('Couldn’t do that: '+m) : 'Something went wrong. Please try again.';
+}
+async function submitRegister(){
+  const email=val('rgEmail'), pass=document.getElementById('rgPass').value, name=val('rgName'), animal=val('rgAnimal');
+  const err=document.getElementById('rgErr'); err.textContent='';
+  if(!email||!pass){ err.textContent='Please enter an email and password.'; return; }
+  if(pass.length<8){ err.textContent='Password needs at least 8 characters.'; return; }
+  if(!name){ err.textContent='Please tell us what to call you.'; return; }
+  const btn=document.getElementById('rgBtn'); btn.disabled=true; btn.textContent='Creating…';
+  const r=await doRegister(email,pass,name,animal);
+  btn.disabled=false; btn.textContent='Create account';
+  if(r.ok){ hideAuth(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
+    toast('Welcome'+(name?', '+name:'')+' — your forest is saved to your account now.'); }
+  else err.textContent=friendlyAuthError(r.msg);
+}
+async function submitLogin(){
+  const email=val('lgEmail'), pass=document.getElementById('lgPass').value;
+  const err=document.getElementById('lgErr'); err.textContent='';
+  if(!email||!pass){ err.textContent='Please enter your email and password.'; return; }
+  const btn=document.getElementById('lgBtn'); btn.disabled=true; btn.textContent='Logging in…';
+  const r=await doLogin(email,pass);
+  btn.disabled=false; btn.textContent='Log in';
+  if(r.ok){ hideAuth(); updateHeader(); renderAccount(); updateSyncUI(); refresh(); }
+  else err.textContent=friendlyAuthError(r.msg);
+}
+async function logoutAccount(){
+  if(!confirm('Log out? Your forest is saved to your account and will be here when you log back in.')) return;
+  await doLogout(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
+}
+function renderAccount(){
+  const status=document.getElementById('acctStatus'), btns=document.getElementById('acctBtns');
+  if(!status||!btns) return;
+  if(backend!=='cloud'){ status.textContent='Offline — accounts need a connection'; btns.innerHTML=''; return; }
+  if(accountIsGuest()){
+    status.textContent='Guest — not saved across devices';
+    btns.innerHTML='<button class="acctbtn primary" onclick="showAuth(\'register\')">Create account</button>';
+  } else {
+    status.textContent=authUser.email;
+    btns.innerHTML='<button class="acctbtn" onclick="logoutAccount()">Log out</button>';
+  }
 }
 
 /* per-day stick counts derived from logs */
@@ -559,25 +744,15 @@ function derive(){
   for(const k in dayStatus){ if(k.startsWith(monthPrefix) && byDay[k]==null && dayStatus[k].state==='estimate') monthSticks+=dayStatus[k].sticks; }
   const monthPacks = monthSticks/oath.sticksPerPack;
 
-  // --- growth stage from pace, capped by how much data exists ---
-  let paceStage;
-  if(knownDays===0) paceStage=1;
-  else if(projPacks<=8) paceStage=7;
-  else if(projPacks<=10) paceStage=6;
-  else if(projPacks<=15) paceStage=5;
-  else if(projPacks<=20) paceStage=4;
-  else if(projPacks<30)  paceStage=3;
-  else paceStage=2;
-
-  let dataCap;
-  if(elapsed<2) dataCap=2; else if(elapsed<4) dataCap=3; else if(elapsed<7) dataCap=4;
-  else if(elapsed<14) dataCap=5; else if(elapsed<21) dataCap=6; else dataCap=7;
-
-  const current = Math.min(paceStage, dataCap);
-  // ratchet up; gentle single-step setback if you've slipped back to baseline for a week
-  let growth = Math.max(prefs.max, current);
-  if(recent7pace>=oath.baselinePacks && growth>current) growth = Math.max(current, growth-1);
-  if(current>prefs.max){ prefs.max=current; persistGrowthMax(prefs.max); }
+  // --- seamless growth: each good day (at/under allowance) adds one element ---
+  let goodDays=0;
+  const totalDays = Math.max(1, daysBetween(oath.start, tk)+1);
+  for(let i=0;i<totalDays;i++){ const d=new Date(); d.setDate(d.getDate()-i);
+    const v=dayValue(todayKey(d), byDay); if(v!=null && v<=allowance) goodDays++; }
+  const cap = ISO.LEN;
+  let growthLevel = Math.min(cap, goodDays);
+  if(growthLevel > (prefs.max||0)){ prefs.max=growthLevel; persistGrowthMax(prefs.max); }   // ratchet: forest never loses elements
+  growthLevel = Math.max(growthLevel, Math.min(cap, prefs.max||0));
 
   // --- weather (fast axis) ---
   let weather='clear';
@@ -592,10 +767,9 @@ function derive(){
     if(dayValue(k,byDay)===null) pending.push(k);
   }
 
-  return {allowance, todaySticks, monthPacks, growth, weather, projPacks, pending, foggy:pending.length>0};
+  return {allowance, todaySticks, monthPacks, growthLevel, weather, projPacks, pending, foggy:pending.length>0};
 }
 
-const STAGE_NAMES=['Bare soil','Seed','Sprout','Sapling','Young tree','Flourishing grove','Thriving haven','Living sanctuary'];
 
 /* ============================================================
    UI  RENDER
@@ -603,11 +777,13 @@ const STAGE_NAMES=['Bare soil','Seed','Sprout','Sapling','Young tree','Flourishi
 let D;
 function refresh(){
   D=derive();
-  // stage pill
-  document.getElementById('stageName').textContent = STAGE_NAMES[D.growth]||'Seed';
+  // stage pill + push growth/time-of-day to the iso scene
+  const dusk = (new Date().getHours()>=18 || new Date().getHours()<6);
+  document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
   const dot=document.getElementById('stageDot');
-  dot.style.background = D.weather==='storm'?'var(--soft-warn)':D.weather==='cloudy'?'var(--muted)':'var(--leaf)';
-  dot.style.boxShadow = `0 0 8px ${D.weather==='storm'?'var(--soft-warn)':'var(--leaf)'}`;
+  dot.style.background = dusk?'var(--honey)':'var(--leaf)';
+  dot.style.boxShadow = `0 0 8px ${dusk?'var(--honey)':'var(--leaf)'}`;
+  ISO.setState(D.growthLevel, dusk);
 
   // today
   document.getElementById('tSticks').textContent=D.todaySticks;
@@ -670,7 +846,7 @@ async function logStick(){
   const iso=new Date().toISOString();
   logs.push(iso);
   await persistStick(iso);
-  spawnPuff();
+  ISO.spawnPuff();
   toast(LOG_LINES[Math.floor(Math.random()*LOG_LINES.length)]);
   refresh();
 }
@@ -718,25 +894,24 @@ function showPane(which){
   document.getElementById('tabSettings').classList.toggle('on', which==='settings');
 }
 
-/* companions unlocked by growth stage; the rest are placeholders for scale-up */
+/* companions unlocked as the forest grows (level = good days) */
 const COMPANIONS=[
-  {g:'🐦', name:'Robin',   stage:3},
-  {g:'🦋', name:'Flit',    stage:4},
-  {g:'🐇', name:'Rabbit',  stage:5},
-  {g:'✨', name:'Fireflies',stage:6},
-  {g:'🦊', name:'Fox',     stage:7},
-  {g:'❔', name:'Spirit',  stage:99},
-  {g:'❔', name:'Spirit',  stage:99},
-  {g:'❔', name:'Spirit',  stage:99},
-  {g:'❔', name:'Spirit',  stage:99},
+  {g:'🦋', name:'Flit',    lvl:8},
+  {g:'🐇', name:'Rabbit',  lvl:19},
+  {g:'🐦', name:'Robin',   lvl:24},
+  {g:'🦊', name:'Fox',     lvl:28},
+  {g:'🦌', name:'Deer',    lvl:34},
+  {g:'🦄', name:'Unicorn', lvl:41},
+  {g:'🐴', name:'Pegasus', lvl:42},
+  {g:'🐉', name:'Dragon',  lvl:43},
 ];
 function renderSanctuary(){
   const grid=document.getElementById('sanctGrid'); grid.innerHTML='';
   for(const c of COMPANIONS){
-    const filled = D && D.growth>=c.stage;
+    const filled = D && D.growthLevel>=c.lvl;
     const el=document.createElement('div');
     el.className='crt'+(filled?' filled':'');
-    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${filled?c.name:(c.stage===99?'Later':'Locked')}</div>`;
+    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${filled?c.name:'Locked'}</div>`;
     grid.appendChild(el);
   }
 }
@@ -846,208 +1021,285 @@ function openTracker(){
 }
 
 /* ============================================================
-   THE DIORAMA  (2.5D cozy pixel, everything moving)
+   THE FOREST  (isometric, grows with your good days)
 ============================================================ */
-const cv=document.getElementById('scene'), ctx=cv.getContext('2d');
-let W=200, H=300, DPR=1;
-function fit(){
-  const r=document.getElementById('stage').getBoundingClientRect();
-  DPR=Math.min(2,window.devicePixelRatio||1);
-  // low internal res for chunky pixels
-  W=200; H=Math.round(200*(r.height/r.width));
-  cv.width=W; cv.height=H;
-  cv.style.width=r.width+'px'; cv.style.height=r.height+'px';
-  ctx.imageSmoothingEnabled=false;
-}
-window.addEventListener('resize', ()=>{fit();});
+const ISO = (function(){
+  const cv=document.getElementById('scene'), ctx=cv.getContext('2d');
+  const stageEl=document.getElementById('stage');
+  const VW=820, VH=680, TW=112, TH=56, C=6, R=6, originX=410, originY=235, THICK=42;
+  function iso(i,j){ return { x:originX+(i-j)*(TW/2), y:originY+(i+j)*(TH/2) }; }
 
-let birds=[], clouds=[], flies=[], rain=[], puffs=[];
-function seedAmbient(){
-  clouds=[]; for(let i=0;i<3;i++) clouds.push({x:Math.random()*W, y:14+i*18, s:0.05+Math.random()*0.06, w:26+Math.random()*16});
-}
-function spawnBird(){ birds.push({x:-14, y:26+Math.random()*40, s:0.35+Math.random()*0.3, ph:Math.random()*6, up:1}); }
-function spawnPuff(){
-  // puff rises near the tree top
-  const tx=W*0.5, ty=H*0.52;
-  for(let i=0;i<3;i++) puffs.push({x:tx+(Math.random()*8-4), y:ty-6, vy:-0.25-Math.random()*0.2, vx:(Math.random()*0.3-0.05), life:1});
-}
+  let level=0, dusk=false, puffs=[];
 
-/* time-of-day palette */
-function skyColors(t, weather){
-  const h=new Date().getHours()+new Date().getMinutes()/60;
-  let top,bot,sun;
-  if(h<5||h>=20){ top='#1c1636'; bot='#3a2b52'; sun='moon'; }          // night
-  else if(h<7){ top='#5b4a7a'; bot='#e8a06a'; sun='dawn'; }            // dawn
-  else if(h<17){ top='#7ec5e8'; bot='#cfeeff'; sun='day'; }           // day
-  else if(h<19){ top='#f0a765'; bot='#f6d9a8'; sun='dusk'; }          // golden
-  else { top='#5a4a7c'; bot='#d98a6a'; sun='dusk'; }                  // sunset
-  if(weather==='storm'){ top='#3f4453'; bot='#6b7080'; sun='none'; }
-  else if(weather==='cloudy'){ top=mix(top,'#8a8a97',.4); bot=mix(bot,'#b7b7c2',.4); }
-  return {top,bot,sun,h};
-}
-function mix(a,b,t){
-  const pa=hx(a),pb=hx(b);
-  return '#'+[0,1,2].map(i=>Math.round(pa[i]+(pb[i]-pa[i])*t).toString(16).padStart(2,'0')).join('');
-}
-function hx(c){c=c.replace('#','');return [0,2,4].map(i=>parseInt(c.substr(i,2),16));}
-function px(x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(Math.round(x),Math.round(y),Math.ceil(w),Math.ceil(h)); }
+  function P(){ return dusk ? {
+      skyTop:'#2b2450',skyBot:'#b5786a',sun:'#ffe6c0',grassA:'#4f7a48',grassB:'#456a40',grassEdge:'#374f34',
+      dirtR:'#6a4830',dirtL:'#523524',water:'#3f6f92',waterHi:'#6aa0c0',amb:'rgba(30,22,58,.42)'
+    } : {
+      skyTop:'#a9def0',skyBot:'#ffedcf',sun:'#fff2b0',grassA:'#8ecb63',grassB:'#80bd57',grassEdge:'#5f9a45',
+      dirtR:'#b07a48',dirtL:'#8a5c34',water:'#6fc4e8',waterHi:'#a6ddf3',amb:'rgba(0,0,0,0)'
+    }; }
 
-let t0=performance.now();
-function draw(now){
- try{
-  const t=(now-t0)/1000;
-  const weather = D? D.weather:'clear';
-  const growth = D? D.growth:1;
-  const foggy = D? D.foggy:false;
-  const sky=skyColors(t,weather);
+  function diamond(cx,cy,c,tw=TW,th=TH){ ctx.fillStyle=c; ctx.beginPath();
+    ctx.moveTo(cx,cy-th/2);ctx.lineTo(cx+tw/2,cy);ctx.lineTo(cx,cy+th/2);ctx.lineTo(cx-tw/2,cy);ctx.closePath();ctx.fill(); }
+  function shadow(cx,cy,rw,rh){ ctx.fillStyle='rgba(0,0,0,.16)';ctx.beginPath();ctx.ellipse(cx,cy,rw,rh,0,0,7);ctx.fill(); }
+  function blob(cx,cy,r,c){ ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(cx,cy,r,r*0.82,0,0,7);ctx.fill(); }
+  function rr(x,y,w,h,r){ ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill(); }
+  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  function zzz(x,y,t){ ctx.font='bold 15px Nunito'; ctx.fillStyle='#e9e4f5';
+    for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); ctx.globalAlpha=(1-o)*0.85; ctx.fillText('z', x+o*10, y-o*22-k*3); } ctx.globalAlpha=1; }
+  function closedEye(x,y){ ctx.strokeStyle='#2b2438'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(x-2,y); ctx.lineTo(x+3,y); ctx.stroke(); }
 
-  // sky gradient (banded for pixel feel)
-  const bands=10;
-  for(let i=0;i<bands;i++){
-    px(0, i*H/bands, W, H/bands+1, mix(sky.top,sky.bot,i/(bands-1)));
+  // ---------- ground ----------
+  let pondTiles=new Set();
+  let clouds=[{x:180,y:90,s:.12,w:120},{x:560,y:70,s:.08,w:90},{x:360,y:150,s:.05,w:70}];
+  function drawGround(){
+    const p=P();
+    const g=ctx.createLinearGradient(0,0,0,VH*0.7); g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
+    ctx.fillStyle=g; ctx.fillRect(0,0,VW,VH);
+    blob(VW-130,120,42,p.sun);
+    if(dusk){ ctx.fillStyle='#fff'; for(let i=0;i<18;i++){ const sx=(i*151)%VW, sy=(i*97)%220; if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} } ctx.globalAlpha=1; }
+    for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VW+120) cl.x=-140;
+      ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }
+    const bC=iso(C-1,R-1);
+    ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(originX,bC.y+THICK+24,TW*2.4,TH*1.6,0,0,7); ctx.fill();
+    const B=iso(C-1,0),D=iso(0,R-1),Cc=iso(C-1,R-1);
+    const bx=B.x+TW/2,by=B.y,dx=D.x-TW/2,dy=D.y,cx=Cc.x,cy=Cc.y+TH/2;
+    ctx.fillStyle=p.dirtR;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+THICK);ctx.lineTo(bx,by+THICK);ctx.closePath();ctx.fill();
+    ctx.fillStyle=p.dirtL;ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+THICK);ctx.lineTo(dx,dy+THICK);ctx.closePath();ctx.fill();
+    for(let s=0;s<=(C-1)+(R-1);s++) for(let i=0;i<C;i++){ const j=s-i; if(j<0||j>=R)continue; const c=iso(i,j);
+      if(pondTiles.has(i+','+j)){ drawWater(c.x,c.y); continue; } diamond(c.x,c.y,(i+j)%2?p.grassA:p.grassB); }
+    ctx.strokeStyle=p.grassEdge;ctx.lineWidth=2;ctx.globalAlpha=.5; const A=iso(0,0);
+    ctx.beginPath();ctx.moveTo(A.x,A.y-TH/2);ctx.lineTo(bx,by);ctx.lineTo(cx,cy);ctx.lineTo(dx,dy);ctx.closePath();ctx.stroke();ctx.globalAlpha=1;
+  }
+  function drawWater(cx,cy){ const p=P(); diamond(cx,cy,p.water); const t=performance.now()/500; ctx.fillStyle=p.waterHi;
+    for(let k=0;k<3;k++){ const off=Math.sin(t+k*2)*10; ctx.fillRect(cx-16+off+k*6,cy-4+k*5,10,2); } }
+
+  // ---------- the growing tree ----------
+  const FRUITPOS=[[-0.5,0.45],[0.45,0.5],[0,0.7],[-0.72,0.12],[0.72,0.18],[-0.28,0.85],[0.32,0.85],[0,0.28],[-0.45,-0.12],[0.5,-0.05],[-0.65,0.55],[0.62,0.55]];
+  function drawFruits(cx,cy,cr,n){ for(let k=0;k<n&&k<FRUITPOS.length;k++){ const px=cx+FRUITPOS[k][0]*cr, py=cy+FRUITPOS[k][1]*cr;
+    ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
+    ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#ff9a8a'; ctx.fillRect(px-3,py-3,2,2); } }
+  function drawTree(c,lvl,fruit,t){
+    const sway=Math.sin(t*1.1 + c.x*0.01)*(lvl>=3?2.5:1);
+    if(lvl<=0){ shadow(c.x,c.y+2,14,6); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-9,4,9); blob(c.x+sway,c.y-11,5,'#7ccf5b'); return; }
+    if(lvl===1){ shadow(c.x,c.y+2,16,7); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-20,4,20);
+      blob(c.x-5+sway,c.y-22,8,'#7ccf5b'); blob(c.x+5+sway,c.y-18,7,'#67bf4c'); return; }
+    if(lvl===2){ shadow(c.x,c.y+2,18,8); ctx.fillStyle='#7a5230'; ctx.fillRect(c.x-3,c.y-28,6,28);
+      blob(c.x+sway,c.y-32,16,'#4f9e38'); blob(c.x-9+sway,c.y-28,12,'#67bf4c'); blob(c.x+9+sway,c.y-29,12,'#67bf4c'); blob(c.x-2+sway,c.y-40,13,'#7ccf5b');
+      drawFruits(c.x+sway,c.y-32,16,fruit); return; }
+    const ht=34+(lvl-3)*16, wt=13+(lvl-3)*3, cr=22+(lvl-3)*10;
+    shadow(c.x,c.y+3, 30+lvl*6, 12+lvl*2);
+    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2,c.y-ht,wt,ht);
+    ctx.fillStyle='#8a5e37'; ctx.fillRect(c.x-1,c.y-ht,wt/2,ht);
+    ctx.fillStyle='#5c3c22'; ctx.fillRect(c.x-2,c.y-ht+8,2,ht-12);
+    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2-3,c.y-4,4,4); ctx.fillRect(c.x+wt/2-1,c.y-4,4,4);
+    if(lvl>=4){ ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(c.x,c.y-ht+10); ctx.lineTo(c.x-14,c.y-ht-4); ctx.moveTo(c.x,c.y-ht+18); ctx.lineTo(c.x+14,c.y-ht+2); ctx.stroke(); }
+    const ccx=c.x+sway, ccy=c.y-ht-cr*0.35;
+    blob(ccx,ccy+cr*0.5,cr,'#3f7f2c');
+    blob(ccx-cr*0.55,ccy+cr*0.15,cr*0.72,'#4f9e38');
+    blob(ccx+cr*0.55,ccy+cr*0.2,cr*0.72,'#4f9e38');
+    blob(ccx,ccy-cr*0.12,cr*0.95,'#5cb043');
+    blob(ccx-cr*0.22,ccy-cr*0.5,cr*0.55,'#7ccf5b');
+    drawFruits(ccx,ccy,cr,fruit);
   }
 
-  // sun / moon
-  if(sky.sun==='day'||sky.sun==='dawn'||sky.sun==='dusk'){
-    px(W-42,22,14,14,'#ffe9a8'); px(W-44,24,18,10,'rgba(255,233,168,.35)');
-  } else if(sky.sun==='moon'){
-    px(W-40,20,12,12,'#efe7cf'); px(W-36,20,8,8, sky.top);
-    // stars
-    for(let i=0;i<14;i++){ const sx=(i*57%W), sy=(i*31%(H*0.4)); if((i+Math.floor(t*0.5))%3===0) px(sx,sy,1,1,'#fff'); }
+  // ---------- flora ----------
+  function drawBush(c,color){ shadow(c.x,c.y+2,26,10);
+    blob(c.x,c.y-8,22,'#3f7f2c'); blob(c.x-14,c.y-4,15,'#4f9e38'); blob(c.x+14,c.y-4,15,'#4f9e38'); blob(c.x,c.y-16,17,'#5cb043');
+    const spots=[[-10,-14],[8,-16],[0,-22],[-16,-6],[14,-8]];
+    for(const s of spots){ ctx.fillStyle=color; ctx.beginPath(); ctx.ellipse(c.x+s[0],c.y+s[1],4.5,4.5,0,0,7); ctx.fill();
+      ctx.fillStyle='#fff6c8'; ctx.fillRect(c.x+s[0]-1,c.y+s[1]-1,2,2); } }
+  function drawMushroom(c){ shadow(c.x,c.y+1,9,4); ctx.fillStyle='#f2ead6'; ctx.fillRect(c.x-3,c.y-8,6,8);
+    ctx.fillStyle='#e05a4a'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,9,6,0,Math.PI,0); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.fillRect(c.x-4,c.y-11,2,2); ctx.fillRect(c.x+3,c.y-10,2,2); }
+
+  // ---------- furniture ----------
+  function drawBirdhouse(c,t){ shadow(c.x,c.y+2,16,8); ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-3,c.y-40,6,40);
+    ctx.fillStyle='#d59b5c'; ctx.fillRect(c.x-15,c.y-64,30,24);
+    ctx.fillStyle='#8a5030'; ctx.beginPath(); ctx.moveTo(c.x-20,c.y-64); ctx.lineTo(c.x,c.y-78); ctx.lineTo(c.x+20,c.y-64); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#3a2414'; ctx.beginPath(); ctx.ellipse(c.x,c.y-52,5,5,0,0,7); ctx.fill(); }
+  function drawBench(c){ shadow(c.x,c.y+3,40,14); ctx.fillStyle='#a5703e'; ctx.fillRect(c.x-30,c.y-16,60,7);
+    ctx.fillStyle='#8a5c30'; ctx.fillRect(c.x-30,c.y-30,60,7); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-26,c.y-16,6,16); ctx.fillRect(c.x+20,c.y-16,6,16); }
+  function drawWheelbarrow(c){ shadow(c.x,c.y+2,26,10); ctx.fillStyle='#7d8a92'; ctx.beginPath();
+    ctx.moveTo(c.x-18,c.y-20); ctx.lineTo(c.x+18,c.y-20); ctx.lineTo(c.x+10,c.y-6); ctx.lineTo(c.x-10,c.y-6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#5f6a70'; ctx.fillRect(c.x-2,c.y-19,16,4); ctx.fillStyle='#3a2c1a'; ctx.beginPath(); ctx.ellipse(c.x-12,c.y-4,6,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x+14,c.y-18,12,3); }
+  function drawLantern(c,t){ shadow(c.x,c.y+1,8,4); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-2,c.y-34,4,34);
+    const on=dusk?(0.6+0.4*Math.sin(t*3)):0; if(on){ glow(c.x,c.y-40,22,'#ffd98a',on*0.6); }
+    ctx.fillStyle= dusk?'#ffdf9a':'#c9a86a'; ctx.fillRect(c.x-6,c.y-46,12,12); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-7,c.y-48,14,3); }
+
+  // ---------- everyday animals (sleep at dusk) ----------
+  function drawRabbit(c,t){ shadow(c.x,c.y+2,15,7);
+    if(dusk){ ctx.fillStyle='#e2dccf'; ctx.beginPath(); ctx.ellipse(c.x,c.y-5,15,8,0,0,7); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(c.x+11,c.y-7,6,5,0,0,7); ctx.fill();
+      ctx.fillStyle='#d0c6b6'; ctx.fillRect(c.x+2,c.y-12,11,3); closedEye(c.x+11,c.y-7); zzz(c.x+17,c.y-12,t); return; }
+    const hop=Math.abs(Math.sin(t*1.6))*8, y=c.y-hop;
+    ctx.fillStyle='#efe7db'; ctx.beginPath(); ctx.ellipse(c.x,y-9,13,10,0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(c.x+9,y-16,7,7,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+6,y-30,3,10); ctx.fillRect(c.x+11,y-30,3,10); ctx.fillStyle='#f6b9c8'; ctx.beginPath(); ctx.ellipse(c.x-11,y-8,4,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+12,y-17,2,2); }
+  function drawFox(c,t){ const b=dusk?0:Math.sin(t*1.3)*1.5; shadow(c.x,c.y+2,26,10);
+    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9+b,22,12,0,0,7); ctx.fill();
+    ctx.fillStyle='#e6bd96'; ctx.beginPath(); ctx.ellipse(c.x-18,c.y-9+b,9,7,0,0,7); ctx.fill();
+    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x+16,c.y-13+b,9,8,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+12,c.y-22+b); ctx.lineTo(c.x+15,c.y-14+b); ctx.lineTo(c.x+9,c.y-15+b); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+22,c.y-22+b); ctx.lineTo(c.x+23,c.y-14+b); ctx.lineTo(c.x+18,c.y-15+b); ctx.fill();
+    if(dusk){ closedEye(c.x+20,c.y-13); zzz(c.x+26,c.y-20,t); } else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+20,c.y-13+b,2,2); } }
+  function drawDeer(c,t){ shadow(c.x,c.y+2,24,10);
+    if(dusk){ ctx.fillStyle='#a97e50'; ctx.beginPath(); ctx.ellipse(c.x,c.y-8,18,10,0,0,7); ctx.fill();
+      ctx.fillRect(c.x+12,c.y-16,5,10); ctx.beginPath(); ctx.ellipse(c.x+16,c.y-16,7,6,0,0,7); ctx.fill();
+      ctx.strokeStyle='#7a5230'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x+15,c.y-20); ctx.lineTo(c.x+12,c.y-27); ctx.moveTo(c.x+18,c.y-20); ctx.lineTo(c.x+21,c.y-27); ctx.stroke();
+      closedEye(c.x+18,c.y-16); zzz(c.x+24,c.y-24,t); return; }
+    const b=Math.sin(t*1.1+c.x)*1.2, y=c.y+b;
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-12,y-14,3,14); ctx.fillRect(c.x-4,y-14,3,14); ctx.fillRect(c.x+6,y-14,3,14); ctx.fillRect(c.x+13,y-14,3,14);
+    ctx.fillStyle='#b98a5a'; ctx.beginPath(); ctx.ellipse(c.x,y-20,16,10,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+10,y-34,5,16); ctx.beginPath(); ctx.ellipse(c.x+14,y-36,7,6,0,0,7); ctx.fill();
+    ctx.strokeStyle='#7a5230'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x+13,y-40); ctx.lineTo(c.x+10,y-48); ctx.moveTo(c.x+16,y-40); ctx.lineTo(c.x+19,y-48); ctx.stroke();
+    ctx.fillStyle='#f2ead6'; ctx.beginPath(); ctx.ellipse(c.x-15,y-20,4,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); }
+  function drawBird(c,t){ shadow(c.x,c.y+1,10,4);
+    if(dusk){ ctx.fillStyle='#6a7fa8'; ctx.beginPath(); ctx.ellipse(c.x,c.y-7,10,8,0,0,7); ctx.fill();
+      ctx.fillStyle='#59688c'; ctx.beginPath(); ctx.ellipse(c.x+2,c.y-9,5,4,0,0,7); ctx.fill(); zzz(c.x+9,c.y-14,t); return; }
+    const hop=Math.abs(Math.sin(t*2+c.x))*4, y=c.y-hop;
+    ctx.fillStyle='#7a95c7'; ctx.beginPath(); ctx.ellipse(c.x,y-8,9,8,0,0,7); ctx.fill();
+    ctx.fillStyle='#e08a5a'; ctx.beginPath(); ctx.ellipse(c.x-2,y-6,5,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#f4c04a'; ctx.beginPath(); ctx.moveTo(c.x+7,y-10); ctx.lineTo(c.x+13,y-9); ctx.lineTo(c.x+7,y-7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+4,y-11,2,2); }
+
+  // ---------- butterflies / fireflies ----------
+  function drawButterfly(c,t,seed){ const bx=c.x+Math.sin(t*1.2+seed)*24, by=c.y-46+Math.cos(t*1.7+seed)*16; const f=Math.sin(t*11+seed);
+    const cols=['#ff8fb0','#ffd36a','#a98fff','#ff9d6a']; const col=cols[Math.floor(seed)%4];
+    ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(bx-4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(bx+4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill();
+    ctx.fillStyle='#3a2c1a'; ctx.fillRect(bx-1,by-4,2,8); }
+  function drawFirefly(c,t,seed){ const bx=c.x+Math.sin(t*0.7+seed)*24, by=c.y-46+Math.cos(t*0.9+seed)*18;
+    const on=0.25+0.75*Math.max(0,Math.sin(t*3+seed)); glow(bx,by,16,'#fff2a0',on*0.8);
+    ctx.globalAlpha=on; ctx.fillStyle='#fff7c0'; ctx.beginPath(); ctx.ellipse(bx,by,2.5,2.5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+
+  // ---------- mythical (active + glowing at dusk) ----------
+  function sparkle(x,y,t,seed){ for(let k=0;k<3;k++){ const a=(0.6+0.4*Math.sin(t*3+seed+k*2)); ctx.globalAlpha=a; ctx.fillStyle='#fff6c8';
+    const sx=x+Math.cos(seed+k*2.1)*18, sy=y+Math.sin(seed+k*1.7)*16; ctx.fillRect(sx-1,sy-4,2,8); ctx.fillRect(sx-4,sy-1,8,2); } ctx.globalAlpha=1; }
+  function horseBase(c,t,color){ const b=Math.sin(t*2+c.x)*1.4, y=c.y+b; shadow(c.x,c.y+2,24,9);
+    ctx.fillStyle=color; ctx.fillRect(c.x-13,y-14,4,14); ctx.fillRect(c.x-4,y-14,4,14); ctx.fillRect(c.x+5,y-14,4,14); ctx.fillRect(c.x+13,y-14,4,14);
+    ctx.beginPath(); ctx.ellipse(c.x,y-20,17,11,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+9,y-34,6,16); ctx.beginPath(); ctx.ellipse(c.x+15,y-36,8,6,0,0,7); ctx.fill(); return y; }
+  function drawUnicorn(c,t){ if(dusk) glow(c.x,c.y-26,58,'#ffd6ef',0.5+0.15*Math.sin(t*2)); const y=horseBase(c,t,'#f4f0ff');
+    ctx.fillStyle='#f6b9d6'; ctx.beginPath(); ctx.moveTo(c.x+8,y-30); ctx.quadraticCurveTo(c.x-6,y-30,c.x-14,y-14); ctx.lineTo(c.x-9,y-14); ctx.quadraticCurveTo(c.x-2,y-28,c.x+9,y-26); ctx.fill();
+    ctx.fillStyle='#ffd76a'; ctx.beginPath(); ctx.moveTo(c.x+17,y-44); ctx.lineTo(c.x+14,y-40); ctx.lineTo(c.x+20,y-40); ctx.fill();
+    ctx.fillStyle='#f6b9d6'; ctx.beginPath(); ctx.moveTo(c.x-15,y-22); ctx.quadraticCurveTo(c.x-26,y-16,c.x-20,y-4); ctx.lineTo(c.x-14,y-8); ctx.quadraticCurveTo(c.x-18,y-16,c.x-11,y-20); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); sparkle(c.x+2,y-30,t,c.x); }
+  function drawPegasus(c,t){ if(dusk) glow(c.x,c.y-26,60,'#cfe3ff',0.5+0.15*Math.sin(t*2.3)); const y=horseBase(c,t,'#eef4ff'); const wf=Math.sin(t*4)*6;
+    ctx.fillStyle='#dbe8ff'; ctx.beginPath(); ctx.moveTo(c.x-2,y-24); ctx.quadraticCurveTo(c.x-26,y-40-wf,c.x-30,y-18); ctx.quadraticCurveTo(c.x-18,y-20,c.x-2,y-16); ctx.fill();
+    ctx.fillStyle='#f7fbff'; ctx.beginPath(); ctx.moveTo(c.x-2,y-24); ctx.quadraticCurveTo(c.x-18,y-34-wf,c.x-22,y-18); ctx.quadraticCurveTo(c.x-12,y-20,c.x-2,y-17); ctx.fill();
+    ctx.fillStyle='#bcd0f0'; ctx.beginPath(); ctx.moveTo(c.x+8,y-30); ctx.quadraticCurveTo(c.x-4,y-30,c.x-10,y-18); ctx.lineTo(c.x-5,y-18); ctx.quadraticCurveTo(c.x,y-28,c.x+9,y-26); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); sparkle(c.x-4,y-30,t,c.x+3); }
+  function drawDragon(c,t){ const b=Math.sin(t*2.2+c.x)*1.6, y=c.y+b; if(dusk) glow(c.x,c.y-16,52,'#c8ffe0',0.45+0.15*Math.sin(t*2.6)); shadow(c.x,c.y+2,22,9);
+    const wf=Math.sin(t*5)*5;
+    ctx.fillStyle='#6a4fb0'; ctx.beginPath(); ctx.moveTo(c.x-2,y-20); ctx.quadraticCurveTo(c.x-20,y-34-wf,c.x-24,y-14); ctx.quadraticCurveTo(c.x-12,y-16,c.x-2,y-12); ctx.fill();
+    ctx.fillStyle='#4f9e6a'; ctx.beginPath(); ctx.ellipse(c.x,y-14,15,9,0,0,7); ctx.fill();
+    ctx.strokeStyle='#4f9e6a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(c.x-12,y-13); ctx.quadraticCurveTo(c.x-26,y-10,c.x-24,y-2); ctx.stroke();
+    ctx.fillStyle='#4f9e6a'; ctx.beginPath(); ctx.moveTo(c.x-26,y-6); ctx.lineTo(c.x-30,y-2); ctx.lineTo(c.x-24,y+1); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(c.x+12,y-18,8,7,0,0,7); ctx.fill();
+    ctx.fillStyle='#3f7f52'; ctx.beginPath(); ctx.moveTo(c.x+9,y-26); ctx.lineTo(c.x+11,y-21); ctx.lineTo(c.x+7,y-22); ctx.fill(); ctx.beginPath(); ctx.moveTo(c.x+15,y-26); ctx.lineTo(c.x+16,y-21); ctx.lineTo(c.x+13,y-22); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
+
+  // ---------- growth script (each step ≈ one good day) ----------
+  const S=[
+    {t:'tree',id:'A',i:2,j:2,lvl:1},{t:'tree',id:'A',lvl:2},{t:'tree',id:'A',lvl:3},
+    {t:'obj',type:'bush',i:1,j:2,color:'#ff8fb0'},
+    {t:'tree',id:'A',lvl:4},
+    {t:'obj',type:'bush',i:3,j:1,color:'#ffe07a'},
+    {t:'obj',type:'bush',i:4,j:3,color:'#c79cff'},
+    {t:'flutter',i:2,j:3},
+    {t:'fruit',id:'A',n:1},
+    {t:'obj',type:'bush',i:0,j:3,color:'#ff9d6a'},
+    {t:'tree',id:'A',lvl:5},
+    {t:'fruit',id:'A',n:1},
+    {t:'tree',id:'B',i:4,j:1,lvl:1},{t:'tree',id:'B',lvl:2},{t:'tree',id:'B',lvl:3},
+    {t:'obj',type:'bush',i:5,j:2,color:'#8fd4ff'},
+    {t:'obj',type:'bush',i:2,j:4,color:'#ffb3d9'},
+    {t:'flutter',i:4,j:2},
+    {t:'obj',type:'rabbit',i:3,j:4},
+    {t:'pond',i:4,j:4},
+    {t:'tree',id:'B',lvl:4},
+    {t:'fruit',id:'A',n:1},
+    {t:'obj',type:'birdhouse',i:5,j:0},
+    {t:'obj',type:'bird',i:2,j:5},
+    {t:'tree',id:'C',i:1,j:4,lvl:1},{t:'tree',id:'C',lvl:2},
+    {t:'obj',type:'mushroom',i:0,j:4},
+    {t:'obj',type:'fox',i:5,j:4},
+    {t:'tree',id:'C',lvl:3},
+    {t:'obj',type:'bush',i:3,j:5,color:'#c9ff8f'},
+    {t:'flutter',i:1,j:3},
+    {t:'fruit',id:'A',n:1},
+    {t:'obj',type:'bench',i:0,j:2},
+    {t:'obj',type:'deer',i:5,j:3},
+    {t:'tree',id:'A',lvl:6},
+    {t:'obj',type:'wheelbarrow',i:1,j:0},
+    {t:'obj',type:'lantern',i:0,j:1},
+    {t:'obj',type:'lantern',i:2,j:0},
+    {t:'fruit',id:'A',n:1},
+    {t:'obj',type:'rabbit',i:2,j:3},
+    {t:'obj',type:'unicorn',i:3,j:3},
+    {t:'obj',type:'pegasus',i:5,j:5},
+    {t:'obj',type:'dragon',i:0,j:0},
+  ];
+  function phaseOf(n){ if(n<=0)return'Seed'; if(n<13)return'Sapling'; if(n<33)return'Grove'; return'Haven'; }
+
+  function apply(n){ const trees={},objs=[],ponds=new Set(),flutters=[];
+    for(let k=0;k<n&&k<S.length;k++){ const s=S[k];
+      if(s.t==='tree'){ trees[s.id]=trees[s.id]||{i:s.i,j:s.j,lvl:0,fruit:0}; if(s.i!=null){trees[s.id].i=s.i;trees[s.id].j=s.j;} trees[s.id].lvl=s.lvl; }
+      else if(s.t==='fruit'){ if(trees[s.id]) trees[s.id].fruit+=s.n; }
+      else if(s.t==='pond'){ ponds.add(s.i+','+s.j); }
+      else if(s.t==='flutter'){ flutters.push({i:s.i,j:s.j,seed:s.i*3+s.j}); }
+      else objs.push(s); }
+    return {trees,objs,ponds,flutters};
+  }
+  let STATE=apply(0);
+
+  function drawScene(t){
+    pondTiles=STATE.ponds; drawGround();
+    const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(0,0,VW,VH); }
+    const items=[];
+    for(const id in STATE.trees){ const tr=STATE.trees[id], c=iso(tr.i,tr.j); items.push({d:tr.i+tr.j,fn:()=>drawTree(c,tr.lvl,tr.fruit,t)}); }
+    for(const o of STATE.objs){ const c=iso(o.i,o.j), d=o.i+o.j;
+      const f={bush:()=>drawBush(c,o.color),mushroom:()=>drawMushroom(c),birdhouse:()=>drawBirdhouse(c,t),bench:()=>drawBench(c),
+        wheelbarrow:()=>drawWheelbarrow(c),lantern:()=>drawLantern(c,t),rabbit:()=>drawRabbit(c,t),fox:()=>drawFox(c,t),
+        deer:()=>drawDeer(c,t),bird:()=>drawBird(c,t),unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
+      if(f) items.push({d,fn:f}); }
+    items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
+    for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
   }
 
-  // clouds
-  for(const c of clouds){
-    c.x+=c.s*(weather==='storm'?2:1); if(c.x>W+20) c.x=-c.w-10;
-    const col = weather==='storm'?'#565b69':'rgba(255,255,255,.8)';
-    px(c.x,c.y,c.w,6,col); px(c.x+6,c.y-4,c.w-14,6,col);
+  // log-stick puff over the main tree
+  function spawnPuff(){ const c=iso(2,2); for(let i=0;i<3;i++) puffs.push({x:c.x+(Math.random()*10-5),y:c.y-70,vx:(Math.random()*0.8-0.3),vy:-0.7-Math.random()*0.5,life:1}); }
+  function drawPuffs(t){ for(const p of puffs){ p.x+=p.vx; p.y+=p.vy; p.life-=0.012;
+    ctx.globalAlpha=Math.max(0,p.life)*0.55; ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(p.x,p.y,5,5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+    puffs=puffs.filter(p=>p.life>0); }
+
+  // fit the virtual scene into the responsive canvas
+  function fitFrame(now){
+   try{
+    const t=now/1000;
+    const r=stageEl.getBoundingClientRect();
+    const DPR=Math.min(2, window.devicePixelRatio||1);
+    const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
+    if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
+    ctx.setTransform(1,0,0,1,0,0);
+    const p=P();
+    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    const scale=Math.min(cw/VW, ch/VH)*DPR;
+    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
+    drawScene(t); drawPuffs(t);
+   }catch(_e){}
+    requestAnimationFrame(fitFrame);
   }
 
-  // birds (only in fair weather + enough growth)
-  if(weather!=='storm' && growth>=3){
-    if(Math.random()<0.006+growth*0.0008 && birds.length<4) spawnBird();
-  }
-  for(const b of birds){
-    b.x+=b.s; b.ph+=0.2;
-    const flap=Math.sin(b.ph)>0?1:-1;
-    px(b.x,b.y,2,1,'#2b2438'); px(b.x-2,b.y-flap,2,1,'#2b2438'); px(b.x+2,b.y-flap,2,1,'#2b2438');
-  }
-  birds=birds.filter(b=>b.x<W+16);
-
-  // ---- floating island ----
-  const cx=W/2, gy=H*0.62;
-  // soft shadow
-  ctx.globalAlpha=.18; px(cx-46, gy+34, 92, 8, '#000'); ctx.globalAlpha=1;
-  // dirt underside (tapered)
-  const dirt='#6b4630', dirt2='#553622';
-  for(let i=0;i<16;i++){ const w=88-i*4.6; px(cx-w/2, gy+18+i, w, 1, i%2?dirt:dirt2); }
-  // grass slab top
-  const grass = weather==='storm'? '#5f7d4e' : '#7cb85e';
-  const grass2= weather==='storm'? '#4f6a42' : '#69a34e';
-  px(cx-48, gy+2, 96, 16, grass2);
-  px(cx-46, gy-2, 92, 10, grass);
-  // little grass rim tufts (sway)
-  for(let i=0;i<14;i++){
-    const gx=cx-44+i*6.4, sw=Math.sin(t*1.6+i)*1.2;
-    px(gx+sw, gy-6, 1, 5, grass);
-    px(gx+sw*0.6, gy-8, 1, 3, grass);
-  }
-
-  // ---- the tree (size by growth) ----
-  drawTree(cx, gy, growth, t, weather);
-
-  // ---- ground companions ----
-  if(growth>=4){ drawButterfly(cx-26, gy-4, t); }         // flit
-  if(growth>=5){ drawRabbit(cx+24, gy+2, t); }            // rabbit
-  if(growth>=6){ drawStream(cx, gy, t); }                 // stream
-  if(growth>=7){ drawFox(cx-30, gy+4, t); }               // fox
-
-  // fireflies at dusk/night when thriving
-  if(growth>=6 && (sky.h<7||sky.h>=18)){
-    if(flies.length<10 && Math.random()<0.1) flies.push({x:cx-40+Math.random()*80, y:gy-30+Math.random()*30, ph:Math.random()*6});
-    for(const f of flies){ f.ph+=0.05; const on=(Math.sin(f.ph*4)>0.3);
-      if(on) px(f.x+Math.sin(f.ph)*3, f.y+Math.cos(f.ph*0.7)*2, 1,1,'#f6e27a'); }
-    flies=flies.filter(f=>Math.random()>0.002);
-  } else flies=[];
-
-  // ---- weather overlays ----
-  if(weather==='storm'){
-    if(rain.length<60) for(let i=0;i<4;i++) rain.push({x:Math.random()*W, y:-4, v:2.4+Math.random()*1.5});
-    ctx.fillStyle='rgba(150,170,200,.55)';
-    for(const r of rain){ r.x-=1; r.y+=r.v; ctx.fillRect(r.x, r.y, 1, 3); }
-    rain=rain.filter(r=>r.y<H);
-    ctx.fillStyle='rgba(30,34,48,.18)'; ctx.fillRect(0,0,W,H);
-  } else rain=[];
-
-  // fog overlay if there are unclosed days
-  if(foggy){
-    ctx.fillStyle='rgba(210,214,224,.10)'; ctx.fillRect(0,0,W,H);
-    for(let i=0;i<3;i++){ const fx=(t*6+i*80)%(W+60)-30; px(fx, gy-2+i*4, 44, 3, 'rgba(230,232,240,.12)'); }
-  }
-
-  // ---- log puffs (friction feedback) ----
-  for(const p of puffs){ p.x+=p.vx; p.y+=p.vy; p.life-=0.012;
-    ctx.globalAlpha=Math.max(0,p.life)*0.7; px(p.x,p.y,3,3,'#d9d2e2'); ctx.globalAlpha=1; }
-  puffs=puffs.filter(p=>p.life>0);
- }catch(_e){ /* keep the loop alive even if one frame errors */ }
-  requestAnimationFrame(draw);
-}
-
-function drawTree(cx, gy, g, t, weather){
-  const sway=Math.sin(t*1.1)*(1+g*0.15);
-  const trunk = weather==='storm'? '#4a3524':'#5b4128';
-  const leaf1 = weather==='storm'? '#4f6f3e':'#5fa044';
-  const leaf2 = weather==='storm'? '#3f5a33':'#4d8637';
-  const leaf3 = weather==='storm'? '#6a8a4e':'#7bbd57';
-
-  if(g<=0){ px(cx-1, gy-3, 2, 3,'#6b4a2e'); return; }           // bare soil
-  if(g===1){ // seed / seedling
-    px(cx, gy-4, 1, 4, '#6f8f4a'); px(cx-1+sway*.3, gy-6, 3, 2, leaf3); return;
-  }
-  if(g===2){ // sprout
-    px(cx, gy-8, 1, 8, trunk);
-    px(cx-2+sway*.4, gy-11, 5, 4, leaf1); px(cx-1, gy-13, 3, 3, leaf3); return;
-  }
-  // sapling and up — scale canopy with stage
-  const trunkH = 10+ (g-2)*3;
-  const canopyR = 7 + (g-2)*3;
-  // trunk
-  px(cx-1, gy-trunkH, 2, trunkH, trunk);
-  if(g>=5){ px(cx-4, gy-trunkH+4, 3,1,trunk); px(cx+2, gy-trunkH+7,3,1,trunk); } // branches
-  const topY = gy-trunkH-canopyR+2;
-  // canopy as stacked blobs
-  const blob=(bx,by,r,c)=>{ px(bx-r+sway, by-r*0.6, r*2, r*1.2, c); px(bx-r*0.6+sway, by-r, r*1.2, r*2, c); };
-  blob(cx, topY+canopyR, canopyR, leaf2);
-  blob(cx-canopyR*0.6, topY+canopyR*1.2, canopyR*0.8, leaf1);
-  blob(cx+canopyR*0.6, topY+canopyR*1.1, canopyR*0.85, leaf1);
-  blob(cx, topY+canopyR*0.5, canopyR*0.9, leaf3);
-  // flowers / fruit at higher stages
-  if(g>=4){ for(let i=0;i<5+g;i++){ const a=i*1.7+t*0.2, rr=canopyR*0.9;
-    px(cx+Math.cos(a)*rr+sway, topY+canopyR+Math.sin(a)*rr*0.7, 1,1, i%2?'#ffd1e0':'#fff2a8'); } }
-}
-
-function drawButterfly(x,y,t){
-  const f=Math.sin(t*6)>0?1:-1; const bx=x+Math.sin(t*0.8)*10, by=y-16+Math.cos(t*1.2)*6;
-  px(bx,by,1,1,'#3a2c1a'); px(bx-2,by-f,2,2,'#f2a0c0'); px(bx+1,by-f,2,2,'#f2a0c0');
-}
-function drawRabbit(x,y,t){
-  const hop=Math.abs(Math.sin(t*1.4))*3;
-  px(x, y-3-hop, 4,3,'#e9e2d4'); px(x+3, y-4-hop,2,2,'#e9e2d4'); // body+head
-  px(x, y-6-hop,1,3,'#e9e2d4'); px(x+1,y-6-hop,1,3,'#e9e2d4'); // ears
-  px(x-1,y-hop,1,1,'#fff');
-}
-function drawFox(x,y,t){
-  const step=Math.sin(t*1.1)*3;
-  const fx=x+step;
-  px(fx, y-4,6,3,'#d9793a'); px(fx+5,y-5,3,3,'#d9793a'); // body+head
-  px(fx-2,y-4,3,2,'#f0c9a0'); // tail
-  px(fx+6,y-6,1,2,'#d9793a'); px(fx+7,y-6,1,2,'#d9793a'); // ears
-  px(fx+6,y-4,1,1,'#2b2438');
-}
-function drawStream(cx,gy,t){
-  for(let i=0;i<10;i++){ const sx=cx-30+i*3; const wob=Math.sin(t*2+i)*1;
-    px(sx, gy+8+wob, 2,1, i%2?'#6fb6e0':'#8fd0ee'); }
-}
+  function setState(lvl, isDusk){ lvl=Math.max(0,Math.min(S.length, lvl|0)); if(lvl!==level){ level=lvl; STATE=apply(level); } dusk=!!isDusk; }
+  function start(){ requestAnimationFrame(fitFrame); }
+  return { setState, spawnPuff, start, phaseOf, LEN:S.length };
+})();
 
 /* ============================================================
    BOOT
@@ -1060,9 +1312,12 @@ function drawStream(cx,gy,t){
     if(!oath){ oath={ substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() }; logs=[]; dayStatus={}; prefs={max:0}; }
   }
   try{ updateSyncUI(); }catch(_){}
-  try{ fit(); seedAmbient(); refresh(); }catch(e){ console.error('render init failed', e); }
-  requestAnimationFrame(draw);
+  try{ updateHeader(); renderAccount(); }catch(_){}
+  try{ refresh(); }catch(e){ console.error('render init failed', e); }
+  ISO.start();
+  // first run: gently invite a guest to make an account (fully skippable)
+  try{ if(backend==='cloud' && accountIsGuest() && !(profile&&profile.name)) showAuth('welcome'); }catch(_){}
   setInterval(()=>{ try{ refresh(); }catch(_){} }, 60000);
-  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every honest day is what grows it.'); }catch(_){} }, 900);
+  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every good day is what grows it.'); }catch(_){} }, 900);
 })();
 </script>
