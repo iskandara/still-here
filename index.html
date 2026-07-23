@@ -239,6 +239,28 @@
   .cell.hi{background:var(--soft-warn); color:#3a1410}
   .cell.foggy{background:transparent; border:1px dashed var(--locked); color:var(--muted)}
   .cell.today{outline:2px solid var(--honey); outline-offset:1px}
+  /* ---------- boot / loading ---------- */
+  #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:26px;
+    background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
+    transition:opacity .55s ease; }
+  #boot.hide{opacity:0; pointer-events:none}
+  #boot .bl{font-family:'Pixelify Sans'; font-size:24px; letter-spacing:.5px; color:var(--ink)}
+  #boot .bl small{display:block; font-family:'Nunito'; font-weight:800; font-size:9.5px;
+    letter-spacing:2.5px; color:var(--muted); text-transform:uppercase; margin-top:6px; text-align:center}
+  .sprout{position:relative; width:64px; height:56px}
+  .sprout .soil{position:absolute; left:12px; bottom:0; width:40px; height:6px; border-radius:4px;
+    background:#5b4128; opacity:.85}
+  .sprout .stem{position:absolute; left:31px; bottom:5px; width:3px; background:#6f8f45; border-radius:2px;
+    animation:stemGrow 1.9s ease-in-out infinite}
+  .sprout .lf{position:absolute; width:14px; height:11px; border-radius:60% 10% 60% 10%; background:#7ccf5b}
+  .sprout .l1{left:17px; bottom:26px; animation:leafPop 1.9s ease-in-out infinite .5s; transform-origin:right center}
+  .sprout .l2{left:33px; bottom:33px; animation:leafPop 1.9s ease-in-out infinite .8s; transform-origin:left center;
+    border-radius:10% 60% 10% 60%; background:#67bf4c}
+  @keyframes stemGrow{0%{height:4px}45%{height:34px}100%{height:34px}}
+  @keyframes leafPop{0%,25%{transform:scale(0);opacity:0}55%{transform:scale(1.12);opacity:1}70%,100%{transform:scale(1);opacity:1}}
+  #boot .bt{color:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.2px}
+
   .cell.blank{background:transparent; border:none}
 
   /* ---------- auth ---------- */
@@ -275,6 +297,15 @@
     font-weight:800;font-size:12px;padding:9px 13px;border-radius:10px;cursor:pointer}
   .acctbtn.primary{background:var(--honey);color:#3a2410;border-color:transparent}
 </style>
+
+<div id="boot">
+  <div class="bl">Still Here<small>your quiet forest</small></div>
+  <div class="sprout">
+    <span class="soil"></span><span class="stem"></span>
+    <span class="lf l1"></span><span class="lf l2"></span>
+  </div>
+  <div class="bt" id="bootMsg">Waking the forest…</div>
+</div>
 
 <div id="app">
   <div id="stage">
@@ -629,6 +660,13 @@ async function doLogout(){
   stateDocId = null;
   await reloadStateFromCloud();
 }
+
+function hideBoot(){
+  const b=document.getElementById('boot'); if(!b || b.classList.contains('hide')) return;
+  b.classList.add('hide');
+  setTimeout(()=>{ if(b && b.parentNode) b.parentNode.removeChild(b); }, 700);
+}
+function bootMsg(m){ const el=document.getElementById('bootMsg'); if(el) el.textContent=m; }
 
 function updateHeader(){
   const w=document.getElementById('wordmark'); if(!w) return;
@@ -1026,10 +1064,11 @@ function openTracker(){
 const ISO = (function(){
   const cv=document.getElementById('scene'), ctx=cv.getContext('2d');
   const stageEl=document.getElementById('stage');
-  const VW=820, VH=680, TW=112, TH=56, C=6, R=6, originX=410, originY=235, THICK=42;
+  const VW=760, VH=620, TW=112, TH=56, C=6, R=6, originX=380, originY=215, THICK=42;
   function iso(i,j){ return { x:originX+(i-j)*(TW/2), y:originY+(i+j)*(TH/2) }; }
 
   let level=0, dusk=false, puffs=[];
+  let VIS={l:0,t:0,r:VW,b:VH};   // visible region in scene coords (set each frame)
 
   function P(){ return dusk ? {
       skyTop:'#2b2450',skyBot:'#b5786a',sun:'#ffe6c0',grassA:'#4f7a48',grassB:'#456a40',grassEdge:'#374f34',
@@ -1052,14 +1091,17 @@ const ISO = (function(){
 
   // ---------- ground ----------
   let pondTiles=new Set();
-  let clouds=[{x:180,y:90,s:.12,w:120},{x:560,y:70,s:.08,w:90},{x:360,y:150,s:.05,w:70}];
+  let clouds=[{x:170,y:85,s:.12,w:120},{x:520,y:62,s:.08,w:90},{x:330,y:140,s:.05,w:70}];
   function drawGround(){
     const p=P();
-    const g=ctx.createLinearGradient(0,0,0,VH*0.7); g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
-    ctx.fillStyle=g; ctx.fillRect(0,0,VW,VH);
-    blob(VW-130,120,42,p.sun);
-    if(dusk){ ctx.fillStyle='#fff'; for(let i=0;i<18;i++){ const sx=(i*151)%VW, sy=(i*97)%220; if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} } ctx.globalAlpha=1; }
-    for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VW+120) cl.x=-140;
+    // NOTE: the sky gradient is painted across the whole canvas in fitFrame(),
+    // so the scene only adds what sits in front of it.
+    blob(VIS.r-120, VIS.t+110, 42, p.sun);
+    if(dusk){ ctx.fillStyle='#fff';
+      for(let i=0;i<40;i++){ const sx=VIS.l+((i*151)%Math.max(1,(VIS.r-VIS.l))), sy=VIS.t+((i*97)%Math.max(1,(originY-VIS.t)));
+        if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} }
+      ctx.globalAlpha=1; }
+    for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VIS.r+140) cl.x=VIS.l-160;
       ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }
     const bC=iso(C-1,R-1);
     ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(originX,bC.y+THICK+24,TW*2.4,TH*1.6,0,0,7); ctx.fill();
@@ -1260,7 +1302,7 @@ const ISO = (function(){
 
   function drawScene(t){
     pondTiles=STATE.ponds; drawGround();
-    const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(0,0,VW,VH); }
+    const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(VIS.l,VIS.t,VIS.r-VIS.l,VIS.b-VIS.t); }
     const items=[];
     for(const id in STATE.trees){ const tr=STATE.trees[id], c=iso(tr.i,tr.j); items.push({d:tr.i+tr.j,fn:()=>drawTree(c,tr.lvl,tr.fruit,t)}); }
     for(const o of STATE.objs){ const c=iso(o.i,o.j), d=o.i+o.j;
@@ -1288,9 +1330,14 @@ const ISO = (function(){
     if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
     ctx.setTransform(1,0,0,1,0,0);
     const p=P();
-    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    // one continuous sky across the entire canvas — no seams
+    const g=ctx.createLinearGradient(0,0,0,cv.height);
+    g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
+    ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
     const scale=Math.min(cw/VW, ch/VH)*DPR;
-    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
+    const ox=(cv.width-VW*scale)/2, oy=(cv.height-VH*scale)/2;
+    ctx.setTransform(scale,0,0,scale,ox,oy);
+    VIS={ l:-ox/scale, t:-oy/scale, r:(cv.width-ox)/scale, b:(cv.height-oy)/scale };
     drawScene(t); drawPuffs(t);
    }catch(_e){}
     requestAnimationFrame(fitFrame);
@@ -1305,18 +1352,24 @@ const ISO = (function(){
    BOOT
 ============================================================ */
 (async function(){
+  bootMsg('Waking the forest…');
   try{ await load(); }
   catch(e){
     cloudError = 'Startup: '+((e && e.message) ? e.message : String(e));
     backend='local';
     if(!oath){ oath={ substance:'IQOS', sticksPerPack:PACK, baselinePacks:30, targetPacks:10, start: todayKey() }; logs=[]; dayStatus={}; prefs={max:0}; }
   }
+  if(!profile) profile={ name:'', animal:'' };
+  bootMsg('Planting the ground…');
   try{ updateSyncUI(); }catch(_){}
   try{ updateHeader(); renderAccount(); }catch(_){}
   try{ refresh(); }catch(e){ console.error('render init failed', e); }
   ISO.start();
   // first run: gently invite a guest to make an account (fully skippable)
   try{ if(backend==='cloud' && accountIsGuest() && !(profile&&profile.name)) showAuth('welcome'); }catch(_){}
+  // hide the loader once the scene has actually painted a frame
+  requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(hideBoot,220)));
+  setTimeout(hideBoot, 6000);   // safety net: never trap the user on the loader
   setInterval(()=>{ try{ refresh(); }catch(_){} }, 60000);
   setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every good day is what grows it.'); }catch(_){} }, 900);
 })();
