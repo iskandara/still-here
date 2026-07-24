@@ -288,6 +288,23 @@
   .pdesc{color:var(--muted); font-size:12.5px; line-height:1.5}
   .phase.active .pdesc{color:var(--ink)}
 
+  /* ---------- hourly rhythm + day detail ---------- */
+  .hours{display:flex; align-items:flex-end; gap:3px; height:110px; padding:6px 2px 0}
+  .hr{flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%}
+  .hr i{display:block; width:100%; border-radius:3px 3px 1px 1px; background:var(--honey); min-height:2px;
+    transition:height .4s ease}
+  .hr i.peak{background:var(--soft-warn)}
+  .hr i.none{background:rgba(255,255,255,.07)}
+  .hr b{font-size:8px; color:var(--muted); font-weight:800; margin-top:5px; letter-spacing:-.2px}
+  .hr span{font-size:8.5px; color:var(--ink); font-weight:800; margin-bottom:2px; height:10px}
+  .times{display:flex; flex-wrap:wrap; gap:7px}
+  .tchip{background:var(--plum3); border:1px solid var(--line); border-radius:9px; padding:7px 10px;
+    font-weight:800; font-size:12.5px; font-variant-numeric:tabular-nums}
+  .cell{flex-direction:column; gap:1px; cursor:pointer}
+  .cell .dn{font-size:9px; opacity:.75; line-height:1}
+  .cell .cn{font-size:11px; font-weight:800; line-height:1}
+  .cell.blank{cursor:default}
+
   /* ---------- boot / loading ---------- */
   #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:26px;
@@ -500,6 +517,18 @@
         <span><i style="background:var(--soft-warn)"></i>over</span>
         <span><i style="background:transparent;border:1px dashed var(--locked)"></i>foggy</span>
       </div>
+      <h3 style="margin-top:22px">Your rhythm</h3>
+      <p class="lead" id="rhythmLead">When this happens across the day. Tap any date above to see that day on its own.</p>
+      <div class="hours" id="dtHours"></div>
+    </div>
+
+    <div id="trkDay" style="display:none">
+      <button class="back" onclick="dayBack()">‹ Back to month</button>
+      <h3 id="dyTitle">Day</h3>
+      <div class="dtstats" id="dyStats"></div>
+      <div class="hours" id="dyHours"></div>
+      <h3 style="margin-top:20px;font-size:15px">Every log</h3>
+      <div class="times" id="dyTimes"></div>
     </div>
   </div>
 
@@ -1190,23 +1219,26 @@ function showPane(which){
 
 /* companions unlocked as the forest grows (level = good days) */
 const COMPANIONS=[
-  {g:'🦋', name:'Flit',    lvl:8},
-  {g:'🐓', name:'Rooster', lvl:11},
-  {g:'🐇', name:'Rabbit',  lvl:20},
-  {g:'🐸', name:'Frog',    lvl:22},
-  {g:'🐦', name:'Robin',   lvl:26},
-  {g:'🐑', name:'Sheep',   lvl:27},
-  {g:'🐄', name:'Cow',     lvl:31},
-  {g:'🦊', name:'Fox',     lvl:32},
-  {g:'🐟', name:'Fish',    lvl:40},
-  {g:'🦌', name:'Deer',    lvl:43},
-  {g:'🦄', name:'Unicorn', lvl:50},
-  {g:'🐉', name:'Dragon',  lvl:52},
+  {g:'🦋', name:'Flit',     type:'butterfly'},
+  {g:'🐓', name:'Rooster',  type:'rooster'},
+  {g:'🐇', name:'Rabbit',   type:'rabbit'},
+  {g:'🐸', name:'Frog',     type:'frog'},
+  {g:'🐦', name:'Robin',    type:'bird'},
+  {g:'🐑', name:'Sheep',    type:'sheep'},
+  {g:'🐄', name:'Cow',      type:'cow'},
+  {g:'🦘', name:'Kangaroo', type:'kangaroo'},
+  {g:'🦜', name:'Cockatoo', type:'cockatoo'},
+  {g:'🦊', name:'Fox',      type:'fox'},
+  {g:'🐟', name:'Fish',     type:'fish'},
+  {g:'🦌', name:'Deer',     type:'deer'},
+  {g:'🦄', name:'Unicorn',  type:'unicorn'},
+  {g:'🐉', name:'Dragon',   type:'dragon'},
 ];
 function renderSanctuary(){
   const grid=document.getElementById('sanctGrid'); grid.innerHTML='';
   for(const c of COMPANIONS){
-    const filled = D && D.growthLevel>=c.lvl;
+    const lvl = ISO.levelOf(c.type);
+    const filled = D && lvl>0 && D.growthLevel>=lvl;
     const el=document.createElement('div');
     el.className='crt'+(filled?' filled':'');
     el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${filled?c.name:'Locked'}</div>`;
@@ -1273,9 +1305,84 @@ function renderTracker(){
   guide(target,'goal','goal '+Math.round(target));
 }
 
+
+/* ---- hourly rhythm (uses the timestamp already stored with every log) ---- */
+function logsByDay(){
+  const m={};
+  for(const iso of logs){ const d=new Date(iso); const k=todayKey(d); (m[k]=m[k]||[]).push(d); }
+  for(const k in m) m[k].sort((a,b)=>a-b);
+  return m;
+}
+function hourCounts(dayKeys){
+  const by=logsByDay(); const h=new Array(24).fill(0);
+  for(const k of dayKeys){ (by[k]||[]).forEach(d=>{ h[d.getHours()]++; }); }
+  return h;
+}
+function renderHours(elId, h){
+  const el=document.getElementById(elId); if(!el) return;
+  const max=Math.max(1, ...h);
+  el.innerHTML=h.map((v,i)=>{
+    const pct=Math.round(v/max*100);
+    const cls = v===0? 'none' : (v===max? 'peak':'');
+    const lbl = (i%6===0)? (i===0?'12a':(i===12?'12p':(i<12? i+'a' : (i-12)+'p'))) : '';
+    return `<div class="hr" title="${i}:00 — ${v}"><span>${v>0?v:''}</span>`+
+           `<i class="${cls}" style="height:${Math.max(2,pct)}%"></i><b>${lbl}</b></div>`;
+  }).join('');
+}
+function peakHourText(h){
+  const max=Math.max(...h); if(max<=0) return 'No logs yet in this stretch.';
+  const idx=h.indexOf(max);
+  const fmt=x=>{ const ap=x<12?'am':'pm'; const hr=x%12===0?12:x%12; return hr+' '+ap; };
+  const quiet=[]; for(let i=6;i<24;i++){ if(h[i]===0) quiet.push(i); }
+  let msg='Your heaviest hour is around '+fmt(idx)+'.';
+  if(quiet.length>=3) msg+=' You are clear through '+fmt(quiet[0])+' and '+(quiet.length-1)+' other waking hours.';
+  return msg;
+}
+
+/* ---- single-day detail ---- */
+let dayFrom=null;
+function openDayDetail(key){
+  dayFrom=selMonth;
+  const by=logsByDay(); const times=(by[key]||[]);
+  const st=dayStatus[key];
+  const count = times.length ? times.length : (st? (st.state==='estimate'? st.sticks : 0) : null);
+  const allow=dailyAllowance();
+  const d=keyToDate(key);
+  document.getElementById('trkDetail').style.display='none';
+  document.getElementById('trkOverview').style.display='none';
+  document.getElementById('trkDay').style.display='block';
+  document.getElementById('dyTitle').textContent=d.toLocaleDateString(undefined,{weekday:'long', day:'numeric', month:'long'});
+  const overBy = (count==null)? 0 : count-allow;
+  document.getElementById('dyStats').innerHTML=
+    `<div class="dtcell"><div class="k">${unitLabel(2)}</div><div class="v">${count==null?'·':count}</div></div>`+
+    `<div class="dtcell"><div class="k">vs allowance ${allow}</div><div class="v" style="color:${overBy<=0?'var(--leaf)':'var(--soft-warn)'}">${count==null?'·':(overBy<=0?'−':'+')+Math.abs(overBy)}</div></div>`+
+    `<div class="dtcell"><div class="k">First → last</div><div class="v" style="font-size:13px">${times.length? (fmtTime(times[0])+' → '+fmtTime(times[times.length-1])) : '·'}</div></div>`;
+  renderHours('dyHours', hourCounts([key]));
+  const tl=document.getElementById('dyTimes');
+  if(times.length){
+    tl.innerHTML=times.map((t,i)=>{
+      const gap = i>0 ? Math.round((t-times[i-1])/60000) : null;
+      const gapTxt = gap!=null ? ` <span style="color:var(--muted);font-weight:700">+${gap>=60? Math.floor(gap/60)+'h'+(gap%60?(gap%60)+'m':'') : gap+'m'}</span>` : '';
+      return `<span class="tchip">${fmtTime(t)}${gapTxt}</span>`;
+    }).join('');
+  } else if(st && st.state==='estimate'){
+    tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">Logged later from memory ('+st.sticks+'), so there are no times for this day.</span>';
+  } else if(st && st.state==='clean'){
+    tl.innerHTML='<span style="color:var(--leaf);font-size:12.5px;font-weight:800">A clear day — nothing logged.</span>';
+  } else {
+    tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">This day was never closed, so it stays foggy.</span>';
+  }
+}
+function fmtTime(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function dayBack(){
+  document.getElementById('trkDay').style.display='none';
+  if(dayFrom) openMonthDetail(dayFrom); else trkBack();
+}
+
 function openMonthDetail(key){
   selMonth=key; const a=monthAgg(key);
   document.getElementById('trkOverview').style.display='none';
+  document.getElementById('trkDay').style.display='none';
   document.getElementById('trkDetail').style.display='block';
   document.getElementById('dtTitle').textContent=a.label+(a.inProgress?' · so far':'');
   const target=monthlyEquivalent(oath.target), diff=a.packs-target;
@@ -1301,13 +1408,18 @@ function openMonthDetail(key){
     else if(day.v<=allow) cls+=' mid';
     else cls+=' hi';
     if(day.k===tk) cls+=' today';
-    const lbl = day.future? '' : (day.v===null? '·' : day.v);
-    html+=`<div class="${cls}">${lbl}</div>`;
+    const cnt = day.future? '' : (day.v===null? '·' : day.v);
+    const click = day.future? '' : ` onclick="openDayDetail('${day.k}')"`;
+    html+=`<div class="${cls}"${click}><span class="dn">${day.d}</span><span class="cn">${cnt}</span></div>`;
   }
   document.getElementById('dtCal').innerHTML=html;
+  const mh=hourCounts(a.days.filter(d=>!d.future).map(d=>d.k));
+  renderHours('dtHours', mh);
+  document.getElementById('rhythmLead').textContent=peakHourText(mh)+' Tap any date above to open that day.';
 }
 function trkBack(){
   selMonth=null;
+  document.getElementById('trkDay').style.display='none';
   document.getElementById('trkDetail').style.display='none';
   document.getElementById('trkOverview').style.display='block';
   renderTracker();
@@ -1512,6 +1624,41 @@ const ISO = (function(){
     else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+22,y-32,2,2); }
     ctx.strokeStyle='#3a3040'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(c.x-21,y-28); ctx.quadraticCurveTo(c.x-30,y-22,c.x-27,y-10); ctx.stroke(); }
 
+  function drawKangaroo(c,t){ shadow(c.x,c.y+2,24,10);
+    if(dusk){ ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,20,11,0,0,7); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(c.x+14,c.y-16,8,7,0,0,7); ctx.fill();
+      ctx.fillRect(c.x+11,c.y-27,3,10); ctx.fillRect(c.x+16,c.y-27,3,10);
+      ctx.fillStyle='#9a6740'; ctx.beginPath(); ctx.ellipse(c.x-17,c.y-6,10,6,0,0,7); ctx.fill();
+      closedEye(c.x+16,c.y-17); zzz(c.x+24,c.y-26,t); return; }
+    const hop=Math.abs(Math.sin(t*1.3+c.x))*10, y=c.y-hop;
+    ctx.strokeStyle='#9a6740'; ctx.lineWidth=6; ctx.lineCap='round';                 // thick tail
+    ctx.beginPath(); ctx.moveTo(c.x-8,y-10); ctx.quadraticCurveTo(c.x-26,y-6,c.x-30,y+2); ctx.stroke();
+    ctx.lineCap='butt';
+    ctx.fillStyle='#8a5c34'; ctx.beginPath();                                         // hind leg
+    ctx.moveTo(c.x-6,y-6); ctx.lineTo(c.x+6,y-6); ctx.lineTo(c.x+9,y-1); ctx.lineTo(c.x-8,y-1); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x,y-17,13,13,0,0,7); ctx.fill();   // body
+    ctx.fillStyle='#c9915e'; ctx.beginPath(); ctx.ellipse(c.x+2,y-15,7,8,0,0,7); ctx.fill();   // pale belly / pouch
+    ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x+11,y-29,8,7,0,0,7); ctx.fill();  // head
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x+8,y-41,3,11); ctx.fillRect(c.x+14,y-41,3,11);    // tall ears
+    ctx.fillStyle='#b07a4e'; ctx.fillRect(c.x-2,y-22,7,5);                                     // small arms
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+14,y-30,2,2); }
+  function drawCockatoo(c,t){ shadow(c.x,c.y+1,13,5);
+    const bob=dusk?0:Math.sin(t*2.2+c.x)*2, y=c.y+bob;
+    if(!dusk){ ctx.fillStyle='#6e6a60'; ctx.fillRect(c.x-2,y-9,2,9); ctx.fillRect(c.x+3,y-9,2,9); }
+    ctx.fillStyle='#f7f4ec'; ctx.beginPath(); ctx.ellipse(c.x,y-18,12,11,0,0,7); ctx.fill();   // white body
+    ctx.fillStyle='#eae5da'; ctx.beginPath(); ctx.ellipse(c.x-8,y-16,7,8,0,0,7); ctx.fill();   // wing
+    ctx.fillStyle='#f6e6a8'; ctx.beginPath(); ctx.ellipse(c.x-13,y-13,7,4,0.5,0,7); ctx.fill();// yellow under-tail
+    ctx.fillStyle='#f7f4ec'; ctx.beginPath(); ctx.ellipse(c.x+8,y-28,8,7,0,0,7); ctx.fill();   // head
+    ctx.fillStyle='#f6d24a';                                                                   // sulphur crest
+    const cf = dusk? 0 : Math.max(0,Math.sin(t*1.6+c.x))*4;
+    ctx.beginPath(); ctx.moveTo(c.x+4,y-34); ctx.lineTo(c.x+1,y-44-cf); ctx.lineTo(c.x+8,y-36); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+8,y-35); ctx.lineTo(c.x+7,y-47-cf); ctx.lineTo(c.x+12,y-35); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+11,y-34); ctx.lineTo(c.x+14,y-43-cf); ctx.lineTo(c.x+15,y-33); ctx.fill();
+    ctx.fillStyle='#3a3630'; ctx.beginPath();                                                  // dark hooked beak
+    ctx.moveTo(c.x+15,y-29); ctx.quadraticCurveTo(c.x+21,y-28,c.x+17,y-22); ctx.quadraticCurveTo(c.x+15,y-25,c.x+13,y-26); ctx.fill();
+    if(dusk){ closedEye(c.x+10,y-30); zzz(c.x+20,y-40,t); }
+    else { ctx.fillStyle='#2b2438'; ctx.beginPath(); ctx.ellipse(c.x+10,y-30,1.6,1.6,0,0,7); ctx.fill(); } }
+
   // ---------- waterfall, river & river critters ----------
   function drawWaterfall(c,t){
     // falls off the outer (down-right) edge of tile (i,j)
@@ -1615,7 +1762,7 @@ const ISO = (function(){
     {t:'obj',type:'bush',i:1,j:2,color:'#ff8fb0',label:'A bush with pink blossoms'},
     {t:'tree',id:'A',lvl:4,label:'The trunk thickens, first branches'},
     {t:'obj',type:'bush',i:3,j:1,color:'#ffe07a',label:'A bush with yellow blossoms'},
-    {t:'obj',type:'bush',i:4,j:3,color:'#c79cff',label:'A bush with violet blossoms'},
+    {t:'obj',type:'bush',i:3,j:0,color:'#c79cff',label:'A bush with violet blossoms'},
     {t:'flutter',i:2,j:3,label:'A butterfly finds the flowers'},
     {t:'fruit',id:'A',n:1,label:'The first apple ripens'},
     {t:'obj',type:'bush',i:0,j:3,color:'#ff9d6a',label:'A bush with amber blossoms'},
@@ -1640,6 +1787,8 @@ const ISO = (function(){
     {t:'tree',id:'C',lvl:2,label:'The third tree grows'},
     {t:'obj',type:'mushroom',i:0,j:4,label:'Mushrooms appear in the shade'},
     {t:'obj',type:'cow',i:2,j:0,label:'A cow comes to the meadow'},
+    {t:'obj',type:'kangaroo',i:0,j:0,label:'A kangaroo bounds onto the island'},
+    {t:'obj',type:'cockatoo',i:4,j:0,label:'A sulphur-crested cockatoo lands in the branches'},
     {t:'obj',type:'fox',i:5,j:4,label:'A fox curls up at the edge'},
     {t:'tree',id:'C',lvl:3,label:'The third tree finds its trunk'},
     {t:'obj',type:'bush',i:3,j:5,color:'#c9ff8f',label:'A bush with lime blossoms'},
@@ -1651,26 +1800,26 @@ const ISO = (function(){
     {t:'obj',type:'fish',i:4,j:3,label:'Fish leap in the river'},
     {t:'obj',type:'dragonfly',i:3,j:3,label:'Dragonflies skim the water'},
     {t:'obj',type:'bench',i:0,j:2,label:'A bench to sit and watch'},
-    {t:'obj',type:'deer',i:5,j:3,label:'A deer steps out of the trees'},
+    {t:'obj',type:'deer',i:4,j:5,label:'A deer steps out of the trees'},
     {t:'tree',id:'A',lvl:6,label:'The first tree becomes grand'},
     {t:'obj',type:'wheelbarrow',i:1,j:0,label:'A wheelbarrow rests by the path'},
-    {t:'obj',type:'lantern',i:0,j:1,label:'A lantern is lit'},
-    {t:'obj',type:'lantern',i:2,j:0,label:'A second lantern is lit'},
+    {t:'obj',type:'lantern',i:2,j:1,label:'A lantern is lit'},
+    {t:'obj',type:'lantern',i:5,j:1,label:'A second lantern is lit'},
     {t:'fruit',id:'A',n:1,label:'A fifth apple ripens'},
     {t:'obj',type:'rabbit',i:2,j:3,label:'Another rabbit joins the first'},
     {t:'obj',type:'unicorn',i:3,j:2,label:'A unicorn appears in the clearing'},
     {t:'obj',type:'pegasus',i:5,j:5,label:'A pegasus alights on the island'},
-    {t:'obj',type:'dragon',i:0,j:0,label:'A little dragon makes its home here'},
+    {t:'obj',type:'dragon',i:1,j:5,label:'A little dragon makes its home here'},
   ];
-  function phaseOf(n){ if(n<=0)return'Seed'; if(n<14)return'Sapling'; if(n<37)return'Grove'; return'Haven'; }
+  function phaseOf(n){ if(n<=0)return'Seed'; if(n<14)return'Sapling'; if(n<39)return'Grove'; return'Haven'; }
   const PHASES=[
     {name:'Seed', from:0, to:0,
      desc:'Bare soil and a promise. Your first good day breaks the ground.'},
     {name:'Sapling', from:1, to:13,
      desc:'A young tree finds its trunk and first branches. Flowering bushes open one colour at a time, a butterfly arrives, and a rooster comes to greet the mornings.'},
-    {name:'Grove', from:14, to:36,
-     desc:'More trees rise and a pond gathers. Animals settle in — a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, and a fox at the edge.'},
-    {name:'Haven', from:37, to:S.length,
+    {name:'Grove', from:14, to:38,
+     desc:'More trees rise and a pond gathers. Animals settle in — a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
+    {name:'Haven', from:39, to:S.length,
      desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come — a unicorn, a pegasus, even a little dragon.'},
   ];
   function phases(){ return PHASES.map(p=>Object.assign({},p)); }
@@ -1696,6 +1845,7 @@ const ISO = (function(){
       const f={bush:()=>drawBush(c,o.color),mushroom:()=>drawMushroom(c),birdhouse:()=>drawBirdhouse(c,t),bench:()=>drawBench(c),
         wheelbarrow:()=>drawWheelbarrow(c),lantern:()=>drawLantern(c,t),rabbit:()=>drawRabbit(c,t),fox:()=>drawFox(c,t),
         deer:()=>drawDeer(c,t),bird:()=>drawBird(c,t),rooster:()=>drawRooster(c,t),sheep:()=>drawSheep(c,t),cow:()=>drawCow(c,t),
+        kangaroo:()=>drawKangaroo(c,t),cockatoo:()=>drawCockatoo(c,t),
         frog:()=>drawFrog(c,t),fish:()=>drawFish(c,t,o.i+o.j),dragonfly:()=>drawDragonfly(c,t,o.i*2+o.j),
         unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
       if(f) items.push({d,fn:f}); }
@@ -1735,8 +1885,10 @@ const ISO = (function(){
 
   function setState(lvl, isDusk){ lvl=Math.max(0,Math.min(S.length, lvl|0)); if(lvl!==level){ level=lvl; STATE=apply(level); } dusk=!!isDusk; }
   function start(){ requestAnimationFrame(fitFrame); }
-  function steps(){ return S.map(x=>({label:x.label||'A new life arrives', phase:phaseOf(S.indexOf(x)+1)})); }
-  return { setState, spawnPuff, start, phaseOf, steps, phases, LEN:S.length };
+  function steps(){ return S.map((x,i)=>({label:x.label||'A new life arrives', phase:phaseOf(i+1)})); }
+  // level at which a given creature/object first appears (1-based); 0 if never
+  function levelOf(type){ const i=S.findIndex(x=> x.type===type || (type==='butterfly' && x.t==='flutter') ); return i<0?0:i+1; }
+  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, LEN:S.length };
 })();
 
 /* ============================================================
