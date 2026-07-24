@@ -305,6 +305,43 @@
   .cell .cn{font-size:11px; font-weight:800; line-height:1}
   .cell.blank{cursor:default}
 
+  body.locked{position:fixed; left:0; right:0; width:100%; overflow:hidden}
+
+  /* ---------- crossing-point dialog ---------- */
+  #cross, #donate{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
+    padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
+  #cross.show, #donate.show{display:flex}
+  #cross .mbox, #donate .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
+    border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
+    box-shadow:0 24px 60px rgba(6,3,16,.6)}
+  #cross .mtitle, #donate .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
+  #cross .mbody, #donate .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
+  #cross .mprimary, #donate .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
+    font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
+  #cross .mprimary:active, #donate .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  #cross .mghost, #donate .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
+    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer}
+  #cross .mlink, #donate .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:14px; cursor:pointer; text-decoration:underline}
+
+  #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+    background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311;
+    font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #4d8a36}
+  #donate .mgreen:active{transform:translateY(3px); box-shadow:0 1px 0 #4d8a36}
+  #donate .msub{display:block; font-weight:700; font-size:11px; opacity:.75; margin-top:2px}
+
+  /* ---------- ten-minute hold ---------- */
+  #waitPill{position:absolute; left:50%; transform:translate(-50%,10px); bottom:14px; z-index:6;
+    display:none; align-items:center; gap:11px; opacity:0; transition:.35s ease;
+    background:rgba(20,15,32,.72); backdrop-filter:blur(8px); border:1px solid rgba(244,184,96,.4);
+    border-radius:999px; padding:9px 10px 9px 15px}
+  #waitPill.show{display:flex; opacity:1; transform:translate(-50%,0)}
+  #waitPill .wt{font-weight:800; font-size:13px; color:var(--ink); font-variant-numeric:tabular-nums}
+  #waitPill .wt b{color:var(--honey)}
+  #waitPill button{background:rgba(255,255,255,.08); border:none; color:var(--muted); font-family:'Nunito';
+    font-weight:800; font-size:11.5px; padding:6px 11px; border-radius:999px; cursor:pointer}
+
   /* ---------- boot / loading ---------- */
   #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:26px;
@@ -381,6 +418,11 @@
       <div class="stagepill" onclick="openProgress()"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6">›</span></div>
     </div>
     <div id="toast"></div>
+    <div id="waitPill">
+      <span class="wt">Holding on · <b id="waitTime">10:00</b></span>
+      <button onclick="logNowFromWait()">Log now</button>
+      <button onclick="cancelWait()">✕</button>
+    </div>
   </div>
 
   <div id="deck">
@@ -407,7 +449,7 @@
       </div>
     </div>
 
-    <button class="logbtn" onclick="logStick()"><span class="puff">💨</span> <span id="logBtnLabel">I had one</span></button>
+    <button class="logbtn" onclick="onLogTap()"><span class="puff">💨</span> <span id="logBtnLabel">I had one</span></button>
 
     <div class="subrow">
       <button class="ghost" onclick="openSheet('sanctuary')">✦ Sanctuary</button>
@@ -416,6 +458,26 @@
   </div>
 
   <div id="scrim" onclick="closeSheet()"></div>
+
+  <div id="cross">
+    <div class="mbox">
+      <div class="mtitle" id="crossTitle"></div>
+      <div class="mbody" id="crossBody"></div>
+      <button class="mprimary" id="crossWait" onclick="startWait()">Wait 10 minutes</button>
+      <button class="mghost" id="crossGo" onclick="crossProceed()">Log it anyway</button>
+      <button class="mlink" onclick="muteToday()">Don't ask me again today</button>
+    </div>
+  </div>
+
+  <div id="donate">
+    <div class="mbox">
+      <div class="mtitle">Support Still Here</div>
+      <div class="mbody">No ads, no subscription — just a forest that keeps growing. If this has helped you, this is what keeps it free.</div>
+      <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
+      <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
+      <button class="mlink" onclick="hideDonate()">Maybe later</button>
+    </div>
+  </div>
 
   <div id="onboard">
     <div class="obwrap">
@@ -559,15 +621,15 @@
       </div>
       <div class="setrow">
         <div class="lbl">Voice<small>how the forest speaks to you</small></div>
-        <div class="seg">
-          <button class="on">Gentle</button>
-          <button disabled title="coming soon">Plain</button>
-          <button disabled title="coming soon">Honest</button>
+        <div class="seg" id="toneSeg">
+          <button data-t="gentle" onclick="setTone('gentle')">Gentle</button>
+          <button data-t="plain"  onclick="setTone('plain')">Plain</button>
+          <button data-t="honest" onclick="setTone('honest')">Honest</button>
         </div>
       </div>
       <div class="setrow">
         <div class="lbl">Daily allowance<small>keeps the weather kind</small></div>
-        <div class="lbl" style="color:var(--leaf)"><span id="setAllow">7</span> sticks</div>
+        <div class="lbl" style="color:var(--leaf)"><span id="setAllow">—</span></div>
       </div>
       <div class="setrow">
         <div class="lbl">Sync<small>where your forest lives</small></div>
@@ -827,17 +889,161 @@ function hideBoot(){
 }
 function bootMsg(m){ const el=document.getElementById('bootMsg'); if(el) el.textContent=m; }
 
-/* ---- donations ----
-   Paste your link below (Saweria / Trakteer / Ko-fi / PayPal.me all work).
-   Leave blank and the button explains it isn't set up yet.            */
-const DONATE_URL = '';
-function openDonate(){
-  if(!DONATE_URL){
-    alert('Donations aren\u2019t set up yet.\n\nAdd your link to DONATE_URL near the top of the file — Saweria or Trakteer work well in Indonesia (QRIS, GoPay, OVO, DANA); Ko-fi or PayPal.me suit an international audience.');
-    return;
-  }
-  window.open(DONATE_URL, '_blank', 'noopener');
+/* ---- donations ---- */
+const DONATE_KOFI     = 'https://ko-fi.com/aradnaksi';
+const DONATE_TRAKTEER = 'https://teer.id/iskandar_agung3';
+function openDonate(){ closeAllSheets();
+  const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
+  document.getElementById('donate').classList.add('show'); }
+function hideDonate(){ document.getElementById('donate').classList.remove('show'); }
+function goDonate(which){
+  const url = which==='kofi' ? DONATE_KOFI : DONATE_TRAKTEER;
+  hideDonate();
+  window.open(url, '_blank', 'noopener');
+  toast('Thank you — truly. It keeps the forest growing.');
 }
+
+/* ============================================================
+   TONE, THE CROSSING POINT, AND THE TEN-MINUTE HOLD
+============================================================ */
+function tone(){ return (prefs && prefs.tone) || 'gentle'; }
+async function persistPrefs(){
+  if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} }
+  else { await store.set('prefs', prefs); }
+}
+function setTone(t){
+  prefs.tone=t; persistPrefs(); renderTone();
+  const line={gentle:'The forest will speak gently.',plain:'Plain and factual it is.',honest:'Honest it is — no softening.'}[t];
+  toast(line);
+}
+function renderTone(){
+  const seg=document.getElementById('toneSeg'); if(!seg) return;
+  [...seg.children].forEach(b=>b.classList.toggle('on', b.dataset.t===tone()));
+}
+
+const TONE_COPY={
+  gentle:{
+    title: a=>`That’s your ${a} for today`,
+    body:  ()=>'No penalty here — the forest keeps everything you’ve grown. Want to give it ten minutes first?',
+    wait:'Wait 10 minutes', go:'Log it anyway',
+    held:'Ten minutes, and you’re still here. That craving passed on its own.',
+    ended:'The ten minutes are up. Whatever you choose next, the forest is still yours.'
+  },
+  plain:{
+    title: (a,n)=>`You’re at ${n} of ${a}`,
+    body:  ()=>'Anything past this counts as over. Your call.',
+    wait:'Wait 10 minutes', go:'Log it',
+    held:'Ten minutes held. Craving passed without one.',
+    ended:'Ten minutes done.'
+  },
+  honest:{
+    title: ()=>'This one puts you over',
+    body:  (a,n)=>`You said ${a}. This is ${n+1}. Nothing bad happens to your forest — you just asked me to say it plainly.`,
+    wait:'Hold off', go:'Log it',
+    held:'You waited it out. That’s the whole skill, right there.',
+    ended:'Ten minutes are up. Your call now.'
+  }
+};
+
+/* ---- the crossing point ---- */
+function shouldPrompt(){
+  if(!D || !oath || !oath.configured) return false;
+  const a=D.allowance;
+  if(a<=0) return false;                       // no meaningful daily line
+  if(D.todayCount !== a) return false;          // only the log that crosses 7 → 8
+  const tk=todayKey();
+  if(prefs.muteDay===tk) return false;          // "don't ask me again today"
+  if(prefs.promptDay===tk) return false;        // once per day, maximum
+  return true;
+}
+function onLogTap(){
+  if(shouldPrompt()) showCross(); else logStick();
+}
+function showCross(){
+  const c=TONE_COPY[tone()]||TONE_COPY.gentle, a=D.allowance, n=D.todayCount;
+  document.getElementById('crossTitle').textContent=c.title(a,n);
+  document.getElementById('crossBody').textContent=c.body(a,n);
+  document.getElementById('crossWait').textContent=c.wait;
+  document.getElementById('crossGo').textContent=c.go;
+  prefs.promptDay=todayKey(); persistPrefs();
+  document.getElementById('cross').classList.add('show');
+}
+function hideCross(){ document.getElementById('cross').classList.remove('show'); }
+function crossProceed(){ hideCross(); logStick(); }
+function muteToday(){ prefs.muteDay=todayKey(); persistPrefs(); hideCross();
+  toast('Understood — no more nudges today.'); }
+
+/* ---- the ten-minute hold ---- */
+let waitTimer=null, waitUntil=0;
+function startWait(){
+  hideCross();
+  waitUntil=Date.now()+10*60*1000;
+  store.set('waitUntil', waitUntil);            // device-only; survives a reload
+  runWait();
+}
+function runWait(){
+  if(waitTimer) clearInterval(waitTimer);
+  document.getElementById('waitPill').classList.add('show');
+  tickWait();
+  waitTimer=setInterval(tickWait,1000);
+}
+function tickWait(){
+  const left=waitUntil-Date.now();
+  if(left<=0){ finishWait(true); return; }
+  const m=Math.floor(left/60000), sec=Math.floor((left%60000)/1000);
+  document.getElementById('waitTime').textContent=m+':'+String(sec).padStart(2,'0');
+}
+function finishWait(completed){
+  if(waitTimer){ clearInterval(waitTimer); waitTimer=null; }
+  waitUntil=0; store.set('waitUntil', 0);
+  document.getElementById('waitPill').classList.remove('show');
+  if(completed){
+    const c=TONE_COPY[tone()]||TONE_COPY.gentle;
+    toast(c.held);
+    try{ if('vibrate' in navigator) navigator.vibrate([40,60,40]); }catch(_){}
+  }
+}
+function cancelWait(){ finishWait(false); }
+function logNowFromWait(){ finishWait(false); logStick(); }
+async function restoreWait(){
+  try{
+    const w=await store.get('waitUntil');
+    if(w && w>Date.now()+1000){ waitUntil=w; runWait(); }
+    else if(w){ await store.set('waitUntil',0); }
+  }catch(_){}
+}
+
+/* ---- full-screen overlay helpers (iOS keyboard-safe) ---- */
+let lockedScrollY=0;
+function lockScroll(){
+  if(document.body.classList.contains('locked')) return;
+  lockedScrollY = window.scrollY || 0;
+  document.body.classList.add('locked');
+  document.body.style.top = (-lockedScrollY)+'px';
+}
+function unlockScroll(){
+  if(!document.body.classList.contains('locked')) return;
+  document.body.classList.remove('locked');
+  document.body.style.top='';
+  window.scrollTo(0, lockedScrollY);
+}
+// closing a full-screen overlay: drop the keyboard, release the lock, reset any drift
+function dismissOverlay(el){
+  try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(_){}
+  if(el){ el.classList.remove('show'); el.scrollTop=0; }
+  unlockScroll();
+  closeAllSheets();
+  const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
+  window.scrollTo(0,0);
+  setTimeout(()=>window.scrollTo(0,0), 60);   // iOS settles the viewport a beat later
+}
+
+function overlayOpen(){
+  return ['onboard','auth'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
+}
+// iOS can leave the page scrolled after the keyboard closes — put it back
+window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
+window.addEventListener('orientationchange', ()=>setTimeout(()=>window.scrollTo(0,0),120));
 
 /* ---- oath onboarding ---- */
 let obPeriod='monthly';
@@ -867,9 +1073,11 @@ function showOnboard(isEdit){
     pickPeriod(oath.period||'monthly');
   } else { pickPeriod('monthly'); }
   obUpdateHint();
+  ob.scrollTop=0;
   ob.classList.add('show');
+  lockScroll();
 }
-function hideOnboard(){ document.getElementById('onboard').classList.remove('show'); }
+function hideOnboard(){ dismissOverlay(document.getElementById('onboard')); }
 async function submitOath(){
   const what=(document.getElementById('obWhat').value||'').trim();
   const unit=(document.getElementById('obUnit').value||'').trim();
@@ -935,9 +1143,13 @@ function updateHeader(){
 }
 
 /* ---- auth screen control ---- */
-function showAuth(view){ showAuthView(view||'welcome'); document.getElementById('auth').classList.add('show'); }
+function showAuth(view){
+  showAuthView(view||'welcome');
+  const el=document.getElementById('auth'); el.scrollTop=0; el.classList.add('show');
+  lockScroll();
+}
 function hideAuth(){
-  document.getElementById('auth').classList.remove('show');
+  dismissOverlay(document.getElementById('auth'));
   if(!(oath && oath.configured)) showOnboard(false);
 }
 function showAuthView(v){
@@ -1034,7 +1246,15 @@ function derive(){
   const paceDaily = knownDays? knownSum/knownDays : 0;
   const recent3avg = recent3.length? recent3.reduce((a,b)=>a+b,0)/recent3.length : 0;
 
-  // --- current period total (the second stat card) ---
+  // --- calendar-month total (the second stat card is always the month) ---
+  const monthPrefix=tk.slice(0,7);
+  let monthCount=0;
+  for(const k in byDay){ if(k.startsWith(monthPrefix)) monthCount+=byDay[k]; }
+  for(const k in dayStatus){
+    if(k.startsWith(monthPrefix) && byDay[k]==null && dayStatus[k].state==='estimate') monthCount+=dayStatus[k].sticks;
+  }
+
+  // --- current period total (kept for the oath's own framing) ---
   const pStart=new Date(); 
   if(periodWord()==='monthly'){ pStart.setDate(1); }
   else if(periodWord()==='weekly'){ pStart.setDate(pStart.getDate()-pStart.getDay()); }
@@ -1076,7 +1296,7 @@ function derive(){
     if(dayValue(k,byDay)===null) pending.push(k);
   }
 
-  return {allowance, todayCount, periodCount, goodDays, paceDaily, growthLevel, weather, pending, foggy:pending.length>0};
+  return {allowance, todayCount, periodCount, monthCount, goodDays, paceDaily, growthLevel, weather, pending, foggy:pending.length>0};
 }
 
 
@@ -1103,18 +1323,17 @@ function refresh(){
   tm.style.width=tp+'%'; tm.classList.toggle('over', D.todayCount>D.allowance);
   document.getElementById('stToday').className='stat'+(D.todayCount>D.allowance?' warn':' good');
 
-  // current period
+  // this month (always the month, whatever period the oath uses)
   const pw=periodWord();
-  document.getElementById('mLabel').textContent =
-    pw==='monthly'? monthLabel(todayKey().slice(0,7)) : (pw==='weekly'?'This week':'Today');
-  document.getElementById('mPacks').textContent=D.periodCount;
-  document.getElementById('mTarget').textContent=(Number(oath.target)||0);
-  document.getElementById('mUnit').textContent=unitLabel(Number(oath.target)||0);
+  const monthGoal=Math.round(monthlyEquivalent(oath.target));
+  document.getElementById('mLabel').textContent = monthLabel(todayKey().slice(0,7));
+  document.getElementById('mPacks').textContent=D.monthCount;
+  document.getElementById('mTarget').textContent=monthGoal;
+  document.getElementById('mUnit').textContent=unitLabel(monthGoal);
   const mm=document.getElementById('mMeter');
-  const tgt=Number(oath.target)||0;
-  const mp=tgt>0? Math.min(100, D.periodCount/tgt*100) : (D.periodCount>0?100:0);
-  mm.style.width=mp+'%'; mm.classList.toggle('over', D.periodCount>tgt);
-  document.getElementById('stMonth').className='stat mstat'+(D.periodCount>tgt?' warn':' good');
+  const mp=monthGoal>0? Math.min(100, D.monthCount/monthGoal*100) : (D.monthCount>0?100:0);
+  mm.style.width=mp+'%'; mm.classList.toggle('over', D.monthCount>monthGoal);
+  document.getElementById('stMonth').className='stat mstat'+(D.monthCount>monthGoal?' warn':' good');
   if(document.getElementById('trackerSheet').classList.contains('show') &&
      document.getElementById('trkOverview').style.display!=='none') renderTracker();
 
@@ -1142,18 +1361,27 @@ function refresh(){
 }
 
 /* ---------- gentle voice ---------- */
-const LOG_LINES=[
-  "Logged. One breath at a time — you’re still here.",
-  "Noted, gently. The forest holds steady.",
-  "That’s honesty, and honesty is the whole practice.",
-  "Counted. No judgement — just clear eyes.",
-  "Okay. Tomorrow’s soil is already softening.",
-];
-const CLEAN_LINES=[
-  "A clean day. The roots drink it in.",
-  "Smoke-free — the birds noticed.",
-  "That day closes bright. Well held.",
-];
+const LOG_LINES={
+  gentle:[
+    "Logged. One breath at a time — you’re still here.",
+    "Noted, gently. The forest holds steady.",
+    "That’s honesty, and honesty is the whole practice.",
+    "Counted. No judgement — just clear eyes.",
+    "Okay. Tomorrow’s soil is already softening.",
+  ],
+  plain:[ "Logged.", "Counted.", "Noted.", "Added to today." ],
+  honest:[
+    "Logged. That’s one more than a moment ago.",
+    "Counted — the number is the number.",
+    "Noted. No spin on it.",
+  ]
+};
+const CLEAN_LINES={
+  gentle:[ "A clean day. The roots drink it in.", "Nothing logged — the birds noticed.", "That day closes bright. Well held." ],
+  plain:[ "Marked as a zero day.", "Day closed at zero." ],
+  honest:[ "Zero. That one you earned.", "A clear day, plainly." ]
+};
+function pickLine(set){ const arr=set[tone()]||set.gentle; return arr[Math.floor(Math.random()*arr.length)]; }
 let toastT;
 function toast(msg){
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
@@ -1169,7 +1397,7 @@ async function logStick(){
   logs.push(iso);
   await persistStick(iso);
   ISO.spawnPuff();
-  toast(LOG_LINES[Math.floor(Math.random()*LOG_LINES.length)]);
+  toast(pickLine(LOG_LINES));
   refresh();
 }
 async function resolveDay(kind){
@@ -1178,7 +1406,7 @@ async function resolveDay(kind){
   if(kind==='clean'){
     dayStatus[key]={state:'clean'};
     await persistDayStatus(key, dayStatus[key]);
-    toast(CLEAN_LINES[Math.floor(Math.random()*CLEAN_LINES.length)]);
+    toast(pickLine(CLEAN_LINES));
     refresh();
   } else {
     const n = prompt('Roughly how many sticks that day?', '5');
@@ -1905,7 +2133,8 @@ const ISO = (function(){
   if(!profile) profile={ name:'', animal:'' };
   bootMsg('Planting the ground…');
   try{ updateSyncUI(); }catch(_){}
-  try{ updateHeader(); renderAccount(); }catch(_){}
+  try{ updateHeader(); renderAccount(); renderTone(); }catch(_){}
+  try{ restoreWait(); }catch(_){}
   try{ refresh(); }catch(e){ console.error('render init failed', e); }
   ISO.start();
   // first run: gently invite a guest to make an account (fully skippable)
