@@ -307,6 +307,25 @@
 
   body.locked{position:fixed; left:0; right:0; width:100%; overflow:hidden}
 
+  /* ---------- homestead chip + panel ---------- */
+  .homechip{display:flex; align-items:center; gap:9px; width:100%; margin-bottom:12px; cursor:pointer;
+    background:linear-gradient(180deg,rgba(244,184,96,.12),rgba(47,39,67,.35)); border:1px solid rgba(244,184,96,.28);
+    color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:13px; padding:11px 14px; border-radius:13px}
+  .homechip .hc-fire{filter:saturate(1.2)}
+  .homechip b{color:var(--honey)}
+  .homechip .hc-div{color:var(--muted); opacity:.6}
+  .homechip .hc-cabin{color:var(--ink)}
+  .homechip .hc-go{margin-left:auto; color:var(--muted); font-size:16px}
+  .homeStage{position:relative; width:100%; height:210px; border-radius:16px; overflow:hidden;
+    border:1px solid var(--line); background:#1c1630; margin-top:6px}
+  .homeStage canvas{display:block; width:100%; height:100%}
+  .homeTier{position:absolute; top:10px; left:12px; background:rgba(20,15,32,.55); backdrop-filter:blur(6px);
+    border:1px solid var(--line); border-radius:999px; padding:5px 11px; font-family:'Pixelify Sans'; font-size:13px}
+  .homeStats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
+  .homeStats .hs{background:var(--plum3); border:1px solid var(--line); border-radius:13px; padding:13px 10px; text-align:center}
+  .homeStats .hs .n{font-family:'Pixelify Sans'; font-size:22px; color:var(--honey)}
+  .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
+
   /* ---------- crossing-point dialog ---------- */
   #cross, #donate{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
@@ -435,6 +454,13 @@
       </div>
     </div>
 
+    <button class="homechip" id="homeChip" onclick="openHomestead()">
+      <span class="hc-run"><span class="hc-fire">🔥</span> <b id="hcRun">0</b> <span id="hcRunLbl">day run</span></span>
+      <span class="hc-div">·</span>
+      <span class="hc-cabin">🏡 <b id="hcCabin">Bedroll</b></span>
+      <span class="hc-go">›</span>
+    </button>
+
     <div class="stats">
       <div class="stat" id="stToday">
         <div class="k">Today</div>
@@ -543,6 +569,18 @@
       <button class="big" id="lgBtn" onclick="submitLogin()">Log in</button>
       <div class="err" id="lgErr"></div>
     </div>
+  </div>
+
+  <div class="sheet" id="homeSheet">
+    <div class="grab"></div>
+    <h3>Your homestead</h3>
+    <p class="lead">Every good day, the builders add a little more. It's never torn down — on an off day they simply rest by the fire, and pick the hammer back up when you're on track again.</p>
+    <div class="homeStage" id="homeStage"><canvas id="cabinCv"></canvas>
+      <div class="homeTier" id="homeTierPill">Bedroll</div>
+    </div>
+    <div class="homeStats" id="homeStats"></div>
+    <div class="pbar" style="margin-top:16px"><i id="homeBar" style="width:0%"></i></div>
+    <p class="lead" id="homeNext" style="margin-top:12px; font-size:13px"></p>
   </div>
 
   <div class="sheet" id="progSheet">
@@ -945,6 +983,56 @@ const TONE_COPY={
   }
 };
 
+/* ---- the homestead (cabin reward track) ---- */
+let cabinView=null;
+function updateHomeChip(){
+  if(!D) return;
+  document.getElementById('hcRun').textContent=D.currentRun;
+  document.getElementById('hcRunLbl').textContent=(D.currentRun===1?'day run':'day run');
+  const nm=(CABIN_TIERS[D.cabinTier]||CABIN_TIERS[0]).name;
+  document.getElementById('hcCabin').textContent=nm;
+  const fire=document.querySelector('#homeChip .hc-fire');
+  if(fire) fire.style.opacity = D.currentRun>0 ? '1' : '.4';
+}
+function openHomestead(){
+  closeAllSheets();
+  document.getElementById('scrim').classList.add('show');
+  document.getElementById('homeSheet').classList.add('show');
+  renderHomestead();
+}
+function renderHomestead(){
+  if(!D) return;
+  const dusk=(new Date().getHours()>=18 || new Date().getHours()<6);
+  const cv=document.getElementById('cabinCv');
+  if(!cabinView) cabinView=makeCabin(cv, document.getElementById('homeStage'));
+  cabinView.startAnim(D.cabinTier, D.building, dusk);
+  // the builders introduce themselves the first time they ever start work
+  if(D.building && !prefs.homesteadGreeted){
+    prefs.homesteadGreeted=true; persistPrefs();
+    setTimeout(()=>{ if(cabinView && cabinView.greet) cabinView.greet(); }, 450);
+  }
+
+  const cur=CABIN_TIERS[D.cabinTier], next=CABIN_TIERS[D.cabinTier+1];
+  document.getElementById('homeTierPill').textContent=cur.name;
+  document.getElementById('homeStats').innerHTML=
+    `<div class="hs"><div class="n">${D.currentRun}</div><div class="l">DAY RUN</div></div>`+
+    `<div class="hs"><div class="n">${D.bestRun}</div><div class="l">BEST RUN</div></div>`+
+    `<div class="hs"><div class="n">${D.homesteadDays}</div><div class="l">GOOD DAYS</div></div>`;
+  const bar=document.getElementById('homeBar'), nx=document.getElementById('homeNext');
+  if(next){
+    const span=next.days-cur.days, into=D.homesteadDays-cur.days;
+    bar.style.width=Math.max(4,Math.min(100,Math.round(into/span*100)))+'%';
+    const left=Math.max(0,next.days-D.homesteadDays);
+    nx.textContent=`${left} more good ${left===1?'day':'days'} and the builders raise your ${next.name.toLowerCase()}.`;
+  } else {
+    bar.style.width='100%';
+    nx.textContent='The Homestead is complete — fireplace lit, windows warm. The builders have made themselves at home.';
+  }
+  nx.innerHTML += D.building
+    ? ' <span style="color:var(--leaf);font-weight:800">The builders are hard at work.</span>'
+    : ' <span style="color:var(--muted)">The builders are resting by the fire — log a good day to get them going again.</span>';
+}
+
 /* ---- the crossing point ---- */
 function shouldPrompt(){
   if(!D || !oath || !oath.configured) return false;
@@ -1101,7 +1189,7 @@ async function submitOath(){
 
 /* ---- ecosystem progress panel ---- */
 function closeAllSheets(){
-  ['sheet','trackerSheet','progSheet'].forEach(id=>{
+  ['sheet','trackerSheet','progSheet','homeSheet'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.classList.remove('show');
   });
 }
@@ -1272,16 +1360,31 @@ function derive(){
   const paceMonthly = paceDaily*30;
   const lowFrequency = (Number(oath.target)||0)/pd < 1;
   const onTrack = targetMonthly>0 && paceMonthly<=targetMonthly;
-  let goodDays=0;
+  const isGood = v => v!=null && (v<=allowance || (lowFrequency && onTrack));
+
   const totalDays = Math.max(1, daysBetween(oath.start, tk)+1);
-  for(let i=0;i<totalDays;i++){ const d=new Date(); d.setDate(d.getDate()-i);
+  const states=[];                       // oldest → newest
+  for(let i=totalDays-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
     const v=dayValue(todayKey(d), byDay);
-    if(v==null) continue;
-    if(v<=allowance || (lowFrequency && onTrack)) goodDays++; }
+    states.push(v==null ? 'foggy' : (isGood(v) ? 'good' : 'bad')); }
+  const goodDays = states.filter(s=>s==='good').length;
+
+  // current run (trailing good days; a not-yet-logged today doesn't break it) + best run ever
+  let bestRun=0, r=0; for(const s of states){ if(s==='good'){ r++; if(r>bestRun) bestRun=r; } else r=0; }
+  let idx=states.length-1, currentRun=0;
+  if(idx>=0 && states[idx]==='foggy') idx--;
+  for(; idx>=0; idx--){ if(states[idx]==='good') currentRun++; else break; }
+
   const cap = ISO.LEN;
   let growthLevel = Math.min(cap, goodDays);
   if(growthLevel > (prefs.max||0)){ prefs.max=growthLevel; persistGrowthMax(prefs.max); }   // ratchet: forest never loses elements
   growthLevel = Math.max(growthLevel, Math.min(cap, prefs.max||0));
+
+  // --- the homestead: cumulative good days, ratcheted (never torn down) ---
+  const homesteadDays = Math.max(goodDays, prefs.homestead||0);
+  if(goodDays > (prefs.homestead||0)){ prefs.homestead=goodDays; persistGrowthMax(prefs.homestead); }
+  let cabinTier=0; for(const T of CABIN_TIERS){ if(homesteadDays>=T.days) cabinTier=T.t; }
+  const building = currentRun>0;
 
   // --- weather (fast axis) ---
   let weather='clear';
@@ -1296,7 +1399,8 @@ function derive(){
     if(dayValue(k,byDay)===null) pending.push(k);
   }
 
-  return {allowance, todayCount, periodCount, monthCount, goodDays, paceDaily, growthLevel, weather, pending, foggy:pending.length>0};
+  return {allowance, todayCount, periodCount, monthCount, goodDays, paceDaily, growthLevel,
+          cabinTier, currentRun, bestRun, homesteadDays, building, weather, pending, foggy:pending.length>0};
 }
 
 
@@ -1313,6 +1417,8 @@ function refresh(){
   dot.style.background = dusk?'var(--honey)':'var(--leaf)';
   dot.style.boxShadow = `0 0 8px ${dusk?'var(--honey)':'var(--leaf)'}`;
   ISO.setState(D.growthLevel, dusk);
+  updateHomeChip();
+  if(document.getElementById('homeSheet').classList.contains('show')) renderHomestead();
 
   // today
   document.getElementById('tSticks').textContent=D.todayCount;
@@ -1657,6 +1763,203 @@ function openTracker(){
   document.getElementById('scrim').classList.add('show');
   document.getElementById('trackerSheet').classList.add('show');
 }
+
+const CABIN_TIERS=[{t:0,days:0,name:'Bedroll'},{t:1,days:3,name:'Tent'},{t:2,days:7,name:'Lean-to'},{t:3,days:14,name:'Cabin frame'},{t:4,days:25,name:'Snug cabin'},{t:5,days:40,name:'Cabin with porch'},{t:6,days:60,name:'The Homestead'}];
+
+/* ============================================================
+   THE HOMESTEAD — a cabin that builds itself as good days add up.
+   Ratcheted (never torn down). Builders work on a run, rest otherwise.
+   makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
+                             setState(tier,building,dusk), TIERS }
+============================================================ */
+function makeCabin(cv, boxEl){
+  const ctx=cv.getContext('2d');
+  const VW=440, VH=300, GY=214;             // virtual size + ground line
+  let tier=0, building=true, dusk=false, animating=false;
+
+  const TIERS=[
+    {t:0, days:0,  name:'Bedroll'},
+    {t:1, days:3,  name:'Tent'},
+    {t:2, days:7,  name:'Lean-to'},
+    {t:3, days:14, name:'Cabin frame'},
+    {t:4, days:25, name:'Snug cabin'},
+    {t:5, days:40, name:'Cabin with porch'},
+    {t:6, days:60, name:'The Homestead'},
+  ];
+
+  const rr=(x,y,w,h,r)=>{ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); };
+  const blob=(x,y,r,c)=>{ ctx.fillStyle=c; ctx.beginPath(); ctx.ellipse(x,y,r,r*0.85,0,0,7); ctx.fill(); };
+  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  function shadow(x,y,w){ ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y,w,w*0.32,0,0,7); ctx.fill(); }
+
+  function ground(){
+    const p = dusk ? {g1:'#4f7a48',g2:'#456a40'} : {g1:'#8ecb63',g2:'#80bd57'};
+    ctx.fillStyle=p.g2; rr(30,GY,VW-60,64,26);
+    ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
+  }
+
+  // ---- little builders ----
+  // rare ambient lines while working, and a warm one-time arrival greeting
+  const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
+  const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
+  const ARRIVAL=[
+    'Morning! We heard you kept your oath — mind if we build here?',
+    'A good day, is it? Then let\u2019s lay the first plank.',
+    'You\u2019re still here. So are we. Let\u2019s build something.',
+    'Room for a cabin on this island? We\u2019ll get started.'
+  ];
+  let bubble=null;                 // {x,y,text,until}
+  let nextQuip=0;                  // timestamp gate so lines stay rare
+  function say(x,y,text,ms){ bubble={x,y,text,until:performance.now()+(ms||2600)}; }
+  function greet(){ say(150,GY-52, ARRIVAL[Math.floor(Math.random()*ARRIVAL.length)], 5200); }
+  function maybeQuip(t){
+    const now=performance.now();
+    if(bubble && now<bubble.until) return;
+    if(now<nextQuip) return;
+    nextQuip = now + 9000 + Math.random()*11000;     // one line every ~9–20s, at most
+    if(Math.random()<0.55){                           // and only ~half the time even then
+      const pool = building ? WORK_LINES : REST_LINES;
+      const bx = building ? (Math.random()<0.5?150:320) : 150;
+      say(bx, GY-52, pool[Math.floor(Math.random()*pool.length)], 2400);
+    }
+  }
+  function drawBubble(){
+    if(!bubble || performance.now()>bubble.until){ bubble=null; return; }
+    ctx.font='bold 13px Nunito';
+    const w=ctx.measureText(bubble.text).width+20, h=24, x=bubble.x-w/2, y=bubble.y-h;
+    ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,w,h,9);
+    ctx.beginPath(); ctx.moveTo(bubble.x-5,y+h); ctx.lineTo(bubble.x+5,y+h); ctx.lineTo(bubble.x,y+h+6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(bubble.text, bubble.x, y+h/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  }
+
+  function head(x,y){ ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y,6,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#5a3b22'; rr(x-6,y-8,12,5,3); }                                  // hair
+  function builderWork(x,y,t,seed){ shadow(x,y+16,15);
+    const sw=Math.sin(t*7+seed);
+    ctx.fillStyle='#3f7f8a'; rr(x-7,y-2,14,16,4);                                   // body
+    ctx.fillStyle='#2f5f68'; rr(x-6,y+10,5,8,2); rr(x+1,y+10,5,8,2);               // legs
+    head(x,y-8);
+    // swinging arm + hammer
+    ctx.save(); ctx.translate(x+4,y); ctx.rotate(-0.5 - sw*0.7);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(12,0); ctx.stroke();
+    ctx.fillStyle='#7a5230'; rr(11,-3,4,10,1); ctx.fillStyle='#9aa2a8'; rr(9,-6,10,5,1);  // hammer head
+    ctx.restore();
+    if(sw>0.85){ ctx.fillStyle='#fff2a0'; ctx.globalAlpha=.9; for(let k=0;k<3;k++){ ctx.fillRect(x+14+k*3, y-8-k*2, 2,2);} ctx.globalAlpha=1; }
+  }
+  function builderRest(x,y,t,seed,dusk){ shadow(x,y+16,15);
+    ctx.fillStyle='#3f7f8a'; rr(x-8,y+2,16,12,5);                                   // sitting body
+    ctx.fillStyle='#2f5f68'; rr(x-8,y+12,14,5,3);                                   // lap/legs
+    head(x,y-3);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';               // hands toward fire
+    ctx.beginPath(); ctx.moveTo(x+4,y+4); ctx.lineTo(x+12,y+8); ctx.stroke();
+    if(dusk){ ctx.font='bold 12px Nunito'; ctx.fillStyle='#e9e4f5'; const o=(t*0.5%1);
+      ctx.globalAlpha=(1-o); ctx.fillText('z', x-10+o*6, y-8-o*12); ctx.globalAlpha=1; }
+  }
+  function campfire(x,y,t,dusk){ shadow(x,y+4,16);
+    ctx.strokeStyle='#7a5230'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x-9,y+3); ctx.lineTo(x+9,y-2); ctx.moveTo(x-9,y-2); ctx.lineTo(x+9,y+3); ctx.stroke();
+    const f=0.6+0.4*Math.sin(t*8);
+    if(dusk) glow(x,y-6,34,'#ffca6a',0.5*f+0.2);
+    ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(x-6,y); ctx.quadraticCurveTo(x-3,y-14-f*4,x,y-20-f*5); ctx.quadraticCurveTo(x+3,y-14-f*4,x+6,y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(x-3,y); ctx.quadraticCurveTo(x-1,y-9-f*3,x,y-13-f*4); ctx.quadraticCurveTo(x+2,y-9-f*3,x+3,y); ctx.closePath(); ctx.fill();
+  }
+  function smoke(x,y,t){ for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.5;
+    ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(x+Math.sin(t*1.2+k)*5, y-o*30, 5+o*4,5+o*4,0,0,7); ctx.fill(); } ctx.globalAlpha=1; }
+  function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
+    if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
+
+  // ---- the cabin, per tier, centered on cx ----
+  function cabin(t){
+    const cx=248, base=GY;
+    if(tier===0){ // bedroll
+      shadow(cx,base+6,40); ctx.fillStyle='#8a6f4a'; rr(cx-34,base-10,68,14,7);
+      ctx.fillStyle='#a98a5c'; rr(cx-34,base-10,20,14,7); return; }
+    if(tier===1){ // tent
+      shadow(cx,base+6,52);
+      ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx+40,base+2); ctx.lineTo(cx-40,base+2); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx-40,base+2); ctx.lineTo(cx-14,base+2); ctx.lineTo(cx,base-30); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(cx,base-30); ctx.lineTo(cx+8,base+2); ctx.lineTo(cx-8,base+2); ctx.closePath(); ctx.fill(); return; }
+    if(tier===2){ // lean-to
+      shadow(cx,base+6,54);
+      ctx.fillStyle='#7a5230'; rr(cx-34,base-30,5,32,1); rr(cx+30,base-56,5,58,1);
+      ctx.fillStyle='#a86f3c'; ctx.save(); ctx.translate(cx,base); ctx.beginPath();
+      ctx.moveTo(-40,-28); ctx.lineTo(38,-54); ctx.lineTo(42,-46); ctx.lineTo(-36,-20); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.fillStyle='#6e4a2a'; rr(cx-36,base-4,72,5,2); return; }
+    if(tier===3){ // frame
+      shadow(cx,base+6,58);
+      ctx.fillStyle='#8a5e37'; [-44,-15,15,44].forEach(dx=>rr(cx+dx,base-60,6,62,1));  // posts
+      ctx.fillStyle='#7a5230'; rr(cx-46,base-62,94,6,1); rr(cx-46,base-34,94,5,1);      // beams
+      ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-46,base-56); ctx.lineTo(cx+48,base-84); ctx.lineTo(cx+48,base-60); ctx.stroke(); // roof skeleton
+      return; }
+    // tiers 4-6 have solid walls
+    const big = tier>=6;
+    const w = big?120:96, h=big?66:56, x=cx-w/2, y=base-h;
+    shadow(cx, base+6, w*0.62);
+    if(tier>=6){ // homestead: outdoor fireplace to the right
+      const fx=cx+w/2+34, fy=base;
+      ctx.fillStyle='#8f8a86'; rr(fx-16,fy-40,32,42,5); ctx.fillStyle='#7a756f'; rr(fx-12,fy-52,24,14,4);
+      ctx.fillStyle='#2b2438'; rr(fx-9,fy-24,18,24,3);
+      const f=0.6+0.4*Math.sin(t*8); if(dusk) glow(fx,fy-14,40,'#ffca6a',0.45*f+0.2);
+      ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-6,fy-4); ctx.quadraticCurveTo(fx,fy-22-f*5,fx,fy-26-f*6); ctx.quadraticCurveTo(fx,fy-22-f*5,fx+6,fy-4); ctx.fill();
+      ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(fx-3,fy-4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx,fy-18-f*4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx+3,fy-4); ctx.fill();
+    }
+    // walls
+    ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,4);
+    ctx.fillStyle= dusk?'#6a4830':'#9a6a3c'; for(let ly=y+8; ly<y+h-4; ly+=11){ ctx.fillRect(x+3,ly,w-6,1.5); } // planks
+    // roof
+    ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath();
+    ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(x+w+8,y+4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; ctx.beginPath(); ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(cx,y-24); ctx.lineTo(x-4,y+4); ctx.closePath(); ctx.fill();
+    // chimney + smoke
+    ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(cx+w*0.24,y-26,10,16,1); smoke(cx+w*0.24+5,y-26,t);
+    // door
+    ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(cx-9,y+h-24,18,24,3);
+    ctx.fillStyle='#f4b860'; ctx.beginPath(); ctx.ellipse(cx+4,y+h-12,1.6,1.6,0,0,7); ctx.fill(); // handle
+    // windows
+    windows(x+10,y+16,16,14);
+    if(tier>=6) windows(x+w-26,y+16,16,14);
+    // porch (tiers 5-6)
+    if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,base-2,w+4,4,2);
+      ctx.fillStyle='#8a5e37'; rr(x-2,base-20,4,20,1); rr(x+w-2,base-20,4,20,1);
+      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-8,base-26,w+16,8,3);              // porch roof
+      ctx.fillStyle='#a5703e'; rr(x+8,base-12,20,4,2); ctx.fillStyle='#6e472b'; rr(x+9,base-9,4,9,1); rr(x+24,base-9,4,9,1); // bench
+    }
+  }
+
+  function paint(t){
+    // sky
+    const sky = dusk
+      ? ['#2b2450','#b5786a'] : ['#a9def0','#ffedcf'];
+    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,sky[0]); g.addColorStop(1,sky[1]);
+    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    const DPR=Math.min(2,window.devicePixelRatio||1);
+    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR;
+    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
+    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,VW,VH); }
+    ground(); cabin(t);
+    if(building){ builderWork(150,GY-14,t,0); builderWork(320,GY-12,t,2.1); }
+    else { campfire(180,GY-2,t,dusk); builderRest(150,GY-14,t,0,dusk); builderRest(210,GY-14,t,1.5,dusk); }
+    maybeQuip(t); drawBubble();
+  }
+
+  function fit(now){
+    try{
+      const r=boxEl.getBoundingClientRect(); const DPR=Math.min(2,window.devicePixelRatio||1);
+      const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
+      if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
+      paint((now||0)/1000);
+    }catch(_){}
+    if(animating) requestAnimationFrame(fit);
+  }
+  function setState(ti,b,d){ tier=Math.max(0,Math.min(6,ti|0)); building=!!b; dusk=!!d; }
+  function startAnim(ti,b,d){ setState(ti,b,d); if(!animating){ animating=true; requestAnimationFrame(fit);} }
+  function render(ti,b,d){ setState(ti,b,d); fit(0); }
+  return { render, startAnim, setState, TIERS, greet };
+}
+
 
 /* ============================================================
    THE FOREST  (isometric, grows with your good days)
