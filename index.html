@@ -498,7 +498,7 @@
   <div id="donate">
     <div class="mbox">
       <div class="mtitle">Support Still Here</div>
-      <div class="mbody">No ads, no subscription — just a forest that keeps growing. If this has helped you, this is what keeps it free.</div>
+      <div class="mbody">No ads, no subscription — just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
       <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
       <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
       <button class="mlink" onclick="hideDonate()">Maybe later</button>
@@ -1417,6 +1417,7 @@ function refresh(){
   dot.style.background = dusk?'var(--honey)':'var(--leaf)';
   dot.style.boxShadow = `0 0 8px ${dusk?'var(--honey)':'var(--leaf)'}`;
   ISO.setState(D.growthLevel, dusk);
+  ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
   if(document.getElementById('homeSheet').classList.contains('show')) renderHomestead();
 
@@ -1540,9 +1541,7 @@ function openSheet(which){
 }
 function closeSheet(){
   document.getElementById('scrim').classList.remove('show');
-  document.getElementById('sheet').classList.remove('show');
-  document.getElementById('trackerSheet').classList.remove('show');
-  document.getElementById('progSheet').classList.remove('show');
+  closeAllSheets();
 }
 function showPane(which){
   document.getElementById('paneSanctuary').classList.toggle('on', which==='sanctuary');
@@ -2285,6 +2284,71 @@ const ISO = (function(){
     ctx.fillStyle='#3f7f52'; ctx.beginPath(); ctx.moveTo(c.x+9,y-26); ctx.lineTo(c.x+11,y-21); ctx.lineTo(c.x+7,y-22); ctx.fill(); ctx.beginPath(); ctx.moveTo(c.x+15,y-26); ctx.lineTo(c.x+16,y-21); ctx.lineTo(c.x+13,y-22); ctx.fill();
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
 
+
+  // ---------- the homestead on the island (compact; grows with good-day runs) ----------
+  let cabinTier=-1, cabinBuilding=false, showCabin=false;
+  const ISLE_WORK=['tok','phew','hey!','nice','*taps*'];
+  const ISLE_REST=['zzz','brr','...'];
+  let isleBubble=null, isleNext=0;
+  function isleSay(x,y,txt){ isleBubble={x,y,txt,until:performance.now()+2200}; }
+  function isleQuip(c){
+    const now=performance.now();
+    if(isleBubble && now<isleBubble.until) return;
+    if(now<isleNext) return;
+    isleNext=now+12000+Math.random()*14000;      // rare: every 12–26s at most
+    if(Math.random()<0.4){ const pool=cabinBuilding?ISLE_WORK:ISLE_REST;
+      isleSay(c.x+6, c.y-58, pool[Math.floor(Math.random()*pool.length)]); }
+  }
+  function isleWorker(x,y,t,building){
+    ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y+2,9,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#3f7f8a'; rr(x-4,y-11,8,11,3);
+    ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y-14,4,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#5a3b22'; rr(x-4,y-18,8,3,2);
+    if(building){ const sw=Math.sin(t*7+x); ctx.save(); ctx.translate(x+3,y-8); ctx.rotate(-0.4-sw*0.6);
+      ctx.strokeStyle='#e8b48a'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(7,0); ctx.stroke();
+      ctx.fillStyle='#9aa2a8'; rr(6,-3,6,3,1); ctx.restore(); }
+  }
+  function drawHomesteadIso(c,tier,t){
+    const bx=c.x, by=c.y;
+    function sh(w){ ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(bx,by+2,w,w*0.34,0,0,7); ctx.fill(); }
+    if(tier<=0){ sh(20); ctx.fillStyle='#8a6f4a'; rr(bx-16,by-8,32,9,4); ctx.fillStyle='#a98a5c'; rr(bx-16,by-8,10,9,4); }
+    else if(tier===1){ sh(24); ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(bx,by-34); ctx.lineTo(bx+22,by+2); ctx.lineTo(bx-22,by+2); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(bx,by-34); ctx.lineTo(bx-22,by+2); ctx.lineTo(bx-8,by+2); ctx.lineTo(bx,by-18); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(bx,by-18); ctx.lineTo(bx+5,by+2); ctx.lineTo(bx-5,by+2); ctx.closePath(); ctx.fill(); }
+    else if(tier===2){ sh(26); ctx.fillStyle='#7a5230'; rr(bx-20,by-18,3,20,1); rr(bx+17,by-34,3,36,1);
+      ctx.fillStyle='#a86f3c'; ctx.beginPath(); ctx.moveTo(bx-22,by-16); ctx.lineTo(bx+20,by-32); ctx.lineTo(bx+23,by-27); ctx.lineTo(bx-19,by-11); ctx.closePath(); ctx.fill(); }
+    else if(tier===3){ sh(28); ctx.fillStyle='#8a5e37'; [-22,-7,8,22].forEach(dx=>rr(bx+dx,by-34,4,36,1));
+      ctx.fillStyle='#7a5230'; rr(bx-24,by-36,50,4,1); ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(bx-24,by-34); ctx.lineTo(bx+26,by-48); ctx.lineTo(bx+26,by-34); ctx.stroke(); }
+    else { const big=tier>=6, w=big?64:52, h=big?38:32, x=bx-w/2, y=by-h;
+      sh(w*0.6);
+      if(tier>=6){ const fx=bx+w/2+16, f=0.6+0.4*Math.sin(t*8);
+        ctx.fillStyle='#8f8a86'; rr(fx-8,by-22,16,24,3); ctx.fillStyle='#2b2438'; rr(fx-5,by-12,10,14,2);
+        if(dusk) glow(fx,by-10,22,'#ffca6a',0.4*f+0.2);
+        ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-3,by-2); ctx.quadraticCurveTo(fx,by-13-f*3,fx,by-15-f*4); ctx.quadraticCurveTo(fx,by-13-f*3,fx+3,by-2); ctx.fill(); }
+      ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,3);
+      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath(); ctx.moveTo(x-5,y+3); ctx.lineTo(bx,y-18); ctx.lineTo(x+w+5,y+3); ctx.closePath(); ctx.fill();
+      ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(bx+w*0.22,y-16,7,10,1);
+      for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.4; ctx.fillStyle='#d9d2e2';
+        ctx.beginPath(); ctx.ellipse(bx+w*0.22+3, y-16-o*16, 3,3,0,0,7); ctx.fill(); } ctx.globalAlpha=1;
+      ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(bx-6,y+h-16,12,16,2);
+      ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x+7,y+9,11,9,2); if(dusk) glow(x+12,y+13,16,'#ffdf9a',0.5);
+      if(tier>=6){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x+w-18,y+9,11,9,2); if(dusk) glow(x+w-13,y+13,16,'#ffdf9a',0.5); }
+      if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,by-2,w+4,3,1); ctx.fillStyle='#8a5e37'; rr(x-2,by-12,3,12,1); rr(x+w-1,by-12,3,12,1);
+        ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-5,by-15,w+10,5,2); }
+    }
+    // one worker beside the build, plus rare short speech
+    isleWorker(bx-Math.max(20,18), by-2, t, cabinBuilding);
+    isleQuip(c);
+    if(isleBubble && performance.now()<isleBubble.until){
+      ctx.font='bold 11px Nunito'; const tw=ctx.measureText(isleBubble.txt).width+14, h=18, x=isleBubble.x-tw/2, y=isleBubble.y-h;
+      ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,tw,h,7);
+      ctx.beginPath(); ctx.moveTo(isleBubble.x-4,y+h); ctx.lineTo(isleBubble.x+4,y+h); ctx.lineTo(isleBubble.x,y+h+5); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(isleBubble.txt, isleBubble.x, y+h/2);
+      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    }
+  }
+
   // ---------- growth script (each step ≈ one good day) ----------
   const S=[
     {t:'tree',id:'A',i:2,j:2,lvl:1,label:'A tender sprout breaks the soil'},
@@ -2318,7 +2382,7 @@ const ISO = (function(){
     {t:'tree',id:'C',lvl:2,label:'The third tree grows'},
     {t:'obj',type:'mushroom',i:0,j:4,label:'Mushrooms appear in the shade'},
     {t:'obj',type:'cow',i:2,j:0,label:'A cow comes to the meadow'},
-    {t:'obj',type:'kangaroo',i:0,j:0,label:'A kangaroo bounds onto the island'},
+    {t:'obj',type:'kangaroo',i:0,j:5,label:'A kangaroo bounds onto the island'},
     {t:'obj',type:'cockatoo',i:4,j:0,label:'A sulphur-crested cockatoo lands in the branches'},
     {t:'obj',type:'fox',i:5,j:4,label:'A fox curls up at the edge'},
     {t:'tree',id:'C',lvl:3,label:'The third tree finds its trunk'},
@@ -2381,6 +2445,7 @@ const ISO = (function(){
         unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
       if(f) items.push({d,fn:f}); }
     for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
+    if(showCabin){ const hc=iso(0,0); items.push({d:-1,fn:()=>drawHomesteadIso(hc,cabinTier,t)}); }
     items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
     for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
   }
@@ -2419,7 +2484,8 @@ const ISO = (function(){
   function steps(){ return S.map((x,i)=>({label:x.label||'A new life arrives', phase:phaseOf(i+1)})); }
   // level at which a given creature/object first appears (1-based); 0 if never
   function levelOf(type){ const i=S.findIndex(x=> x.type===type || (type==='butterfly' && x.t==='flutter') ); return i<0?0:i+1; }
-  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, LEN:S.length };
+  function setCabin(tier, building){ cabinTier=tier|0; cabinBuilding=!!building; showCabin=tier>=0; }
+  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, LEN:S.length };
 })();
 
 /* ============================================================
