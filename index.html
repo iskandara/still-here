@@ -327,28 +327,48 @@
   .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
 
   /* ---------- crossing-point dialog ---------- */
-  #cross, #donate{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
+  #cross, #donate, #feedback, #enjoy, #reset, #install{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
-  #cross.show, #donate.show{display:flex}
-  #cross .mbox, #donate .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
+  #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show{display:flex}
+  #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
     border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
     box-shadow:0 24px 60px rgba(6,3,16,.6)}
-  #cross .mtitle, #donate .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
-  #cross .mbody, #donate .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
-  #cross .mprimary, #donate .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+  #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
+  #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
+  #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
-  #cross .mprimary:active, #donate .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
-  #cross .mghost, #donate .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
-    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer}
-  #cross .mlink, #donate .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
-    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:14px; cursor:pointer; text-decoration:underline}
+  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
+    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
+  #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:6px; cursor:pointer; text-decoration:underline}
 
   #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311;
     font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #4d8a36}
   #donate .mgreen:active{transform:translateY(3px); box-shadow:0 1px 0 #4d8a36}
   #donate .msub{display:block; font-weight:700; font-size:11px; opacity:.75; margin-top:2px}
+
+  #feedback input, #feedback textarea{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
+    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:12px 14px; outline:none; margin-bottom:10px}
+  #feedback textarea{resize:vertical; min-height:96px; line-height:1.5}
+  #feedback input:focus, #feedback textarea:focus{border-color:var(--honey)}
+
+  #install .icon{width:64px; height:64px; border-radius:16px; display:block; margin:0 auto 14px; box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  #install .insteps{list-style:none; padding:0; margin:0 0 4px}
+  #install .insteps li{display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--line);
+    font-size:14px; line-height:1.5; text-align:left}
+  #install .insteps li:last-child{border-bottom:none}
+  #install .insteps .num{flex:0 0 24px; width:24px; height:24px; border-radius:50%; background:rgba(244,184,96,.14);
+    border:1px solid rgba(244,184,96,.4); color:var(--honey); font-weight:800; font-size:12px;
+    display:flex; align-items:center; justify-content:center; margin-top:1px}
+  #install .insteps b{color:var(--ink)}
+  #install .plat{display:inline-block; margin-bottom:14px; font-size:11px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; color:var(--muted); background:var(--plum3); border:1px solid var(--line);
+    padding:5px 11px; border-radius:999px}
+  #reset .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
+  #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
 
   /* ---------- ten-minute hold ---------- */
   #waitPill{position:absolute; left:50%; transform:translate(-50%,10px); bottom:14px; z-index:6;
@@ -501,7 +521,51 @@
       <div class="mbody">No ads, no subscription — just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
       <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
       <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
+      <button class="mghost" onclick="openFeedback()">💬 Got an idea? Tell me</button>
       <button class="mlink" onclick="hideDonate()">Maybe later</button>
+    </div>
+  </div>
+
+  <div id="install">
+    <div class="mbox">
+      <img class="icon" src="icon-180.png" alt="Still Here">
+      <div class="mtitle" style="text-align:center">Keep it one tap away</div>
+      <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app — full-screen, and always right there when you need it.</div>
+      <div style="text-align:center"><span class="plat" id="inPlat">Your device</span></div>
+      <ol class="insteps" id="inSteps"></ol>
+      <button class="mprimary" id="inNow" onclick="installNow()" style="display:none; margin-top:16px">➕ Add to Home Screen</button>
+      <button class="mlink" onclick="hideInstall()">I'll do it later</button>
+    </div>
+  </div>
+
+  <div id="reset">
+    <div class="mbox">
+      <div class="mtitle">Start the forest over?</div>
+      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil — the homestead resets too. Your account, name, and voice stay. This can't be undone.</div>
+      <button class="mprimary" onclick="doReset('same')">Start over — keep my oath</button>
+      <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
+      <button class="mlink" onclick="hideReset()">Cancel — keep my forest</button>
+    </div>
+  </div>
+
+  <div id="enjoy">
+    <div class="mbox">
+      <div class="mtitle">Seven days strong 🌱</div>
+      <div class="mbody">You've kept your oath a whole week — the builders noticed. If you've a moment, I'd love to hear what's working, or what you'd change. It's just me building this, and your words steer it.</div>
+      <button class="mprimary" onclick="enjoyToFeedback()">Share a thought</button>
+      <button class="mlink" onclick="hideEnjoy()">Maybe another time</button>
+    </div>
+  </div>
+
+  <div id="feedback">
+    <div class="mbox">
+      <div class="mtitle">Got any words or ideas?</div>
+      <div class="mbody">I read every single one — it's how Still Here gets better. A feature, a bug, or just a hello.</div>
+      <input id="fbEmail" type="email" autocomplete="email" placeholder="your email (so I can reply — optional)">
+      <textarea id="fbMsg" rows="4" placeholder="Tell me anything…"></textarea>
+      <button class="mprimary" id="fbSend" onclick="submitFeedback()">Send it my way</button>
+      <button class="mlink" onclick="hideFeedback()">Maybe later</button>
+      <div class="err" id="fbErr"></div>
     </div>
   </div>
 
@@ -679,9 +743,13 @@
       </div>
       <div class="acctrow">
         <div class="lbl">Support this project<small>keeps the forest growing for everyone</small></div>
-        <button class="acctbtn primary" onclick="openDonate()">♥ Donate</button>
+        <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
       </div>
-      <button class="reset" onclick="hardReset()">Start the forest over</button>
+      <div class="acctrow" id="installRow">
+        <div class="lbl">Add to home screen<small>open it like a real app</small></div>
+        <button class="acctbtn" onclick="showInstallTutorial()">How?</button>
+      </div>
+      <button class="reset" onclick="openReset()">Start the forest over</button>
     </div>
   </div>
 </div>
@@ -699,6 +767,7 @@ const APPWRITE_PROJECT  = '6a5dbcef0011289fb163';            // Project ID from 
 // database + table IDs (see APPWRITE_SETUP.md)
 const AW_DB    = '6a5dc0440033a02989ef';   // your Appwrite database ID
 const AW_STATE = 'state';   // one table holding your whole forest as a single JSON document
+const AW_FEEDBACK = 'feedback';   // collection for user ideas/feedback
 
 /* ============================================================
    STORAGE  (window.storage if present, else in-memory)
@@ -934,6 +1003,56 @@ function openDonate(){ closeAllSheets();
   const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
   document.getElementById('donate').classList.add('show'); }
 function hideDonate(){ document.getElementById('donate').classList.remove('show'); }
+
+function openFeedback(){
+  hideDonate();
+  const em=document.getElementById('fbEmail');
+  em.value = (authUser && authUser.email) ? authUser.email : '';
+  document.getElementById('fbMsg').value='';
+  document.getElementById('fbErr').textContent='';
+  const el=document.getElementById('feedback'); el.scrollTop=0; el.classList.add('show'); lockScroll();
+}
+function hideEnjoy(){ document.getElementById('enjoy').classList.remove('show'); }
+function enjoyToFeedback(){ hideEnjoy(); openFeedback(); }
+function anyModalOpen(){
+  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install'].some(id=>{
+    const el=document.getElementById(id); return el && el.classList.contains('show');
+  });
+}
+// one-time, gentle nudge for feedback once someone reaches a 7-day run
+function maybeAskFeedback(){
+  if(!D || !oath || !oath.configured) return;
+  if(prefs.askedFeedback) return;
+  if(D.currentRun < 7) return;
+  if(backend!=='cloud') return;         // needs the feedback collection
+  if(anyModalOpen()) return;
+  prefs.askedFeedback = true; persistPrefs();
+  setTimeout(()=>{ if(!anyModalOpen()) document.getElementById('enjoy').classList.add('show'); }, 700);
+}
+function hideFeedback(){ dismissOverlay(document.getElementById('feedback')); }
+async function sendFeedback(email, message){
+  if(backend!=='cloud') return {ok:false, msg:'Feedback needs a connection — please try again online.'};
+  try{
+    await aw.databases.createDocument(AW_DB, AW_FEEDBACK, Appwrite.ID.unique(), {
+      email:(email||'').slice(0,320),
+      message:(message||'').slice(0,5000)
+    });
+    return {ok:true};
+  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
+}
+async function submitFeedback(){
+  const email=(document.getElementById('fbEmail').value||'').trim();
+  const msg=(document.getElementById('fbMsg').value||'').trim();
+  const err=document.getElementById('fbErr'); err.textContent='';
+  if(msg.length<2){ err.textContent='Add a few words first 🙂'; return; }
+  const btn=document.getElementById('fbSend'); btn.disabled=true; btn.textContent='Sending…';
+  const r=await sendFeedback(email, msg);
+  btn.disabled=false; btn.textContent='Send it my way';
+  if(r.ok){ hideFeedback(); toast('Thank you — I read every word. It means a lot.'); }
+  else err.textContent = r.msg.toLowerCase().includes('not found')
+      ? 'Feedback isn\u2019t set up yet (missing collection).'
+      : ('Couldn\u2019t send: '+r.msg);
+}
 function goDonate(which){
   const url = which==='kofi' ? DONATE_KOFI : DONATE_TRAKTEER;
   hideDonate();
@@ -1127,7 +1246,7 @@ function dismissOverlay(el){
 }
 
 function overlayOpen(){
-  return ['onboard','auth'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
+  return ['onboard','auth','feedback','reset','enjoy','install'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
 }
 // iOS can leave the page scrolled after the keyboard closes — put it back
 window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
@@ -1185,6 +1304,11 @@ async function submitOath(){
   if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} } else { await store.set('oath', oath); }
   hideOnboard(); refresh();
   toast(first? 'Your oath is planted. The forest is watching over it.' : 'Oath updated.');
+  // first-run only: offer to add the app to the home screen
+  if(first && !prefs.seenInstall){
+    prefs.seenInstall=true; persistPrefs();
+    setTimeout(()=>{ try{ showInstallTutorial(); }catch(_){} }, 1200);
+  }
 }
 
 /* ---- ecosystem progress panel ---- */
@@ -1419,6 +1543,7 @@ function refresh(){
   ISO.setState(D.growthLevel, dusk);
   ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
+  maybeAskFeedback();
   if(document.getElementById('homeSheet').classList.contains('show')) renderHomestead();
 
   // today
@@ -1525,12 +1650,71 @@ async function resolveDay(kind){
     refresh();
   }
 }
-async function hardReset(){
-  if(!confirm('Clear all logs and grow a new forest from bare soil?')) return;
-  logs=[]; dayStatus={}; prefs={max:0};
-  oath.start=todayKey();
-  await persistReset();
-  closeSheet(); refresh();
+/* ---- add to home screen tutorial ---- */
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredInstall=e; });
+function isStandalone(){ return window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }
+function detectPlatform(){
+  const ua=navigator.userAgent||'';
+  if(/iphone|ipad|ipod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1)) return 'ios';
+  if(/android/i.test(ua)) return 'android';
+  return 'other';
+}
+const INSTALL_STEPS={
+  ios:[['Tap the <b>Share</b> button', 'the square with an ↑ arrow, in Safari\u2019s bar'],
+       ['Choose <b>Add to Home Screen</b>', 'scroll down the share menu to find it'],
+       ['Tap <b>Add</b>', 'and Still Here appears on your home screen']],
+  android:[['Tap the <b>⋮ menu</b>', 'top-right of Chrome'],
+       ['Tap <b>Add to Home screen</b>', 'or \u201cInstall app\u201d'],
+       ['Tap <b>Add</b>', 'and you\u2019re done']],
+  other:[['Open your browser\u2019s <b>menu</b>', 'usually top-right'],
+       ['Choose <b>Install</b> or <b>Add to Home Screen</b>', 'look for an install icon in the address bar too'],
+       ['Confirm', 'and Still Here installs like an app']]
+};
+function showInstallTutorial(){
+  if(isStandalone()) return;                        // already installed
+  const plat=detectPlatform();
+  document.getElementById('inPlat').textContent = plat==='ios'?'iPhone / iPad':plat==='android'?'Android':'Your device';
+  const ol=document.getElementById('inSteps'); ol.innerHTML='';
+  INSTALL_STEPS[plat].forEach((st,i)=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<span class="num">${i+1}</span><span>${st[0]}<br><span style="color:var(--muted);font-size:12.5px">${st[1]}</span></span>`;
+    ol.appendChild(li);
+  });
+  // Android/desktop Chrome can trigger the real prompt in one tap
+  document.getElementById('inNow').style.display = deferredInstall ? 'block' : 'none';
+  document.getElementById('install').classList.add('show');
+}
+function hideInstall(){ document.getElementById('install').classList.remove('show'); }
+async function installNow(){
+  if(!deferredInstall){ return; }
+  hideInstall();
+  deferredInstall.prompt();
+  try{ await deferredInstall.userChoice; }catch(_){}
+  deferredInstall=null;
+}
+
+function openReset(){
+  closeAllSheets();
+  document.getElementById('scrim').classList.remove('show');
+  document.getElementById('reset').classList.add('show');
+}
+function hideReset(){ document.getElementById('reset').classList.remove('show'); }
+async function doReset(mode){
+  hideReset();
+  logs=[]; dayStatus={};
+  prefs={ max:0, tone:(prefs && prefs.tone) || 'gentle' };   // keep voice; clear all progress
+  if(mode==='new'){
+    oath = Object.assign(defaultOath(), { start:todayKey(), configured:false });
+    await persistReset();
+    updateHomeChip(); refresh();
+    showOnboard(false);                                       // let them define the new oath
+  } else {
+    oath.start = todayKey();
+    await persistReset();
+    updateHomeChip(); refresh();
+    toast('A fresh start — your forest begins again from bare soil.');
+  }
 }
 
 /* ---------- sheet ---------- */
@@ -2506,6 +2690,7 @@ const ISO = (function(){
   try{ restoreWait(); }catch(_){}
   try{ refresh(); }catch(e){ console.error('render init failed', e); }
   ISO.start();
+  try{ if(isStandalone()){ const r=document.getElementById('installRow'); if(r) r.style.display='none'; } }catch(_){}
   // first run: gently invite a guest to make an account (fully skippable)
   try{
     if(backend==='cloud' && accountIsGuest() && !(profile&&profile.name)) showAuth('welcome');
