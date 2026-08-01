@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Still Here — the full story</title>
+<meta name="description" content="How a road trip to Halls Gap became Still Here — a gentle app for smoking less.">
+<meta property="og:title" content="Still Here — the full story">
+<meta property="og:description" content="How a road trip to Halls Gap became a forest that grows as you keep your oath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--plum:#241d33;--plum2:#2f2743;--plum3:#3a3152;--ink:#f3ede4;--muted:#c3b9d2;
+    --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--cendol:#8ed36a;--line:rgba(255,255,255,.09)}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(120% 50% at 50% -5%,#4a3d63,#2a2140 44%,#1c1630);background-attachment:fixed;overflow-x:hidden}
+  a{color:inherit}
+  .pix{font-family:'Pixelify Sans'}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(28,22,48,.75),rgba(28,22,48,0))}
+  nav .wrap{max-width:1040px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
+  .brand{font-family:'Pixelify Sans';font-size:18px}
+  .brand small{font-family:'Nunito';font-weight:800;font-size:8.5px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;display:block;margin-top:2px}
+  .navr{display:flex;align-items:center;gap:14px}
+  .back{text-decoration:none;color:var(--muted);font-weight:800;font-size:14px}
+  .back:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;font-family:'Nunito';font-weight:800;border-radius:13px;border:none;transition:transform .08s ease}
+  .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep));color:#3a2410;padding:11px 18px;font-size:14px;box-shadow:0 4px 0 #b06d2e}
+  .btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #b06d2e}
+
+  /* hero */
+  .hero{position:relative;height:min(64vh,520px);overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero img{width:100%;height:100%;object-fit:cover;object-position:center 42%}
+  .hero .veil{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,15,32,1) 2%,rgba(20,15,32,.25) 45%,rgba(20,15,32,.5))}
+  .hero .htext{position:absolute;left:0;right:0;bottom:0;padding:0 22px 34px}
+  .hero .htext .in{max-width:720px;margin:0 auto}
+  .eyebrow{font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--honey);margin-bottom:12px}
+  .hero h1{font-family:'Pixelify Sans';font-size:clamp(30px,6.5vw,46px);line-height:1.1;margin:0}
+  .hero .loc{margin-top:12px;color:var(--muted);font-size:13px;font-weight:700}
+
+  article{padding:44px 0 10px}
+  article p{font-size:17px;line-height:1.78;color:#e7e0d4;margin:0 0 22px}
+  article p.first::first-letter{font-family:'Pixelify Sans';font-size:56px;line-height:.8;float:left;
+    color:var(--honey);padding:6px 12px 0 0}
+  .quote{font-family:'Pixelify Sans';font-size:clamp(21px,4.4vw,28px);line-height:1.35;color:var(--ink);
+    border-left:3px solid var(--honey);padding:6px 0 6px 20px;margin:34px 0}
+  .sub{font-family:'Pixelify Sans';font-size:21px;color:var(--honey);margin:38px 0 14px}
+
+  figure{margin:36px 0}
+  figure img{width:100%;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 22px 50px rgba(8,4,20,.5)}
+  figure figcaption{color:var(--muted);font-size:12.5px;font-weight:700;text-align:center;margin-top:10px}
+  .portrait{max-width:360px;margin:36px auto}
+  .portrait img{aspect-ratio:3/4;object-fit:cover}
+
+  .oath{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.35));border:1px solid var(--line);
+    border-radius:20px;padding:24px;margin:34px 0}
+  .oath b{color:var(--honey)} .oath p{margin:0 0 12px;font-size:15.5px;line-height:1.7;color:var(--muted)}
+  .oath p:last-child{margin:0}
+
+  .keepgoing{background:linear-gradient(180deg,rgba(244,184,96,.1),rgba(47,39,67,.35));
+    border:1px solid rgba(244,184,96,.28); border-radius:22px; padding:30px 26px; margin:40px 0 10px; text-align:center}
+  .keepgoing h3{font-family:'Pixelify Sans'; font-size:23px; margin:0 0 12px}
+  .keepgoing p{color:var(--muted); font-size:15px; line-height:1.7; margin:0 auto 22px; max-width:520px}
+  .kg-btns{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}
+
+  .endcard{text-align:center;padding:20px 0 8px}
+  .endcard .nm{font-family:'Pixelify Sans';font-size:clamp(26px,6vw,40px);color:var(--ink);margin:0 0 8px}
+  .endcard .sig{color:var(--honey);font-weight:800;font-style:italic;margin:18px 0 26px}
+  .cta2{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .btn.big{font-size:16px;padding:15px 24px}
+  .btn.green{background:linear-gradient(180deg,var(--cendol),#66ad4a);color:#173311;box-shadow:0 4px 0 #4d8a36}
+  .btn.green:active{transform:translateY(3px);box-shadow:0 1px 0 #4d8a36}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);padding:14px 20px;font-size:15px}
+
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 0 60px;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--honey);font-weight:800}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand">Still Here<small>your quiet forest</small></div>
+  <div class="navr">
+    <a class="back" href="/">← Home</a>
+    <a class="btn primary" href="/app" target="_blank" rel="noopener">Open app</a>
+  </div>
+</div></nav>
+
+<div class="hero">
+  <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria — a creek, picnic benches, mountains and cloud">
+  <div class="veil"></div>
+  <div class="htext"><div class="in">
+    <div class="eyebrow">The story behind Still Here</div>
+    <h1>It started on a road trip to Halls Gap.</h1>
+    <div class="loc">📍 Halls Gap · Grampians, Victoria, Australia</div>
+  </div></div>
+</div>
+
+<article><div class="wrap">
+
+  <p class="first">This was inspired by my last road trip in Victoria. Fresh air, a clean river, birds flocking to the benches — just people enjoying the things their surroundings gave them. And upon seeing scenery like that, my first thought was, as it always is: <i>"oh, that's got to be a perfect spot to smoke a cig."</i></p>
+
+  <p>But from all these folks, the only smoke that came was from the nearby meat shop. Everyone else was simply doing things — reading, licking ice cream, sipping coffee, or just breathing in the fresh air. <i>Why wouldn't I?</i></p>
+
+  <div class="quote">For the first time in my life, as far as I can remember, I felt ashamed just for having the thought of smoking.</div>
+
+  <figure class="portrait">
+    <img src="assets/agung.jpg" alt="Me, on a sunny balcony">
+    <figcaption>Me — the one making the oath.</figcaption>
+  </figure>
+
+  <p class="sub">The one who could just stop</p>
+
+  <p>I was travelling with my love (she also smokes — smoking hot, and smokes a cig), and we talked about it. I'd seen a slight change in her habit there; she'd greatly reduced how much she smoked. She said she could just stop things cold-turkey — smoking included — and it's one of the things I adore about her, because I'm well aware I don't have that kind of mental perseverance.</p>
+
+  <p>From that scenery, and from that conversation with my partner, I made a choice: I want to enjoy things without having to smoke so much.</p>
+
+  <p class="sub">The honest numbers</p>
+
+  <p>Right now my burn rate is about a pack a day — twenty butts — and I think that's quite concerning. As someone who doesn't have that cold-turkey mental strength, I had a thought: reduce my current rate to one pack every three days.</p>
+
+  <p>Then the real question: <i>how do I make this journey interesting?</i></p>
+
+  <div class="oath">
+    <p><b>First</b>, I should be fully aware of how much I smoke, over time — day, week, month, year.</p>
+    <p><b>Second</b>, logging it should be effortless, using the thing that's always within reach: my phone. You always keep your phone close, riiight? But logging in a notes app — open it, find the note, type it out — gahh, too much hassle.</p>
+    <p><b>Third</b>, and the big one: how do I make it <i>fun</i>? What if I built a little idle ecosystem — small rewards when I keep my oath, gentle setbacks when I don't?</p>
+  </div>
+
+  <p class="sub">A tribute to a place</p>
+
+  <p>So here it is. I wanted to make a tribute to Halls Gap — the place that gave me that sudden moment of clarity — by recreating a little version of that scenery inside an app. Something to always remind me of my oath.</p>
+
+  <div class="quote">It's named "Still Here" — so that I'm always, still, at Halls Gap.</div>
+
+  <div class="keepgoing">
+    <div class="kg-in">
+      <h3>Keep the little forest growing</h3>
+      <p>Still Here is made by one person, in my spare time, and it's completely free — no ads, no subscription, no catch. If it's helped you even a little, a coffee or a cendol covers the running costs and buys time to keep building it. No pressure at all — using it and telling a friend already means the world.</p>
+      <div class="kg-btns">
+        <a class="btn primary big" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener">🌏 Buy me a coffee</a>
+        <a class="btn green big" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener">🇮🇩 Traktir cendol</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="endcard">
+    <div class="nm">Still Here</div>
+    <p style="color:var(--muted);font-size:15.5px;line-height:1.7;max-width:520px;margin:0 auto">If any of this sounds like you, come plant your first day. It's free, there are no ads, and it grows the moment you tap.</p>
+    <div class="sig">— made with care · one person · Indonesia 🌱</div>
+    <div class="cta2">
+      <a class="btn primary big" href="/app" target="_blank" rel="noopener">Open Still Here</a>
+      <a class="btn ghost" href="/">← Back to home</a>
+    </div>
+  </div>
+
+</div></article>
+
+<footer><div class="wrap">
+  <p>If it helps you the way it's helped me, a coffee or a cendol keeps it growing.</p>
+  <p style="margin-top:10px">
+    <a href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener">🌏 Buy me a coffee</a>
+    &nbsp;·&nbsp;
+    <a href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener">🇮🇩 Traktir cendol</a>
+  </p>
+  <p style="margin-top:14px;opacity:.7">© 2026 Still Here</p>
+</div></footer>
+
+</body>
+</html>

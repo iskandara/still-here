@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Still Here — a forest that grows as you keep your oath</title>
+<meta name="description" content="A quiet app for cutting down on something you can't quit cold turkey. Log honestly, and a small forest grows with every good day. No ads, no subscription, no streak to shame you.">
+<meta property="og:title" content="Still Here">
+<meta property="og:description" content="A forest that grows as you keep your oath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#241d33; --plum2:#2f2743; --plum3:#3a3152;
+    --ink:#f3ede4; --muted:#c3b9d2; --honey:#f4b860; --honey-deep:#e0954a;
+    --leaf:#8fce6b; --cendol:#8ed36a; --line:rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{margin:0; font-family:'Nunito',system-ui,sans-serif; color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -5%, #4a3d63 0%, #2a2140 42%, #1c1630 100%);
+    background-attachment:fixed; overflow-x:hidden}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+  a{color:inherit}
+  .pix{font-family:'Pixelify Sans',sans-serif; letter-spacing:.5px}
+
+  /* nav */
+  nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(28,22,48,.72),rgba(28,22,48,0));}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+  .brand{font-family:'Pixelify Sans'; font-size:18px}
+  .brand small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.5px;
+    color:var(--muted); text-transform:uppercase; display:block; margin-top:2px}
+  .btn{display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none;
+    font-family:'Nunito'; font-weight:800; border-radius:13px; border:none; transition:transform .08s ease}
+  .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
+    padding:12px 20px; font-size:15px; box-shadow:0 5px 0 #b06d2e}
+  .btn.primary:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
+  .btn.sm{padding:9px 15px; font-size:13.5px; box-shadow:0 4px 0 #b06d2e}
+  .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:12px 18px; font-size:14px}
+  .btn.ghost:active{background:rgba(255,255,255,.05)}
+
+  .navlinks{display:none; gap:24px}
+  @media(min-width:860px){ .navlinks{display:flex} }
+  .navlinks a{text-decoration:none; color:var(--muted); font-weight:800; font-size:14px; transition:color .15s}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks a.active{color:var(--honey)}
+  .navtog{display:inline-flex; background:transparent; border:1px solid var(--line); color:var(--ink);
+    font-size:16px; width:40px; height:40px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
+  @media(min-width:860px){ .navtog{display:none} }
+  .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.92); backdrop-filter:blur(6px);
+    flex-direction:column; align-items:center; justify-content:center; gap:8px}
+  .mobmenu.show{display:flex}
+  .mobmenu a{color:var(--ink); text-decoration:none; font-family:'Pixelify Sans'; font-size:24px; padding:14px}
+  .mobmenu .close{position:absolute; top:18px; right:20px; background:none; border:none; color:var(--muted); font-size:26px; cursor:pointer}
+  section{padding:64px 0; scroll-margin-top:72px}
+  h1{font-family:'Pixelify Sans'; font-size:clamp(30px,7vw,52px); line-height:1.08; margin:0 0 16px}
+  h2{font-family:'Pixelify Sans'; font-size:clamp(23px,5vw,34px); margin:0 0 10px}
+  .lead{color:var(--muted); font-size:clamp(15px,2.4vw,18px); line-height:1.6; margin:0}
+  .eyebrow{font-weight:800; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--honey); margin-bottom:14px}
+
+  /* hero */
+  .hero{padding-top:26px}
+  .hero .grid{display:grid; grid-template-columns:1fr; gap:30px; align-items:center}
+  @media(min-width:860px){ .hero .grid{grid-template-columns:1.05fr .95fr; gap:44px} }
+  .hero h1 span{color:var(--honey)}
+  .herobadge{display:inline-flex; align-items:center; gap:9px; margin-bottom:18px;
+    background:rgba(20,15,32,.5); border:1px solid var(--line); border-radius:999px;
+    padding:9px 16px; font-weight:800; font-size:13.5px; color:var(--leaf)}
+  .herobadge .hbdot{width:9px; height:9px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
+  .heroCtas{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
+  .trust{display:flex; flex-wrap:wrap; gap:16px; margin-top:22px; color:var(--muted); font-size:12.5px; font-weight:700}
+  .trust span{display:inline-flex; align-items:center; gap:6px}
+  .trust b{color:var(--leaf)}
+
+  /* the interactive forest frame */
+  .stagecard{position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.55); background:#1c1630;
+    width:100%; height:min(74vh,560px)}
+  @media(max-width:859px){ .stagecard{height:min(78vh,540px); max-width:420px; margin:0 auto} }
+  .stagecard canvas{display:block; width:100%; height:100%}
+  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between;
+    align-items:flex-start; padding:14px 16px; pointer-events:none}
+  .stagetop .wm{font-family:'Pixelify Sans'; font-size:14px; text-shadow:0 2px 0 rgba(0,0,0,.25)}
+  .stagetop .wm small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.4px;
+    color:var(--muted); text-transform:uppercase; display:block; margin-top:3px}
+  .pill{background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+    border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
+  .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+    display:flex; flex-direction:column; gap:8px;
+    background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
+  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s}
+  .growbtn{width:100%; border:none; cursor:pointer; border-radius:14px;
+    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
+    font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
+  .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
+  .daybtn{position:absolute; top:52px; right:16px; pointer-events:auto; cursor:pointer;
+    background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+    color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
+
+  /* steps */
+  .steps{display:grid; grid-template-columns:1fr; gap:16px; margin-top:30px}
+  @media(min-width:760px){ .steps{grid-template-columns:repeat(3,1fr)} }
+  .step{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:18px; padding:22px}
+  .step .n{font-family:'Pixelify Sans'; font-size:15px; color:var(--honey);
+    width:34px; height:34px; border-radius:50%; background:rgba(244,184,96,.12);
+    border:1px solid rgba(244,184,96,.3); display:flex; align-items:center; justify-content:center; margin-bottom:14px}
+  .step h3{font-family:'Pixelify Sans'; font-size:18px; margin:0 0 8px}
+  .step p{color:var(--muted); font-size:14px; line-height:1.55; margin:0}
+
+  /* journey */
+  .journey{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:30px}
+  @media(min-width:860px){ .journey{grid-template-columns:repeat(4,1fr)} }
+  .vig{background:#1c1630; border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    animation:float 6s ease-in-out infinite}
+  .vig:nth-child(2){animation-delay:.8s} .vig:nth-child(3){animation-delay:1.6s} .vig:nth-child(4){animation-delay:2.4s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .vig .cvbox{position:relative; width:100%; padding-top:100%}
+  .vig .cvbox canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .vig .cap{padding:13px 15px 16px}
+  .vig .cap b{font-family:'Pixelify Sans'; font-size:15px; display:block; margin-bottom:4px}
+  .vig .cap span{color:var(--muted); font-size:12px; line-height:1.5}
+  .mythline{text-align:center; margin-top:24px; color:var(--muted); font-size:14px}
+  .mythline b{color:var(--ink)}
+
+  /* kind grid */
+  .kind{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:28px}
+  @media(min-width:760px){ .kind{grid-template-columns:repeat(4,1fr)} }
+  .kcard{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:16px; padding:20px 16px; text-align:center}
+  .kcard .ic{font-size:24px; margin-bottom:10px}
+  .kcard b{display:block; font-size:14px; margin-bottom:5px}
+  .kcard span{color:var(--muted); font-size:12px; line-height:1.45}
+
+  /* kind / dashboard preview */
+  .dash{display:grid; grid-template-columns:1fr; gap:16px; margin-top:34px}
+  @media(min-width:820px){ .dash{grid-template-columns:1fr 1fr} }
+  .panel{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:20px; padding:24px}
+  .panel h3{font-family:'Pixelify Sans'; font-size:19px; margin:0 0 6px}
+  .panel .psub{color:var(--muted); font-size:13px; margin:0 0 20px; line-height:1.5}
+  .leaf{background:var(--leaf)} .amber{background:var(--honey)} .coral{background:#e8926a}
+
+  .chart{display:flex; align-items:flex-end; gap:14px; height:180px; padding:0 4px}
+  .chart .bar{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%}
+  .chart .bar .v{font-weight:800; font-size:12px; margin-bottom:6px; color:var(--ink)}
+  .chart .bar i{display:block; width:100%; max-width:40px; border-radius:7px 7px 3px 3px; min-height:6px}
+  .chart .bar b{font-size:11px; color:var(--muted); font-weight:800; margin-top:8px}
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:12px; font-weight:700; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .legend i{width:11px; height:11px; border-radius:50%; display:inline-block}
+
+  .toneseg{display:flex; gap:10px; margin-bottom:18px}
+  .toneseg button{flex:1; border:1px solid var(--line); background:var(--plum3); color:var(--muted);
+    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px 6px; border-radius:12px; cursor:pointer; transition:.12s}
+  .toneseg button.on{background:var(--honey); color:#3a2410; border-color:transparent}
+  .quotebox{background:var(--plum3); border:1px solid var(--line); border-radius:14px; padding:22px 20px;
+    font-weight:800; font-size:16px; line-height:1.5; min-height:118px; display:flex; align-items:center}
+
+  .sanct{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+  .crt{aspect-ratio:1/1; border-radius:14px; background:var(--plum3); border:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    font-weight:800; font-size:12px; color:var(--muted)}
+  .crt span{font-size:26px; filter:grayscale(1) opacity(.5)}
+  .crt.filled{background:rgba(143,206,107,.12); border-color:rgba(143,206,107,.4); color:var(--leaf)}
+  .crt.filled span{filter:none}
+  .soon{margin-top:16px; display:inline-block; background:rgba(244,184,96,.12); border:1px solid rgba(244,184,96,.35);
+    color:var(--honey); font-weight:800; font-size:12px; padding:8px 14px; border-radius:999px}
+
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
+  .cal .d{aspect-ratio:1/1; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:13px; color:#2b2438}
+  .cal .d.foggy{background:transparent; border:1px dashed var(--line); color:var(--muted)}
+
+  .cabincard{margin-top:26px; border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630; max-width:560px}
+  @media(min-width:860px){ .cabincard{margin-left:auto; margin-right:auto} }
+  .cvbox2{position:relative; width:100%; padding-top:64%}
+  .cvbox2 canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+
+  /* about teaser */
+  .about{max-width:920px; margin:0 auto; text-align:center}
+  .abouttease{display:grid; grid-template-columns:1fr; gap:22px; margin-top:22px; text-align:left; align-items:center}
+  @media(min-width:820px){ .abouttease{grid-template-columns:1.1fr .9fr; gap:34px} }
+  .teasetext .lead{margin:0 0 14px}
+  .teasetext .btn{margin-top:8px}
+  .teasephoto{position:relative; display:block; border-radius:20px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 22px 50px rgba(8,4,20,.5); text-decoration:none}
+  .teasephoto img{display:block; width:100%; height:100%; object-fit:cover; aspect-ratio:4/3; transition:transform .5s ease}
+  .teasephoto:hover img{transform:scale(1.04)}
+  .teasephoto span{position:absolute; left:0; right:0; bottom:0; padding:22px 16px 13px; font-size:12px; font-weight:800;
+    color:var(--ink); background:linear-gradient(0deg,rgba(12,8,22,.8),rgba(12,8,22,0))}
+
+  /* final cta */
+  .final{text-align:center; background:linear-gradient(180deg,rgba(58,49,82,.5),rgba(36,29,51,.5));
+    border:1px solid var(--line); border-radius:26px; padding:52px 24px; margin:20px 0}
+  .final .lead{max-width:520px; margin:0 auto 26px}
+
+  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:13px}
+  footer .wrap{display:flex; flex-direction:column; gap:18px}
+  .fdon{display:flex; flex-wrap:wrap; gap:12px}
+  .fdon a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:13.5px;
+    border-radius:12px; padding:11px 16px; border:1px solid var(--line)}
+  .fdon a.kofi{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410; border:none}
+  .fdon a.teer{background:linear-gradient(180deg,var(--cendol),#66ad4a); color:#173311; border:none}
+  .fnote{line-height:1.6}
+  .fnote a{color:var(--honey); font-weight:800}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="brand">Still Here<small>your quiet forest</small></div>
+  <div class="navlinks" id="navlinks">
+    <a href="#try">Try it</a>
+    <a href="#how">How it works</a>
+    <a href="#journey">The forest</a>
+    <a href="#about">About</a>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px">
+    <button class="navtog" id="navtog" aria-label="Menu">☰</button>
+    <a class="btn primary sm" href="/app" target="_blank" rel="noopener">Open app</a>
+  </div>
+</div></nav>
+
+<div class="mobmenu" id="mobmenu">
+  <button class="close" onclick="toggleMenu(false)">✕</button>
+  <a href="#try" onclick="toggleMenu(false)">Try it</a>
+  <a href="#how" onclick="toggleMenu(false)">How it works</a>
+  <a href="#journey" onclick="toggleMenu(false)">The forest</a>
+  <a href="#about" onclick="toggleMenu(false)">About</a>
+  <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)">Open the app →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero"><div class="wrap"><div class="grid">
+  <div>
+    <div class="herobadge"><span class="hbdot"></span>A free, no-ads habit companion</div>
+    <h1>A forest that grows as you <span>keep your oath</span>.</h1>
+    <p class="lead">Still Here turns any habit you're reducing — cigarettes, drinks, screen time, anything you can count — into a living island. Every honest day plants something new.</p>
+    <div class="heroCtas">
+      <a class="btn primary" href="/app" target="_blank" rel="noopener">Open Still Here — free</a>
+    </div>
+    <div class="trust">
+      <span>📲 <b>Installs straight to your home screen</b></span>
+    </div>
+  </div>
+
+  <div id="try" class="stagecard">
+    <canvas id="heroForest" width="500" height="600"></canvas>
+    <div class="stagetop">
+      <div class="wm">Still Here<small>your quiet forest</small></div>
+      <div class="pill"><span class="dot"></span><span id="heroPhase">Sapling</span></div>
+    </div>
+    <button class="daybtn" id="heroDay">☀ Day</button>
+    <div class="stagebar">
+      <div class="grewline" id="heroGrew">This little island is yours to grow. Give it a good day.</div>
+      <button class="growbtn" id="heroGrow">🌱 Plant a good day</button>
+    </div>
+  </div>
+</div></div></section>
+
+<!-- PROBLEM -->
+<section><div class="wrap" style="max-width:720px; text-align:center">
+  <h2>Cold turkey doesn't work for everyone.</h2>
+  <p class="lead">Most apps count perfect streaks and reset you to zero the moment you slip — which, for a habit you're <i>reducing</i>, means failing constantly. Still Here is built the <span style="color:var(--honey);font-weight:800">opposite way</span>. You're not chasing perfection. You're tending something that remembers every step you've taken, and forgives the ones you stumble on.</p>
+</div></section>
+
+<!-- KIND / DASHBOARD PREVIEW -->
+<section id="kind"><div class="wrap" style="max-width:1040px">
+  <div class="eyebrow" style="text-align:center">Kind by design</div>
+  <h2 style="text-align:center">Everything you need to see progress.</h2>
+  <p class="lead" style="text-align:center; max-width:560px; margin:0 auto">No streak-shaming, no ads — just an honest picture of your habit over time.</p>
+
+  <div class="dash">
+    <!-- months bar chart -->
+    <div class="panel">
+      <h3>Your months, at a glance</h3>
+      <p class="psub">Every bar is one month. The green line is your goal.</p>
+      <div class="chart">
+        <div class="bar"><span class="v">190</span><i class="coral" style="height:100%"></i><b>Mar</b></div>
+        <div class="bar"><span class="v">180</span><i class="coral" style="height:95%"></i><b>Apr</b></div>
+        <div class="bar"><span class="v">110</span><i class="amber" style="height:58%"></i><b>May</b></div>
+        <div class="bar"><span class="v">80</span><i class="amber" style="height:42%"></i><b>Jun</b></div>
+        <div class="bar"><span class="v">62</span><i class="leaf" style="height:33%"></i><b>Jul</b></div>
+      </div>
+      <div class="legend">
+        <span><i class="leaf"></i>at / under goal</span>
+        <span><i class="amber"></i>getting there</span>
+        <span><i class="coral"></i>near old habit</span>
+      </div>
+    </div>
+
+    <!-- tone -->
+    <div class="panel">
+      <h3>Speaks your language</h3>
+      <p class="psub">Choose how the forest talks to you.</p>
+      <div class="toneseg" id="toneseg">
+        <button data-t="gentle" onclick="pickTone('gentle')">Gentle</button>
+        <button data-t="plain" onclick="pickTone('plain')">Plain</button>
+        <button data-t="honest" class="on" onclick="pickTone('honest')">Honest</button>
+      </div>
+      <div class="quotebox" id="toneQuote">"That's your third today. You said you wanted fewer. Still your call."</div>
+    </div>
+
+    <!-- sanctuary -->
+    <div class="panel">
+      <h3>A living sanctuary</h3>
+      <p class="psub">As your forest matures, companions come to live in it.</p>
+      <div class="sanct">
+        <div class="crt filled"><span>🦋</span>Arrived</div>
+        <div class="crt filled"><span>🐓</span>Arrived</div>
+        <div class="crt"><span>🐇</span>Locked</div>
+        <div class="crt"><span>🦊</span>Locked</div>
+        <div class="crt"><span>🦄</span>Locked</div>
+        <div class="crt"><span>🐉</span>Locked</div>
+      </div>
+      <div class="soon">More companions arriving as you grow</div>
+    </div>
+
+    <!-- calendar -->
+    <div class="panel">
+      <h3>Honest, not punishing</h3>
+      <p class="psub">A blank day just stays foggy — never a red mark against you.</p>
+      <div class="cal" id="calGrid"></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- JOURNEY -->
+<section id="journey"><div class="wrap">
+  <div class="eyebrow">Watch it come alive</div>
+  <h2>From bare soil to a living haven.</h2>
+  <p class="lead" style="max-width:640px">Every good day is one small arrival. Weeks in, your island is full of life — and at dusk the everyday animals curl up asleep while the rare visitors glow.</p>
+  <div class="journey">
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="1" data-dusk="0"></canvas></div><div class="cap"><b>Seed</b><span>A first sprout breaks the soil.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="12" data-dusk="0"></canvas></div><div class="cap"><b>Sapling</b><span>A tree, flowering bushes, a butterfly, a rooster.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="34" data-dusk="0"></canvas></div><div class="cap"><b>Grove</b><span>More trees, a pond, and animals moving in.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="54" data-dusk="1"></canvas></div><div class="cap"><b>Haven, at dusk</b><span>A waterfall, sleeping animals — and glowing visitors.</span></div></div>
+  </div>
+  <p class="mythline">Keep going, and the rarest of all may come: a <b>unicorn</b>, a <b>pegasus</b>, even a <b>little dragon</b>.</p>
+</div></section>
+
+<!-- HOMESTEAD -->
+<section id="homestead"><div class="wrap">
+  <div class="eyebrow">A second thing grows too</div>
+  <h2>Keep a run going, and a home takes shape.</h2>
+  <p class="lead" style="max-width:640px">Alongside the forest, little builders raise a home for every good day you string together — a bedroll, a tent, a snug cabin, and finally a warm homestead with a crackling fire. Slip up and nothing is torn down; they just rest by the fire until you're back.</p>
+  <div class="cabincard">
+    <div class="cvbox2"><canvas id="cabinDemo" width="440" height="300"></canvas></div>
+  </div>
+  <p class="mythline">On an off day the builders <b>rest, never scold</b> — because progress you've earned should stay earned.</p>
+</div></section>
+
+<!-- HOW -->
+<section id="how"><div class="wrap">
+  <div class="eyebrow">How it works</div>
+  <h2>Three small things.</h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Log honestly</h3><p>One tap each time — with the exact time quietly recorded, so you can later see when you're most tempted.</p></div>
+    <div class="step"><div class="n">2</div><h3>Good days grow it</h3><p>Every day you stay within your limit adds one new living thing — a flower, a butterfly, a rabbit, a rare creature.</p></div>
+    <div class="step"><div class="n">3</div><h3>Slips never destroy it</h3><p>Go over and nothing is torn down. The forest holds everything you've grown. No zero. No shame. Just tomorrow.</p></div>
+  </div>
+</div></section>
+
+<!-- ABOUT -->
+<section id="about"><div class="wrap"><div class="about">
+  <div class="eyebrow">Why I made this</div>
+  <h2>It started on a road trip to Halls Gap.</h2>
+  <div class="abouttease">
+    <div class="teasetext">
+      <p class="lead">Fresh air, a clean river, birds flocking to the benches — and my first thought was still <i>"what a perfect spot to smoke."</i> The only smoke around came from the meat shop. Everyone else was just reading, licking ice cream, sipping coffee. For the first time in my life, I felt ashamed of the thought.</p>
+      <p class="lead">That day became this app — a tribute to Halls Gap, and a promise to enjoy the good things without a cigarette in my hand.</p>
+      <a class="btn primary" href="about.html">Read the full story →</a>
+    </div>
+    <a class="teasephoto" href="about.html" aria-label="Read the full story">
+      <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria" loading="lazy">
+      <span>Halls Gap, Victoria — where it began</span>
+    </a>
+  </div>
+</div></div></section>
+
+<!-- FINAL -->
+<section><div class="wrap"><div class="final">
+  <h2>Grow something instead of counting failures.</h2>
+  <p class="lead">Open it, make your oath, and plant your first day. It's free, and it starts the moment you tap.</p>
+  <a class="btn primary" href="/app" target="_blank" rel="noopener" style="font-size:17px; padding:16px 28px">Open Still Here</a>
+</div></div></section>
+
+<footer><div class="wrap">
+  <div>
+    <div class="brand" style="margin-bottom:8px">Still Here</div>
+    <p class="fnote">Built by one person, for anyone trying to do a little better each day. No ads, no subscription — support keeps it that way.</p>
+  </div>
+  <div class="fdon">
+    <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener">🌏 Buy me a coffee</a>
+    <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener">🇮🇩 Traktir cendol</a>
+  </div>
+  <p class="fnote"><a href="/">Still Here</a> · © 2026</p>
+</div></footer>
+
+<script>
+/* ---- nav: mobile menu + active-section highlight ---- */
+function toggleMenu(open){ document.getElementById('mobmenu').classList.toggle('show', open); }
+document.getElementById('navtog').addEventListener('click', ()=>toggleMenu(true));
+
+const spy=[...document.querySelectorAll('.navlinks a')];
+const spyMap={};
+spy.forEach(a=>{ const id=a.getAttribute('href').slice(1); const sec=document.getElementById(id); if(sec) spyMap[id]=a; });
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ spy.forEach(a=>a.classList.remove('active'));
+      const a=spyMap[e.target.id]; if(a) a.classList.add('active'); } });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  Object.keys(spyMap).forEach(id=>{ const sec=document.getElementById(id); if(sec) io.observe(sec); });
+}
+
+/* ---- dashboard preview: interactive tone + dummy calendar ---- */
+const TONE_QUOTES={
+  gentle:'"That\u2019s your seven for today. No penalty here \u2014 the forest keeps everything you\u2019ve grown."',
+  plain:'"You\u2019re at 7 of 7. Anything past this counts as over. Your call."',
+  honest:'"That\u2019s your third today. You said you wanted fewer. Still your call."'
+};
+function pickTone(t){
+  document.querySelectorAll('#toneseg button').forEach(b=>b.classList.toggle('on', b.dataset.t===t));
+  const q=document.getElementById('toneQuote'); q.style.opacity=0;
+  setTimeout(()=>{ q.textContent=TONE_QUOTES[t]; q.style.opacity=1; }, 140);
+}
+(function buildCal(){
+  const g=document.getElementById('calGrid'); if(!g) return;
+  for(let d=1; d<=28; d++){
+    const col=((d-1)%7)+1;
+    let cls='d ';
+    if(col===7) cls+='foggy';
+    else if(col===3) cls+='amber';
+    else if(col===5) cls+='coral';
+    else cls+='leaf';
+    const el=document.createElement('div'); el.className=cls; el.textContent=d; g.appendChild(el);
+  }
+})();
+document.getElementById('toneQuote').style.transition='opacity .18s ease';
+
+/* ---- tiny persistence (localStorage on the real site, memory in preview) ---- */
+const mem={};
+const save=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){ mem[k]=v; } };
+const load=(k,d)=>{ try{ const r=localStorage.getItem(k); return r==null?d:JSON.parse(r); }catch(_){ return (k in mem)?mem[k]:d; } };
+
+function makeForest(cv, stageEl){
+  const ctx=cv.getContext('2d');
+  const VW=760, VH=620, TW=112, TH=56, C=6, R=6, originX=380, originY=215, THICK=42;
+  function iso(i,j){ return { x:originX+(i-j)*(TW/2), y:originY+(i+j)*(TH/2) }; }
+
+  let level=0, dusk=false, puffs=[];
+  let VIS={l:0,t:0,r:VW,b:VH};   // visible region in scene coords (set each frame)
+
+  function P(){ return dusk ? {
+      skyTop:'#2b2450',skyBot:'#b5786a',sun:'#ffe6c0',grassA:'#4f7a48',grassB:'#456a40',grassEdge:'#374f34',
+      dirtR:'#6a4830',dirtL:'#523524',water:'#3f6f92',waterHi:'#6aa0c0',amb:'rgba(30,22,58,.42)'
+    } : {
+      skyTop:'#a9def0',skyBot:'#ffedcf',sun:'#fff2b0',grassA:'#8ecb63',grassB:'#80bd57',grassEdge:'#5f9a45',
+      dirtR:'#b07a48',dirtL:'#8a5c34',water:'#6fc4e8',waterHi:'#a6ddf3',amb:'rgba(0,0,0,0)'
+    }; }
+
+  function diamond(cx,cy,c,tw=TW,th=TH){ ctx.fillStyle=c; ctx.beginPath();
+    ctx.moveTo(cx,cy-th/2);ctx.lineTo(cx+tw/2,cy);ctx.lineTo(cx,cy+th/2);ctx.lineTo(cx-tw/2,cy);ctx.closePath();ctx.fill(); }
+  function shadow(cx,cy,rw,rh){ ctx.fillStyle='rgba(0,0,0,.16)';ctx.beginPath();ctx.ellipse(cx,cy,rw,rh,0,0,7);ctx.fill(); }
+  function blob(cx,cy,r,c){ ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(cx,cy,r,r*0.82,0,0,7);ctx.fill(); }
+  function rr(x,y,w,h,r){ ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill(); }
+  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  function zzz(x,y,t){ ctx.font='bold 15px Nunito'; ctx.fillStyle='#e9e4f5';
+    for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); ctx.globalAlpha=(1-o)*0.85; ctx.fillText('z', x+o*10, y-o*22-k*3); } ctx.globalAlpha=1; }
+  function closedEye(x,y){ ctx.strokeStyle='#2b2438'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(x-2,y); ctx.lineTo(x+3,y); ctx.stroke(); }
+
+  // ---------- ground ----------
+  let pondTiles=new Set();
+  let clouds=[{x:170,y:85,s:.12,w:120},{x:520,y:62,s:.08,w:90},{x:330,y:140,s:.05,w:70}];
+  function drawGround(){
+    const p=P();
+    // NOTE: the sky gradient is painted across the whole canvas in fitFrame(),
+    // so the scene only adds what sits in front of it.
+    blob(VIS.r-120, VIS.t+110, 42, p.sun);
+    if(dusk){ ctx.fillStyle='#fff';
+      for(let i=0;i<40;i++){ const sx=VIS.l+((i*151)%Math.max(1,(VIS.r-VIS.l))), sy=VIS.t+((i*97)%Math.max(1,(originY-VIS.t)));
+        if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} }
+      ctx.globalAlpha=1; }
+    for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VIS.r+140) cl.x=VIS.l-160;
+      ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }
+    const bC=iso(C-1,R-1);
+    ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(originX,bC.y+THICK+24,TW*2.4,TH*1.6,0,0,7); ctx.fill();
+    const B=iso(C-1,0),D=iso(0,R-1),Cc=iso(C-1,R-1);
+    const bx=B.x+TW/2,by=B.y,dx=D.x-TW/2,dy=D.y,cx=Cc.x,cy=Cc.y+TH/2;
+    ctx.fillStyle=p.dirtR;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+THICK);ctx.lineTo(bx,by+THICK);ctx.closePath();ctx.fill();
+    ctx.fillStyle=p.dirtL;ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+THICK);ctx.lineTo(dx,dy+THICK);ctx.closePath();ctx.fill();
+    for(let s=0;s<=(C-1)+(R-1);s++) for(let i=0;i<C;i++){ const j=s-i; if(j<0||j>=R)continue; const c=iso(i,j);
+      if(pondTiles.has(i+','+j)){ drawWater(c.x,c.y); continue; } diamond(c.x,c.y,(i+j)%2?p.grassA:p.grassB); }
+    ctx.strokeStyle=p.grassEdge;ctx.lineWidth=2;ctx.globalAlpha=.5; const A=iso(0,0);
+    ctx.beginPath();ctx.moveTo(A.x,A.y-TH/2);ctx.lineTo(bx,by);ctx.lineTo(cx,cy);ctx.lineTo(dx,dy);ctx.closePath();ctx.stroke();ctx.globalAlpha=1;
+  }
+  function drawWater(cx,cy){ const p=P(); diamond(cx,cy,p.water); const t=performance.now()/500; ctx.fillStyle=p.waterHi;
+    for(let k=0;k<3;k++){ const off=Math.sin(t+k*2)*10; ctx.fillRect(cx-16+off+k*6,cy-4+k*5,10,2); } }
+
+  // ---------- the growing tree ----------
+  const FRUITPOS=[[-0.5,0.45],[0.45,0.5],[0,0.7],[-0.72,0.12],[0.72,0.18],[-0.28,0.85],[0.32,0.85],[0,0.28],[-0.45,-0.12],[0.5,-0.05],[-0.65,0.55],[0.62,0.55]];
+  function drawFruits(cx,cy,cr,n){ for(let k=0;k<n&&k<FRUITPOS.length;k++){ const px=cx+FRUITPOS[k][0]*cr, py=cy+FRUITPOS[k][1]*cr;
+    ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
+    ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#ff9a8a'; ctx.fillRect(px-3,py-3,2,2); } }
+  function drawTree(c,lvl,fruit,t){
+    const sway=Math.sin(t*1.1 + c.x*0.01)*(lvl>=3?2.5:1);
+    if(lvl<=0){ shadow(c.x,c.y+2,14,6); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-9,4,9); blob(c.x+sway,c.y-11,5,'#7ccf5b'); return; }
+    if(lvl===1){ shadow(c.x,c.y+2,16,7); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-20,4,20);
+      blob(c.x-5+sway,c.y-22,8,'#7ccf5b'); blob(c.x+5+sway,c.y-18,7,'#67bf4c'); return; }
+    if(lvl===2){ shadow(c.x,c.y+2,18,8); ctx.fillStyle='#7a5230'; ctx.fillRect(c.x-3,c.y-28,6,28);
+      blob(c.x+sway,c.y-32,16,'#4f9e38'); blob(c.x-9+sway,c.y-28,12,'#67bf4c'); blob(c.x+9+sway,c.y-29,12,'#67bf4c'); blob(c.x-2+sway,c.y-40,13,'#7ccf5b');
+      drawFruits(c.x+sway,c.y-32,16,fruit); return; }
+    const ht=34+(lvl-3)*16, wt=13+(lvl-3)*3, cr=22+(lvl-3)*10;
+    shadow(c.x,c.y+3, 30+lvl*6, 12+lvl*2);
+    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2,c.y-ht,wt,ht);
+    ctx.fillStyle='#8a5e37'; ctx.fillRect(c.x-1,c.y-ht,wt/2,ht);
+    ctx.fillStyle='#5c3c22'; ctx.fillRect(c.x-2,c.y-ht+8,2,ht-12);
+    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2-3,c.y-4,4,4); ctx.fillRect(c.x+wt/2-1,c.y-4,4,4);
+    if(lvl>=4){ ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(c.x,c.y-ht+10); ctx.lineTo(c.x-14,c.y-ht-4); ctx.moveTo(c.x,c.y-ht+18); ctx.lineTo(c.x+14,c.y-ht+2); ctx.stroke(); }
+    const ccx=c.x+sway, ccy=c.y-ht-cr*0.35;
+    blob(ccx,ccy+cr*0.5,cr,'#3f7f2c');
+    blob(ccx-cr*0.55,ccy+cr*0.15,cr*0.72,'#4f9e38');
+    blob(ccx+cr*0.55,ccy+cr*0.2,cr*0.72,'#4f9e38');
+    blob(ccx,ccy-cr*0.12,cr*0.95,'#5cb043');
+    blob(ccx-cr*0.22,ccy-cr*0.5,cr*0.55,'#7ccf5b');
+    drawFruits(ccx,ccy,cr,fruit);
+  }
+
+  // ---------- flora ----------
+  function drawBush(c,color){ shadow(c.x,c.y+2,26,10);
+    blob(c.x,c.y-8,22,'#3f7f2c'); blob(c.x-14,c.y-4,15,'#4f9e38'); blob(c.x+14,c.y-4,15,'#4f9e38'); blob(c.x,c.y-16,17,'#5cb043');
+    const spots=[[-10,-14],[8,-16],[0,-22],[-16,-6],[14,-8]];
+    for(const s of spots){ ctx.fillStyle=color; ctx.beginPath(); ctx.ellipse(c.x+s[0],c.y+s[1],4.5,4.5,0,0,7); ctx.fill();
+      ctx.fillStyle='#fff6c8'; ctx.fillRect(c.x+s[0]-1,c.y+s[1]-1,2,2); } }
+  function drawMushroom(c){ shadow(c.x,c.y+1,9,4); ctx.fillStyle='#f2ead6'; ctx.fillRect(c.x-3,c.y-8,6,8);
+    ctx.fillStyle='#e05a4a'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,9,6,0,Math.PI,0); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.fillRect(c.x-4,c.y-11,2,2); ctx.fillRect(c.x+3,c.y-10,2,2); }
+
+  // ---------- furniture ----------
+  function drawBirdhouse(c,t){ shadow(c.x,c.y+2,16,8); ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-3,c.y-40,6,40);
+    ctx.fillStyle='#d59b5c'; ctx.fillRect(c.x-15,c.y-64,30,24);
+    ctx.fillStyle='#8a5030'; ctx.beginPath(); ctx.moveTo(c.x-20,c.y-64); ctx.lineTo(c.x,c.y-78); ctx.lineTo(c.x+20,c.y-64); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#3a2414'; ctx.beginPath(); ctx.ellipse(c.x,c.y-52,5,5,0,0,7); ctx.fill(); }
+  function drawBench(c){ shadow(c.x,c.y+3,40,14); ctx.fillStyle='#a5703e'; ctx.fillRect(c.x-30,c.y-16,60,7);
+    ctx.fillStyle='#8a5c30'; ctx.fillRect(c.x-30,c.y-30,60,7); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-26,c.y-16,6,16); ctx.fillRect(c.x+20,c.y-16,6,16); }
+  function drawWheelbarrow(c){ shadow(c.x,c.y+2,26,10); ctx.fillStyle='#7d8a92'; ctx.beginPath();
+    ctx.moveTo(c.x-18,c.y-20); ctx.lineTo(c.x+18,c.y-20); ctx.lineTo(c.x+10,c.y-6); ctx.lineTo(c.x-10,c.y-6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#5f6a70'; ctx.fillRect(c.x-2,c.y-19,16,4); ctx.fillStyle='#3a2c1a'; ctx.beginPath(); ctx.ellipse(c.x-12,c.y-4,6,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x+14,c.y-18,12,3); }
+  function drawLantern(c,t){ shadow(c.x,c.y+1,8,4); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-2,c.y-34,4,34);
+    const on=dusk?(0.6+0.4*Math.sin(t*3)):0; if(on){ glow(c.x,c.y-40,22,'#ffd98a',on*0.6); }
+    ctx.fillStyle= dusk?'#ffdf9a':'#c9a86a'; ctx.fillRect(c.x-6,c.y-46,12,12); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-7,c.y-48,14,3); }
+
+  // ---------- everyday animals (sleep at dusk) ----------
+  function drawRabbit(c,t){ shadow(c.x,c.y+2,15,7);
+    if(dusk){ ctx.fillStyle='#e2dccf'; ctx.beginPath(); ctx.ellipse(c.x,c.y-5,15,8,0,0,7); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(c.x+11,c.y-7,6,5,0,0,7); ctx.fill();
+      ctx.fillStyle='#d0c6b6'; ctx.fillRect(c.x+2,c.y-12,11,3); closedEye(c.x+11,c.y-7); zzz(c.x+17,c.y-12,t); return; }
+    const hop=Math.abs(Math.sin(t*1.6))*8, y=c.y-hop;
+    ctx.fillStyle='#efe7db'; ctx.beginPath(); ctx.ellipse(c.x,y-9,13,10,0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(c.x+9,y-16,7,7,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+6,y-30,3,10); ctx.fillRect(c.x+11,y-30,3,10); ctx.fillStyle='#f6b9c8'; ctx.beginPath(); ctx.ellipse(c.x-11,y-8,4,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+12,y-17,2,2); }
+  function drawFox(c,t){ const b=dusk?0:Math.sin(t*1.3)*1.5; shadow(c.x,c.y+2,26,10);
+    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9+b,22,12,0,0,7); ctx.fill();
+    ctx.fillStyle='#e6bd96'; ctx.beginPath(); ctx.ellipse(c.x-18,c.y-9+b,9,7,0,0,7); ctx.fill();
+    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x+16,c.y-13+b,9,8,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+12,c.y-22+b); ctx.lineTo(c.x+15,c.y-14+b); ctx.lineTo(c.x+9,c.y-15+b); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+22,c.y-22+b); ctx.lineTo(c.x+23,c.y-14+b); ctx.lineTo(c.x+18,c.y-15+b); ctx.fill();
+    if(dusk){ closedEye(c.x+20,c.y-13); zzz(c.x+26,c.y-20,t); } else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+20,c.y-13+b,2,2); } }
+  function drawDeer(c,t){ shadow(c.x,c.y+2,24,10);
+    if(dusk){ ctx.fillStyle='#a97e50'; ctx.beginPath(); ctx.ellipse(c.x,c.y-8,18,10,0,0,7); ctx.fill();
+      ctx.fillRect(c.x+12,c.y-16,5,10); ctx.beginPath(); ctx.ellipse(c.x+16,c.y-16,7,6,0,0,7); ctx.fill();
+      ctx.strokeStyle='#7a5230'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x+15,c.y-20); ctx.lineTo(c.x+12,c.y-27); ctx.moveTo(c.x+18,c.y-20); ctx.lineTo(c.x+21,c.y-27); ctx.stroke();
+      closedEye(c.x+18,c.y-16); zzz(c.x+24,c.y-24,t); return; }
+    const b=Math.sin(t*1.1+c.x)*1.2, y=c.y+b;
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-12,y-14,3,14); ctx.fillRect(c.x-4,y-14,3,14); ctx.fillRect(c.x+6,y-14,3,14); ctx.fillRect(c.x+13,y-14,3,14);
+    ctx.fillStyle='#b98a5a'; ctx.beginPath(); ctx.ellipse(c.x,y-20,16,10,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+10,y-34,5,16); ctx.beginPath(); ctx.ellipse(c.x+14,y-36,7,6,0,0,7); ctx.fill();
+    ctx.strokeStyle='#7a5230'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x+13,y-40); ctx.lineTo(c.x+10,y-48); ctx.moveTo(c.x+16,y-40); ctx.lineTo(c.x+19,y-48); ctx.stroke();
+    ctx.fillStyle='#f2ead6'; ctx.beginPath(); ctx.ellipse(c.x-15,y-20,4,4,0,0,7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); }
+  function drawBird(c,t){ shadow(c.x,c.y+1,10,4);
+    if(dusk){ ctx.fillStyle='#6a7fa8'; ctx.beginPath(); ctx.ellipse(c.x,c.y-7,10,8,0,0,7); ctx.fill();
+      ctx.fillStyle='#59688c'; ctx.beginPath(); ctx.ellipse(c.x+2,c.y-9,5,4,0,0,7); ctx.fill(); zzz(c.x+9,c.y-14,t); return; }
+    const hop=Math.abs(Math.sin(t*2+c.x))*4, y=c.y-hop;
+    ctx.fillStyle='#7a95c7'; ctx.beginPath(); ctx.ellipse(c.x,y-8,9,8,0,0,7); ctx.fill();
+    ctx.fillStyle='#e08a5a'; ctx.beginPath(); ctx.ellipse(c.x-2,y-6,5,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#f4c04a'; ctx.beginPath(); ctx.moveTo(c.x+7,y-10); ctx.lineTo(c.x+13,y-9); ctx.lineTo(c.x+7,y-7); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+4,y-11,2,2); }
+
+  // ---------- farm animals ----------
+  function drawRooster(c,t){ shadow(c.x,c.y+1,12,5);
+    if(dusk){ ctx.fillStyle='#c9803f'; ctx.beginPath(); ctx.ellipse(c.x,c.y-7,12,8,0,0,7); ctx.fill();
+      ctx.fillStyle='#b06a30'; ctx.beginPath(); ctx.ellipse(c.x+3,c.y-10,6,5,0,0,7); ctx.fill();
+      ctx.fillStyle='#d1483f'; ctx.fillRect(c.x+3,c.y-16,2,3); ctx.fillRect(c.x+6,c.y-16,2,3);
+      zzz(c.x+12,c.y-16,t); return; }
+    const bob=Math.sin(t*2.4+c.x)*2;
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-2,c.y-8,2,8); ctx.fillRect(c.x+3,c.y-8,2,8);         // legs
+    ctx.fillStyle='#3f5f8a'; ctx.beginPath(); ctx.ellipse(c.x-9,c.y-16+bob,9,7,0,0,7); ctx.fill();  // tail
+    ctx.fillStyle='#2f4a6e'; ctx.beginPath(); ctx.moveTo(c.x-12,c.y-22+bob); ctx.lineTo(c.x-18,c.y-30+bob); ctx.lineTo(c.x-6,c.y-22+bob); ctx.fill();
+    ctx.fillStyle='#c9803f'; ctx.beginPath(); ctx.ellipse(c.x,c.y-14+bob,12,10,0,0,7); ctx.fill();  // body
+    ctx.fillStyle='#e09a52'; ctx.beginPath(); ctx.ellipse(c.x+8,c.y-24+bob,7,6,0,0,7); ctx.fill();  // head
+    ctx.fillStyle='#d1483f';                                                                        // comb
+    ctx.fillRect(c.x+5,c.y-32+bob,2,4); ctx.fillRect(c.x+8,c.y-33+bob,2,5); ctx.fillRect(c.x+11,c.y-32+bob,2,4);
+    ctx.beginPath(); ctx.ellipse(c.x+8,c.y-19+bob,3,3,0,0,7); ctx.fill();                            // wattle
+    ctx.fillStyle='#f4c04a'; ctx.beginPath(); ctx.moveTo(c.x+14,c.y-25+bob); ctx.lineTo(c.x+20,c.y-23+bob); ctx.lineTo(c.x+14,c.y-21+bob); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+9,c.y-26+bob,2,2); }
+  function drawSheep(c,t){ shadow(c.x,c.y+2,22,9);
+    const b=dusk?0:Math.sin(t*1.0+c.x)*1.2, y=c.y+b;
+    if(!dusk){ ctx.fillStyle='#4a4358'; ctx.fillRect(c.x-9,y-11,4,11); ctx.fillRect(c.x+1,y-11,4,11); ctx.fillRect(c.x+8,y-11,4,11); }
+    ctx.fillStyle='#f2eee6';                                                    // woolly body
+    blob(c.x,y-19,16,'#f2eee6'); blob(c.x-11,y-16,10,'#e8e2d6'); blob(c.x+10,y-16,10,'#e8e2d6');
+    blob(c.x-4,y-27,10,'#f7f4ee'); blob(c.x+6,y-26,9,'#f7f4ee');
+    ctx.fillStyle='#4a4358'; ctx.beginPath(); ctx.ellipse(c.x+15,y-24,7,6,0,0,7); ctx.fill();  // head
+    ctx.fillStyle='#3b3548'; ctx.beginPath(); ctx.ellipse(c.x+19,y-27,4,3,0,0,7); ctx.fill();  // ear
+    if(dusk){ closedEye(c.x+17,y-24); zzz(c.x+24,y-32,t); }
+    else { ctx.fillStyle='#fff'; ctx.fillRect(c.x+16,y-25,2,2); } }
+  function drawCow(c,t){ shadow(c.x,c.y+2,30,11);
+    const b=dusk?0:Math.sin(t*0.9+c.x)*1.1, y=c.y+b;
+    if(!dusk){ ctx.fillStyle='#3a3040'; ctx.fillRect(c.x-13,y-13,5,13); ctx.fillRect(c.x-2,y-13,5,13); ctx.fillRect(c.x+9,y-13,5,13); }
+    ctx.fillStyle='#f4f1ea'; ctx.beginPath(); ctx.ellipse(c.x,y-24,22,13,0,0,7); ctx.fill();   // body
+    ctx.fillStyle='#3a3040';                                                                    // patches
+    ctx.beginPath(); ctx.ellipse(c.x-9,y-27,7,6,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(c.x+7,y-20,6,5,0,0,7); ctx.fill();
+    ctx.fillStyle='#f4f1ea'; ctx.beginPath(); ctx.ellipse(c.x+21,y-30,10,8,0,0,7); ctx.fill();  // head
+    ctx.fillStyle='#f6b9c8'; ctx.beginPath(); ctx.ellipse(c.x+27,y-27,5,4,0,0,7); ctx.fill();   // muzzle
+    ctx.fillStyle='#d8d2c6'; ctx.beginPath(); ctx.moveTo(c.x+17,y-38); ctx.lineTo(c.x+15,y-44); ctx.lineTo(c.x+21,y-39); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+25,y-38); ctx.lineTo(c.x+29,y-43); ctx.lineTo(c.x+27,y-37); ctx.fill();
+    if(dusk){ closedEye(c.x+23,y-31); zzz(c.x+34,y-40,t); }
+    else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+22,y-32,2,2); }
+    ctx.strokeStyle='#3a3040'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(c.x-21,y-28); ctx.quadraticCurveTo(c.x-30,y-22,c.x-27,y-10); ctx.stroke(); }
+
+  function drawKangaroo(c,t){ shadow(c.x,c.y+2,24,10);
+    if(dusk){ ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,20,11,0,0,7); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(c.x+14,c.y-16,8,7,0,0,7); ctx.fill();
+      ctx.fillRect(c.x+11,c.y-27,3,10); ctx.fillRect(c.x+16,c.y-27,3,10);
+      ctx.fillStyle='#9a6740'; ctx.beginPath(); ctx.ellipse(c.x-17,c.y-6,10,6,0,0,7); ctx.fill();
+      closedEye(c.x+16,c.y-17); zzz(c.x+24,c.y-26,t); return; }
+    const hop=Math.abs(Math.sin(t*1.3+c.x))*10, y=c.y-hop;
+    ctx.strokeStyle='#9a6740'; ctx.lineWidth=6; ctx.lineCap='round';                 // thick tail
+    ctx.beginPath(); ctx.moveTo(c.x-8,y-10); ctx.quadraticCurveTo(c.x-26,y-6,c.x-30,y+2); ctx.stroke();
+    ctx.lineCap='butt';
+    ctx.fillStyle='#8a5c34'; ctx.beginPath();                                         // hind leg
+    ctx.moveTo(c.x-6,y-6); ctx.lineTo(c.x+6,y-6); ctx.lineTo(c.x+9,y-1); ctx.lineTo(c.x-8,y-1); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x,y-17,13,13,0,0,7); ctx.fill();   // body
+    ctx.fillStyle='#c9915e'; ctx.beginPath(); ctx.ellipse(c.x+2,y-15,7,8,0,0,7); ctx.fill();   // pale belly / pouch
+    ctx.fillStyle='#b07a4e'; ctx.beginPath(); ctx.ellipse(c.x+11,y-29,8,7,0,0,7); ctx.fill();  // head
+    ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x+8,y-41,3,11); ctx.fillRect(c.x+14,y-41,3,11);    // tall ears
+    ctx.fillStyle='#b07a4e'; ctx.fillRect(c.x-2,y-22,7,5);                                     // small arms
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+14,y-30,2,2); }
+  function drawCockatoo(c,t){ shadow(c.x,c.y+1,13,5);
+    const bob=dusk?0:Math.sin(t*2.2+c.x)*2, y=c.y+bob;
+    if(!dusk){ ctx.fillStyle='#6e6a60'; ctx.fillRect(c.x-2,y-9,2,9); ctx.fillRect(c.x+3,y-9,2,9); }
+    ctx.fillStyle='#f7f4ec'; ctx.beginPath(); ctx.ellipse(c.x,y-18,12,11,0,0,7); ctx.fill();   // white body
+    ctx.fillStyle='#eae5da'; ctx.beginPath(); ctx.ellipse(c.x-8,y-16,7,8,0,0,7); ctx.fill();   // wing
+    ctx.fillStyle='#f6e6a8'; ctx.beginPath(); ctx.ellipse(c.x-13,y-13,7,4,0.5,0,7); ctx.fill();// yellow under-tail
+    ctx.fillStyle='#f7f4ec'; ctx.beginPath(); ctx.ellipse(c.x+8,y-28,8,7,0,0,7); ctx.fill();   // head
+    ctx.fillStyle='#f6d24a';                                                                   // sulphur crest
+    const cf = dusk? 0 : Math.max(0,Math.sin(t*1.6+c.x))*4;
+    ctx.beginPath(); ctx.moveTo(c.x+4,y-34); ctx.lineTo(c.x+1,y-44-cf); ctx.lineTo(c.x+8,y-36); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+8,y-35); ctx.lineTo(c.x+7,y-47-cf); ctx.lineTo(c.x+12,y-35); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(c.x+11,y-34); ctx.lineTo(c.x+14,y-43-cf); ctx.lineTo(c.x+15,y-33); ctx.fill();
+    ctx.fillStyle='#3a3630'; ctx.beginPath();                                                  // dark hooked beak
+    ctx.moveTo(c.x+15,y-29); ctx.quadraticCurveTo(c.x+21,y-28,c.x+17,y-22); ctx.quadraticCurveTo(c.x+15,y-25,c.x+13,y-26); ctx.fill();
+    if(dusk){ closedEye(c.x+10,y-30); zzz(c.x+20,y-40,t); }
+    else { ctx.fillStyle='#2b2438'; ctx.beginPath(); ctx.ellipse(c.x+10,y-30,1.6,1.6,0,0,7); ctx.fill(); } }
+
+  // ---------- waterfall, river & river critters ----------
+  function drawWaterfall(c,t){
+    // falls off the outer (down-right) edge of tile (i,j)
+    const ex=c.x+TW/4, ey=c.y+TH/4, w=30, fall=THICK+58;
+    ctx.save();
+    ctx.fillStyle= dusk? 'rgba(110,170,200,.85)':'rgba(150,215,240,.9)';
+    ctx.beginPath(); ctx.moveTo(ex-w/2,ey); ctx.lineTo(ex+w/2,ey);
+    ctx.lineTo(ex+w/2-4,ey+fall); ctx.lineTo(ex-w/2+4,ey+fall); ctx.closePath(); ctx.fill();
+    // streaks
+    ctx.fillStyle= dusk? 'rgba(190,230,250,.6)':'rgba(255,255,255,.75)';
+    for(let k=0;k<5;k++){
+      const off=((t*90+k*37)%fall);
+      ctx.fillRect(ex-10+k*5, ey+off, 2, Math.min(16, fall-off));
+    }
+    ctx.restore();
+    // lip highlight
+    ctx.fillStyle= dusk? '#8fc4dc':'#cfeeff';
+    ctx.fillRect(ex-w/2, ey-2, w, 3);
+    // mist at the bottom (it falls into open sky — the island floats)
+    for(let k=0;k<7;k++){
+      const a=0.28+0.22*Math.sin(t*2+k);
+      ctx.globalAlpha=a;
+      ctx.fillStyle= dusk? '#9fc4d8':'#eaf7ff';
+      const mx=ex+Math.sin(t*1.3+k*1.7)*16, my=ey+fall-4+Math.cos(t+k)*5;
+      ctx.beginPath(); ctx.ellipse(mx,my,10+k,5+k*0.6,0,0,7); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  function drawFish(c,t,seed){
+    // a fish arcs out of the water and back
+    const cyc=(t*0.6+seed)%1; if(cyc>0.42) return;
+    const p=cyc/0.42, h=Math.sin(p*Math.PI)*26, x=c.x-14+p*28, y=c.y-h-4;
+    ctx.save(); ctx.translate(x,y); ctx.rotate((p-0.5)*1.5);
+    ctx.fillStyle= dusk?'#e8a15c':'#f0a94e';
+    ctx.beginPath(); ctx.ellipse(0,0,9,5,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-8,0); ctx.lineTo(-15,-5); ctx.lineTo(-15,5); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(4,-2,2,2);
+    ctx.restore();
+    if(p>0.9){ ctx.globalAlpha=.5; ctx.fillStyle='#cfeeff'; ctx.beginPath(); ctx.ellipse(c.x+14,c.y-2,8,3,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  }
+  function drawFrog(c,t){ shadow(c.x,c.y+1,11,5);
+    const b=dusk?0:Math.abs(Math.sin(t*1.5+c.x))*3, y=c.y-b;
+    ctx.fillStyle='#5aa84e'; ctx.beginPath(); ctx.ellipse(c.x,y-7,11,7,0,0,7); ctx.fill();
+    ctx.fillStyle='#6fc45f'; ctx.beginPath(); ctx.ellipse(c.x-6,y-11,4,4,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(c.x+6,y-11,4,4,0,0,7); ctx.fill();
+    if(dusk){ closedEye(c.x-6,y-11); closedEye(c.x+6,y-11); }
+    else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x-7,y-12,2,2); ctx.fillRect(c.x+5,y-12,2,2); }
+    ctx.fillStyle='#4a9440'; ctx.fillRect(c.x-10,y-2,5,2); ctx.fillRect(c.x+6,y-2,5,2); }
+  function drawDragonfly(c,t,seed){
+    const bx=c.x+Math.sin(t*1.6+seed)*26, by=c.y-34+Math.cos(t*2.1+seed)*12;
+    const f=Math.sin(t*16+seed)*0.5+0.5;
+    ctx.globalAlpha=.45+.35*f; ctx.fillStyle= dusk?'#bfe6ff':'#dff4ff';
+    ctx.beginPath(); ctx.ellipse(bx-5,by-2,8,3,-0.4,0,7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(bx+5,by-2,8,3,0.4,0,7); ctx.fill(); ctx.globalAlpha=1;
+    ctx.fillStyle= dusk?'#6fd6c0':'#3fb8a0'; ctx.fillRect(bx-1,by-2,2,13);
+    ctx.beginPath(); ctx.ellipse(bx,by-4,3,3,0,0,7); ctx.fill();
+    if(dusk) glow(bx,by,10,'#7ff0d0',0.35);
+  }
+
+  // ---------- butterflies / fireflies ----------
+  function drawButterfly(c,t,seed){ const bx=c.x+Math.sin(t*1.2+seed)*24, by=c.y-46+Math.cos(t*1.7+seed)*16; const f=Math.sin(t*11+seed);
+    const cols=['#ff8fb0','#ffd36a','#a98fff','#ff9d6a']; const col=cols[Math.floor(seed)%4];
+    ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(bx-4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(bx+4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill();
+    ctx.fillStyle='#3a2c1a'; ctx.fillRect(bx-1,by-4,2,8); }
+  function drawFirefly(c,t,seed){ const bx=c.x+Math.sin(t*0.7+seed)*24, by=c.y-46+Math.cos(t*0.9+seed)*18;
+    const on=0.25+0.75*Math.max(0,Math.sin(t*3+seed)); glow(bx,by,16,'#fff2a0',on*0.8);
+    ctx.globalAlpha=on; ctx.fillStyle='#fff7c0'; ctx.beginPath(); ctx.ellipse(bx,by,2.5,2.5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+
+  // ---------- mythical (active + glowing at dusk) ----------
+  function sparkle(x,y,t,seed){ for(let k=0;k<3;k++){ const a=(0.6+0.4*Math.sin(t*3+seed+k*2)); ctx.globalAlpha=a; ctx.fillStyle='#fff6c8';
+    const sx=x+Math.cos(seed+k*2.1)*18, sy=y+Math.sin(seed+k*1.7)*16; ctx.fillRect(sx-1,sy-4,2,8); ctx.fillRect(sx-4,sy-1,8,2); } ctx.globalAlpha=1; }
+  function horseBase(c,t,color){ const b=Math.sin(t*2+c.x)*1.4, y=c.y+b; shadow(c.x,c.y+2,24,9);
+    ctx.fillStyle=color; ctx.fillRect(c.x-13,y-14,4,14); ctx.fillRect(c.x-4,y-14,4,14); ctx.fillRect(c.x+5,y-14,4,14); ctx.fillRect(c.x+13,y-14,4,14);
+    ctx.beginPath(); ctx.ellipse(c.x,y-20,17,11,0,0,7); ctx.fill();
+    ctx.fillRect(c.x+9,y-34,6,16); ctx.beginPath(); ctx.ellipse(c.x+15,y-36,8,6,0,0,7); ctx.fill(); return y; }
+  function drawUnicorn(c,t){ if(dusk) glow(c.x,c.y-26,58,'#ffd6ef',0.5+0.15*Math.sin(t*2)); const y=horseBase(c,t,'#f4f0ff');
+    ctx.fillStyle='#f6b9d6'; ctx.beginPath(); ctx.moveTo(c.x+8,y-30); ctx.quadraticCurveTo(c.x-6,y-30,c.x-14,y-14); ctx.lineTo(c.x-9,y-14); ctx.quadraticCurveTo(c.x-2,y-28,c.x+9,y-26); ctx.fill();
+    ctx.fillStyle='#ffd76a'; ctx.beginPath(); ctx.moveTo(c.x+17,y-44); ctx.lineTo(c.x+14,y-40); ctx.lineTo(c.x+20,y-40); ctx.fill();
+    ctx.fillStyle='#f6b9d6'; ctx.beginPath(); ctx.moveTo(c.x-15,y-22); ctx.quadraticCurveTo(c.x-26,y-16,c.x-20,y-4); ctx.lineTo(c.x-14,y-8); ctx.quadraticCurveTo(c.x-18,y-16,c.x-11,y-20); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); sparkle(c.x+2,y-30,t,c.x); }
+  function drawPegasus(c,t){ if(dusk) glow(c.x,c.y-26,60,'#cfe3ff',0.5+0.15*Math.sin(t*2.3)); const y=horseBase(c,t,'#eef4ff'); const wf=Math.sin(t*4)*6;
+    ctx.fillStyle='#dbe8ff'; ctx.beginPath(); ctx.moveTo(c.x-2,y-24); ctx.quadraticCurveTo(c.x-26,y-40-wf,c.x-30,y-18); ctx.quadraticCurveTo(c.x-18,y-20,c.x-2,y-16); ctx.fill();
+    ctx.fillStyle='#f7fbff'; ctx.beginPath(); ctx.moveTo(c.x-2,y-24); ctx.quadraticCurveTo(c.x-18,y-34-wf,c.x-22,y-18); ctx.quadraticCurveTo(c.x-12,y-20,c.x-2,y-17); ctx.fill();
+    ctx.fillStyle='#bcd0f0'; ctx.beginPath(); ctx.moveTo(c.x+8,y-30); ctx.quadraticCurveTo(c.x-4,y-30,c.x-10,y-18); ctx.lineTo(c.x-5,y-18); ctx.quadraticCurveTo(c.x,y-28,c.x+9,y-26); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+16,y-37,2,2); sparkle(c.x-4,y-30,t,c.x+3); }
+  function drawDragon(c,t){ const b=Math.sin(t*2.2+c.x)*1.6, y=c.y+b; if(dusk) glow(c.x,c.y-16,52,'#c8ffe0',0.45+0.15*Math.sin(t*2.6)); shadow(c.x,c.y+2,22,9);
+    const wf=Math.sin(t*5)*5;
+    ctx.fillStyle='#6a4fb0'; ctx.beginPath(); ctx.moveTo(c.x-2,y-20); ctx.quadraticCurveTo(c.x-20,y-34-wf,c.x-24,y-14); ctx.quadraticCurveTo(c.x-12,y-16,c.x-2,y-12); ctx.fill();
+    ctx.fillStyle='#4f9e6a'; ctx.beginPath(); ctx.ellipse(c.x,y-14,15,9,0,0,7); ctx.fill();
+    ctx.strokeStyle='#4f9e6a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(c.x-12,y-13); ctx.quadraticCurveTo(c.x-26,y-10,c.x-24,y-2); ctx.stroke();
+    ctx.fillStyle='#4f9e6a'; ctx.beginPath(); ctx.moveTo(c.x-26,y-6); ctx.lineTo(c.x-30,y-2); ctx.lineTo(c.x-24,y+1); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(c.x+12,y-18,8,7,0,0,7); ctx.fill();
+    ctx.fillStyle='#3f7f52'; ctx.beginPath(); ctx.moveTo(c.x+9,y-26); ctx.lineTo(c.x+11,y-21); ctx.lineTo(c.x+7,y-22); ctx.fill(); ctx.beginPath(); ctx.moveTo(c.x+15,y-26); ctx.lineTo(c.x+16,y-21); ctx.lineTo(c.x+13,y-22); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
+
+  // ---------- growth script (each step ≈ one good day) ----------
+  const S=[
+    {t:'tree',id:'A',i:2,j:2,lvl:1,label:'A tender sprout breaks the soil'},
+    {t:'tree',id:'A',lvl:2,label:'The sprout finds its stem'},
+    {t:'tree',id:'A',lvl:3,label:'A real trunk begins to form'},
+    {t:'obj',type:'bush',i:1,j:2,color:'#ff8fb0',label:'A bush with pink blossoms'},
+    {t:'tree',id:'A',lvl:4,label:'The trunk thickens, first branches'},
+    {t:'obj',type:'bush',i:3,j:1,color:'#ffe07a',label:'A bush with yellow blossoms'},
+    {t:'obj',type:'bush',i:3,j:0,color:'#c79cff',label:'A bush with violet blossoms'},
+    {t:'flutter',i:2,j:3,label:'A butterfly finds the flowers'},
+    {t:'fruit',id:'A',n:1,label:'The first apple ripens'},
+    {t:'obj',type:'bush',i:0,j:3,color:'#ff9d6a',label:'A bush with amber blossoms'},
+    {t:'obj',type:'rooster',i:1,j:1,label:'A rooster struts in to greet the mornings'},
+    {t:'tree',id:'A',lvl:5,label:'The canopy spreads wide'},
+    {t:'fruit',id:'A',n:1,label:'A second apple ripens'},
+    {t:'tree',id:'B',i:4,j:1,lvl:1,label:'A second tree takes root'},
+    {t:'tree',id:'B',lvl:2,label:'The second tree grows a stem'},
+    {t:'tree',id:'B',lvl:3,label:'The second tree finds its trunk'},
+    {t:'obj',type:'bush',i:5,j:2,color:'#8fd4ff',label:'A bush with sky-blue blossoms'},
+    {t:'obj',type:'bush',i:2,j:4,color:'#ffb3d9',label:'A bush with rose blossoms'},
+    {t:'flutter',i:4,j:2,label:'A second butterfly joins'},
+    {t:'obj',type:'rabbit',i:3,j:4,label:'A rabbit moves into the grass'},
+    {t:'pond',i:4,j:4,label:'A small pond gathers'},
+    {t:'obj',type:'frog',i:4,j:4,label:'A frog settles by the water'},
+    {t:'tree',id:'B',lvl:4,label:'The second tree branches out'},
+    {t:'fruit',id:'A',n:1,label:'A third apple ripens'},
+    {t:'obj',type:'birdhouse',i:5,j:0,label:'A birdhouse goes up'},
+    {t:'obj',type:'bird',i:2,j:5,label:'A robin comes to stay'},
+    {t:'obj',type:'sheep',i:0,j:1,label:'A sheep wanders in to graze'},
+    {t:'tree',id:'C',i:1,j:4,lvl:1,label:'A third tree takes root'},
+    {t:'tree',id:'C',lvl:2,label:'The third tree grows'},
+    {t:'obj',type:'mushroom',i:0,j:4,label:'Mushrooms appear in the shade'},
+    {t:'obj',type:'cow',i:2,j:0,label:'A cow comes to the meadow'},
+    {t:'obj',type:'kangaroo',i:0,j:0,label:'A kangaroo bounds onto the island'},
+    {t:'obj',type:'cockatoo',i:4,j:0,label:'A sulphur-crested cockatoo lands in the branches'},
+    {t:'obj',type:'fox',i:5,j:4,label:'A fox curls up at the edge'},
+    {t:'tree',id:'C',lvl:3,label:'The third tree finds its trunk'},
+    {t:'obj',type:'bush',i:3,j:5,color:'#c9ff8f',label:'A bush with lime blossoms'},
+    {t:'flutter',i:1,j:3,label:'A third butterfly drifts through'},
+    {t:'fruit',id:'A',n:1,label:'A fourth apple ripens'},
+    {t:'river',i:3,j:3,label:'A spring bubbles up'},
+    {t:'river',i:4,j:3,label:'The spring becomes a river'},
+    {t:'waterfall',i:5,j:3,label:'The river spills into a waterfall'},
+    {t:'obj',type:'fish',i:4,j:3,label:'Fish leap in the river'},
+    {t:'obj',type:'dragonfly',i:3,j:3,label:'Dragonflies skim the water'},
+    {t:'obj',type:'bench',i:0,j:2,label:'A bench to sit and watch'},
+    {t:'obj',type:'deer',i:4,j:5,label:'A deer steps out of the trees'},
+    {t:'tree',id:'A',lvl:6,label:'The first tree becomes grand'},
+    {t:'obj',type:'wheelbarrow',i:1,j:0,label:'A wheelbarrow rests by the path'},
+    {t:'obj',type:'lantern',i:2,j:1,label:'A lantern is lit'},
+    {t:'obj',type:'lantern',i:5,j:1,label:'A second lantern is lit'},
+    {t:'fruit',id:'A',n:1,label:'A fifth apple ripens'},
+    {t:'obj',type:'rabbit',i:2,j:3,label:'Another rabbit joins the first'},
+    {t:'obj',type:'unicorn',i:3,j:2,label:'A unicorn appears in the clearing'},
+    {t:'obj',type:'pegasus',i:5,j:5,label:'A pegasus alights on the island'},
+    {t:'obj',type:'dragon',i:1,j:5,label:'A little dragon makes its home here'},
+  ];
+  function phaseOf(n){ if(n<=0)return'Seed'; if(n<14)return'Sapling'; if(n<39)return'Grove'; return'Haven'; }
+  const PHASES=[
+    {name:'Seed', from:0, to:0,
+     desc:'Bare soil and a promise. Your first good day breaks the ground.'},
+    {name:'Sapling', from:1, to:13,
+     desc:'A young tree finds its trunk and first branches. Flowering bushes open one colour at a time, a butterfly arrives, and a rooster comes to greet the mornings.'},
+    {name:'Grove', from:14, to:38,
+     desc:'More trees rise and a pond gathers. Animals settle in — a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
+    {name:'Haven', from:39, to:S.length,
+     desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come — a unicorn, a pegasus, even a little dragon.'},
+  ];
+  function phases(){ return PHASES.map(p=>Object.assign({},p)); }
+
+  function apply(n){ const trees={},objs=[],ponds=new Set(),flutters=[],falls=[];
+    for(let k=0;k<n&&k<S.length;k++){ const s=S[k];
+      if(s.t==='tree'){ trees[s.id]=trees[s.id]||{i:s.i,j:s.j,lvl:0,fruit:0}; if(s.i!=null){trees[s.id].i=s.i;trees[s.id].j=s.j;} trees[s.id].lvl=s.lvl; }
+      else if(s.t==='fruit'){ if(trees[s.id]) trees[s.id].fruit+=s.n; }
+      else if(s.t==='pond'||s.t==='river'){ ponds.add(s.i+','+s.j); }
+      else if(s.t==='waterfall'){ ponds.add(s.i+','+s.j); falls.push({i:s.i,j:s.j}); }
+      else if(s.t==='flutter'){ flutters.push({i:s.i,j:s.j,seed:s.i*3+s.j}); }
+      else objs.push(s); }
+    return {trees,objs,ponds,flutters,falls};
+  }
+  let STATE=apply(0);
+
+  function drawScene(t){
+    pondTiles=STATE.ponds; drawGround();
+    const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(VIS.l,VIS.t,VIS.r-VIS.l,VIS.b-VIS.t); }
+    const items=[];
+    for(const id in STATE.trees){ const tr=STATE.trees[id], c=iso(tr.i,tr.j); items.push({d:tr.i+tr.j,fn:()=>drawTree(c,tr.lvl,tr.fruit,t)}); }
+    for(const o of STATE.objs){ const c=iso(o.i,o.j), d=o.i+o.j;
+      const f={bush:()=>drawBush(c,o.color),mushroom:()=>drawMushroom(c),birdhouse:()=>drawBirdhouse(c,t),bench:()=>drawBench(c),
+        wheelbarrow:()=>drawWheelbarrow(c),lantern:()=>drawLantern(c,t),rabbit:()=>drawRabbit(c,t),fox:()=>drawFox(c,t),
+        deer:()=>drawDeer(c,t),bird:()=>drawBird(c,t),rooster:()=>drawRooster(c,t),sheep:()=>drawSheep(c,t),cow:()=>drawCow(c,t),
+        kangaroo:()=>drawKangaroo(c,t),cockatoo:()=>drawCockatoo(c,t),
+        frog:()=>drawFrog(c,t),fish:()=>drawFish(c,t,o.i+o.j),dragonfly:()=>drawDragonfly(c,t,o.i*2+o.j),
+        unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
+      if(f) items.push({d,fn:f}); }
+    for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
+    items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
+    for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
+  }
+
+  // log-stick puff over the main tree
+  function spawnPuff(){ const c=iso(2,2); for(let i=0;i<3;i++) puffs.push({x:c.x+(Math.random()*10-5),y:c.y-70,vx:(Math.random()*0.8-0.3),vy:-0.7-Math.random()*0.5,life:1}); }
+  function drawPuffs(t){ for(const p of puffs){ p.x+=p.vx; p.y+=p.vy; p.life-=0.012;
+    ctx.globalAlpha=Math.max(0,p.life)*0.55; ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(p.x,p.y,5,5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+    puffs=puffs.filter(p=>p.life>0); }
+
+  // fit the virtual scene into the responsive canvas
+  function fitFrame(now){
+   try{
+    const t=now/1000;
+    const r=stageEl.getBoundingClientRect();
+    const DPR=Math.min(2, window.devicePixelRatio||1);
+    const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
+    if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
+    ctx.setTransform(1,0,0,1,0,0);
+    const p=P();
+    // one continuous sky across the entire canvas — no seams
+    const g=ctx.createLinearGradient(0,0,0,cv.height);
+    g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
+    ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    const scale=Math.min(cw/VW, ch/VH)*DPR;
+    const ox=(cv.width-VW*scale)/2, oy=(cv.height-VH*scale)/2;
+    ctx.setTransform(scale,0,0,scale,ox,oy);
+    VIS={ l:-ox/scale, t:-oy/scale, r:(cv.width-ox)/scale, b:(cv.height-oy)/scale };
+    drawScene(t); drawPuffs(t);
+   }catch(_e){}
+    if(animating) requestAnimationFrame(fitFrame);
+  }
+
+  function setLevel(lvl){ lvl=Math.max(0,Math.min(S.length, lvl|0)); level=lvl; STATE=apply(level); }
+  function setDusk(v){ dusk=!!v; }
+  let animating=false;
+  function startAnim(lvl,isDusk){ setLevel(lvl); dusk=!!isDusk; if(!animating){ animating=true; requestAnimationFrame(fitFrame);} }
+  function renderStatic(lvl,isDusk){ setLevel(lvl); dusk=!!isDusk; fitFrame(0); }
+  function grow(){ if(level>=S.length) return null; level++; STATE=apply(level); return S[level-1]; }
+  function start(){ startAnim(level,dusk); }
+  return { S, LEN:S.length, phaseOf, phases, startAnim, renderStatic, grow, setLevel, setDusk, spawnPuff };
+}
+/* ============================================================
+   THE HOMESTEAD — a cabin that builds itself as good days add up.
+   Ratcheted (never torn down). Builders work on a run, rest otherwise.
+   makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
+                             setState(tier,building,dusk), TIERS }
+============================================================ */
+function makeCabin(cv, boxEl){
+  const ctx=cv.getContext('2d');
+  const VW=440, VH=300, GY=214;             // virtual size + ground line
+  let tier=0, building=true, dusk=false, animating=false;
+
+  const TIERS=[
+    {t:0, days:0,  name:'Bedroll'},
+    {t:1, days:3,  name:'Tent'},
+    {t:2, days:7,  name:'Lean-to'},
+    {t:3, days:14, name:'Cabin frame'},
+    {t:4, days:25, name:'Snug cabin'},
+    {t:5, days:40, name:'Cabin with porch'},
+    {t:6, days:60, name:'The Homestead'},
+  ];
+
+  const rr=(x,y,w,h,r)=>{ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); };
+  const blob=(x,y,r,c)=>{ ctx.fillStyle=c; ctx.beginPath(); ctx.ellipse(x,y,r,r*0.85,0,0,7); ctx.fill(); };
+  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  function shadow(x,y,w){ ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y,w,w*0.32,0,0,7); ctx.fill(); }
+
+  function ground(){
+    const p = dusk ? {g1:'#4f7a48',g2:'#456a40'} : {g1:'#8ecb63',g2:'#80bd57'};
+    ctx.fillStyle=p.g2; rr(30,GY,VW-60,64,26);
+    ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
+  }
+
+  // ---- little builders ----
+  // rare ambient lines while working, and a warm one-time arrival greeting
+  const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
+  const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
+  const ARRIVAL=[
+    'Morning! We heard you kept your oath — mind if we build here?',
+    'A good day, is it? Then let’s lay the first plank.',
+    'You’re still here. So are we. Let’s build something.',
+    'Room for a cabin on this island? We’ll get started.'
+  ];
+  let bubble=null; let nextQuip=0;
+  function say(x,y,text,ms){ bubble={x,y,text,until:performance.now()+(ms||2600)}; }
+  function greet(){ say(150,GY-52, ARRIVAL[Math.floor(Math.random()*ARRIVAL.length)], 5200); }
+  function maybeQuip(t){
+    const now=performance.now();
+    if(bubble && now<bubble.until) return;
+    if(now<nextQuip) return;
+    nextQuip = now + 9000 + Math.random()*11000;
+    if(Math.random()<0.55){
+      const pool = building ? WORK_LINES : REST_LINES;
+      const bx = building ? (Math.random()<0.5?150:320) : 150;
+      say(bx, GY-52, pool[Math.floor(Math.random()*pool.length)], 2400);
+    }
+  }
+  function drawBubble(){
+    if(!bubble || performance.now()>bubble.until){ bubble=null; return; }
+    ctx.font='bold 13px Nunito';
+    const w=ctx.measureText(bubble.text).width+20, h=24, x=bubble.x-w/2, y=bubble.y-h;
+    ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,w,h,9);
+    ctx.beginPath(); ctx.moveTo(bubble.x-5,y+h); ctx.lineTo(bubble.x+5,y+h); ctx.lineTo(bubble.x,y+h+6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(bubble.text, bubble.x, y+h/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  }
+  function head(x,y){ ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y,6,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#5a3b22'; rr(x-6,y-8,12,5,3); }                                  // hair
+  function builderWork(x,y,t,seed){ shadow(x,y+16,15);
+    const sw=Math.sin(t*7+seed);
+    ctx.fillStyle='#3f7f8a'; rr(x-7,y-2,14,16,4);                                   // body
+    ctx.fillStyle='#2f5f68'; rr(x-6,y+10,5,8,2); rr(x+1,y+10,5,8,2);               // legs
+    head(x,y-8);
+    // swinging arm + hammer
+    ctx.save(); ctx.translate(x+4,y); ctx.rotate(-0.5 - sw*0.7);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(12,0); ctx.stroke();
+    ctx.fillStyle='#7a5230'; rr(11,-3,4,10,1); ctx.fillStyle='#9aa2a8'; rr(9,-6,10,5,1);  // hammer head
+    ctx.restore();
+    if(sw>0.85){ ctx.fillStyle='#fff2a0'; ctx.globalAlpha=.9; for(let k=0;k<3;k++){ ctx.fillRect(x+14+k*3, y-8-k*2, 2,2);} ctx.globalAlpha=1; }
+  }
+  function builderRest(x,y,t,seed,dusk){ shadow(x,y+16,15);
+    ctx.fillStyle='#3f7f8a'; rr(x-8,y+2,16,12,5);                                   // sitting body
+    ctx.fillStyle='#2f5f68'; rr(x-8,y+12,14,5,3);                                   // lap/legs
+    head(x,y-3);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';               // hands toward fire
+    ctx.beginPath(); ctx.moveTo(x+4,y+4); ctx.lineTo(x+12,y+8); ctx.stroke();
+    if(dusk){ ctx.font='bold 12px Nunito'; ctx.fillStyle='#e9e4f5'; const o=(t*0.5%1);
+      ctx.globalAlpha=(1-o); ctx.fillText('z', x-10+o*6, y-8-o*12); ctx.globalAlpha=1; }
+  }
+  function campfire(x,y,t,dusk){ shadow(x,y+4,16);
+    ctx.strokeStyle='#7a5230'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x-9,y+3); ctx.lineTo(x+9,y-2); ctx.moveTo(x-9,y-2); ctx.lineTo(x+9,y+3); ctx.stroke();
+    const f=0.6+0.4*Math.sin(t*8);
+    if(dusk) glow(x,y-6,34,'#ffca6a',0.5*f+0.2);
+    ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(x-6,y); ctx.quadraticCurveTo(x-3,y-14-f*4,x,y-20-f*5); ctx.quadraticCurveTo(x+3,y-14-f*4,x+6,y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(x-3,y); ctx.quadraticCurveTo(x-1,y-9-f*3,x,y-13-f*4); ctx.quadraticCurveTo(x+2,y-9-f*3,x+3,y); ctx.closePath(); ctx.fill();
+  }
+  function smoke(x,y,t){ for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.5;
+    ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(x+Math.sin(t*1.2+k)*5, y-o*30, 5+o*4,5+o*4,0,0,7); ctx.fill(); } ctx.globalAlpha=1; }
+  function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
+    if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
+
+  // ---- the cabin, per tier, centered on cx ----
+  function cabin(t){
+    const cx=248, base=GY;
+    if(tier===0){ // bedroll
+      shadow(cx,base+6,40); ctx.fillStyle='#8a6f4a'; rr(cx-34,base-10,68,14,7);
+      ctx.fillStyle='#a98a5c'; rr(cx-34,base-10,20,14,7); return; }
+    if(tier===1){ // tent
+      shadow(cx,base+6,52);
+      ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx+40,base+2); ctx.lineTo(cx-40,base+2); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx-40,base+2); ctx.lineTo(cx-14,base+2); ctx.lineTo(cx,base-30); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(cx,base-30); ctx.lineTo(cx+8,base+2); ctx.lineTo(cx-8,base+2); ctx.closePath(); ctx.fill(); return; }
+    if(tier===2){ // lean-to
+      shadow(cx,base+6,54);
+      ctx.fillStyle='#7a5230'; rr(cx-34,base-30,5,32,1); rr(cx+30,base-56,5,58,1);
+      ctx.fillStyle='#a86f3c'; ctx.save(); ctx.translate(cx,base); ctx.beginPath();
+      ctx.moveTo(-40,-28); ctx.lineTo(38,-54); ctx.lineTo(42,-46); ctx.lineTo(-36,-20); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.fillStyle='#6e4a2a'; rr(cx-36,base-4,72,5,2); return; }
+    if(tier===3){ // frame
+      shadow(cx,base+6,58);
+      ctx.fillStyle='#8a5e37'; [-44,-15,15,44].forEach(dx=>rr(cx+dx,base-60,6,62,1));  // posts
+      ctx.fillStyle='#7a5230'; rr(cx-46,base-62,94,6,1); rr(cx-46,base-34,94,5,1);      // beams
+      ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-46,base-56); ctx.lineTo(cx+48,base-84); ctx.lineTo(cx+48,base-60); ctx.stroke(); // roof skeleton
+      return; }
+    // tiers 4-6 have solid walls
+    const big = tier>=6;
+    const w = big?120:96, h=big?66:56, x=cx-w/2, y=base-h;
+    shadow(cx, base+6, w*0.62);
+    if(tier>=6){ // homestead: outdoor fireplace to the right
+      const fx=cx+w/2+34, fy=base;
+      ctx.fillStyle='#8f8a86'; rr(fx-16,fy-40,32,42,5); ctx.fillStyle='#7a756f'; rr(fx-12,fy-52,24,14,4);
+      ctx.fillStyle='#2b2438'; rr(fx-9,fy-24,18,24,3);
+      const f=0.6+0.4*Math.sin(t*8); if(dusk) glow(fx,fy-14,40,'#ffca6a',0.45*f+0.2);
+      ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-6,fy-4); ctx.quadraticCurveTo(fx,fy-22-f*5,fx,fy-26-f*6); ctx.quadraticCurveTo(fx,fy-22-f*5,fx+6,fy-4); ctx.fill();
+      ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(fx-3,fy-4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx,fy-18-f*4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx+3,fy-4); ctx.fill();
+    }
+    // walls
+    ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,4);
+    ctx.fillStyle= dusk?'#6a4830':'#9a6a3c'; for(let ly=y+8; ly<y+h-4; ly+=11){ ctx.fillRect(x+3,ly,w-6,1.5); } // planks
+    // roof
+    ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath();
+    ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(x+w+8,y+4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; ctx.beginPath(); ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(cx,y-24); ctx.lineTo(x-4,y+4); ctx.closePath(); ctx.fill();
+    // chimney + smoke
+    ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(cx+w*0.24,y-26,10,16,1); smoke(cx+w*0.24+5,y-26,t);
+    // door
+    ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(cx-9,y+h-24,18,24,3);
+    ctx.fillStyle='#f4b860'; ctx.beginPath(); ctx.ellipse(cx+4,y+h-12,1.6,1.6,0,0,7); ctx.fill(); // handle
+    // windows
+    windows(x+10,y+16,16,14);
+    if(tier>=6) windows(x+w-26,y+16,16,14);
+    // porch (tiers 5-6)
+    if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,base-2,w+4,4,2);
+      ctx.fillStyle='#8a5e37'; rr(x-2,base-20,4,20,1); rr(x+w-2,base-20,4,20,1);
+      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-8,base-26,w+16,8,3);              // porch roof
+      ctx.fillStyle='#a5703e'; rr(x+8,base-12,20,4,2); ctx.fillStyle='#6e472b'; rr(x+9,base-9,4,9,1); rr(x+24,base-9,4,9,1); // bench
+    }
+  }
+
+  function paint(t){
+    // sky
+    const sky = dusk
+      ? ['#2b2450','#b5786a'] : ['#a9def0','#ffedcf'];
+    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,sky[0]); g.addColorStop(1,sky[1]);
+    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    const DPR=Math.min(2,window.devicePixelRatio||1);
+    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR;
+    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
+    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,VW,VH); }
+    ground(); cabin(t);
+    if(building){ builderWork(150,GY-14,t,0); builderWork(320,GY-12,t,2.1); }
+    else { campfire(180,GY-2,t,dusk); builderRest(150,GY-14,t,0,dusk); builderRest(210,GY-14,t,1.5,dusk); }
+    maybeQuip(t); drawBubble();
+  }
+
+  function fit(now){
+    try{
+      const r=boxEl.getBoundingClientRect(); const DPR=Math.min(2,window.devicePixelRatio||1);
+      const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
+      if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
+      paint((now||0)/1000);
+    }catch(_){}
+    if(animating) requestAnimationFrame(fit);
+  }
+  function setState(ti,b,d){ tier=Math.max(0,Math.min(6,ti|0)); building=!!b; dusk=!!d; }
+  function startAnim(ti,b,d){ setState(ti,b,d); if(!animating){ animating=true; requestAnimationFrame(fit);} }
+  function render(ti,b,d){ setState(ti,b,d); fit(0); }
+  return { render, startAnim, setState, TIERS, greet };
+}
+
+
+/* ---- hero: live, interactive forest ---- */
+const heroCanvas=document.getElementById('heroForest');
+const hero=makeForest(heroCanvas, heroCanvas.parentElement);
+const START_LEVEL=11;                      // opens in a lush late-Sapling (tree, bushes, butterfly)
+const DEMO_CAP=20;                         // let them reach early Grove — the first animal — then hand off
+let heroLevel=START_LEVEL;                  // fresh every visit — no persistence, so it always resets
+let heroDusk=false;
+hero.startAnim(heroLevel, heroDusk);
+setHeroPhase();
+
+function setHeroPhase(){ document.getElementById('heroPhase').textContent = hero.phaseOf(heroLevel); }
+const grewEl=document.getElementById('heroGrew');
+const growBtn=document.getElementById('heroGrow');
+
+function capReached(){
+  growBtn.textContent='Open the app to keep growing →';
+  growBtn.classList.add('done');
+  growBtn.onclick=()=>window.open('/app','_blank','noopener');
+}
+
+growBtn.addEventListener('click', ()=>{
+  if(heroLevel>=DEMO_CAP) return;          // handed off to capReached's own handler
+  const step=hero.grow();
+  if(!step){ return; }
+  heroLevel++;
+  setHeroPhase();
+  grewEl.textContent = (step.label||'A new life arrives')+'.';
+  if(heroLevel>=DEMO_CAP){
+    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning \u2014 <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+  }
+});
+
+const dayBtn=document.getElementById('heroDay');
+function paintDayBtn(){ dayBtn.textContent = heroDusk ? '🌙 Dusk' : '☀ Day'; }
+paintDayBtn();
+dayBtn.addEventListener('click', ()=>{
+  heroDusk=!heroDusk;
+  hero.setDusk(heroDusk); paintDayBtn();
+});
+
+/* ---- journey vignettes: static snapshots at fixed stages ---- */
+document.querySelectorAll('.vig canvas').forEach(cv=>{
+  const f=makeForest(cv, cv.parentElement);        // parent is the fixed .cvbox
+  const lvl=parseInt(cv.dataset.lvl,10), dusk=cv.dataset.dusk==='1';
+  const draw=()=>f.renderStatic(lvl,dusk);
+  draw();
+  // re-render only when the *box* changes size (not the canvas we just resized)
+  let raf, last=0;
+  const ro=new ResizeObserver(()=>{ cancelAnimationFrame(raf); raf=requestAnimationFrame(()=>{
+    const w=cv.parentElement.clientWidth; if(w!==last){ last=w; draw(); }
+  }); });
+  ro.observe(cv.parentElement);
+});
+
+/* ---- homestead demo ---- */
+(function(){
+  const cv=document.getElementById('cabinDemo'); if(!cv) return;
+  const cab=makeCabin(cv, cv.parentElement);
+  cab.startAnim(5, true, false);   // "Cabin with porch", builders working, daytime
+  setTimeout(()=>{ if(cab.greet) cab.greet(); }, 1200);
+})();
+
+/* keep the hero fitting on resize (its own loop handles redraw, this nudges layout) */
+</script>
+</body>
+</html>
