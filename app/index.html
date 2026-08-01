@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Still Here">
 <meta name="theme-color" content="#241d33">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="icon" href="/icon-180.png">
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0"></script>
 
@@ -528,7 +528,7 @@
 
   <div id="install">
     <div class="mbox">
-      <img class="icon" src="icon-180.png" alt="Still Here">
+      <img class="icon" src="/icon-180.png" alt="Still Here">
       <div class="mtitle" style="text-align:center">Keep it one tap away</div>
       <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app — full-screen, and always right there when you need it.</div>
       <div style="text-align:center"><span class="plat" id="inPlat">Your device</span></div>
@@ -575,7 +575,7 @@
       <div class="tag">The forest grows around this promise. You can change it later.</div>
 
       <label>What oath do you want to make?</label>
-      <input id="obWhat" type="text" placeholder="e.g. Reduce smoking IQOS">
+      <input id="obWhat" type="text" placeholder="What would you like to reduce?">
 
       <label>What are you counting?</label>
       <input id="obUnit" type="text" placeholder="e.g. sticks, drinks, hours">
@@ -595,6 +595,7 @@
 
       <div class="obhint" id="obHint">That works out to about — a day.</div>
       <button class="big" onclick="submitOath()">Plant my forest</button>
+      <button class="link" id="obLogin" onclick="onboardToLogin()">Already have a forest? Log in</button>
       <button class="link" id="obCancel" style="display:none" onclick="hideOnboard()">Cancel</button>
       <div class="err" id="obErr"></div>
     </div>
@@ -1271,6 +1272,9 @@ function showOnboard(isEdit){
   const ob=document.getElementById('onboard');
   document.getElementById('obTitle').textContent = isEdit? 'Edit your oath' : 'Make your oath';
   document.getElementById('obCancel').style.display = isEdit? 'block':'none';
+  // "already have a forest? log in" only makes sense during first-time setup for a guest
+  const lg=document.getElementById('obLogin');
+  if(lg) lg.style.display = (!isEdit && accountIsGuest && accountIsGuest()) ? 'block' : 'none';
   document.getElementById('obErr').textContent='';
   if(isEdit && oath){
     document.getElementById('obWhat').value=oath.title||'';
@@ -1283,6 +1287,10 @@ function showOnboard(isEdit){
   ob.scrollTop=0;
   ob.classList.add('show');
   lockScroll();
+}
+function onboardToLogin(){
+  hideOnboard();
+  showAuth('login');
 }
 function hideOnboard(){ dismissOverlay(document.getElementById('onboard')); }
 async function submitOath(){
