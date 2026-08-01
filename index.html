@@ -1,2163 +1,458 @@
-<!--
-  Still Here — a living forest that grows while you keep your oath.
-  v1 self-use build: IQOS reduction, 30 → 10 packs/month.
-  Data syncs to Appwrite when configured, with on-device fallback.
--->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>Still Here</title>
-
-<!-- iPhone home-screen web app -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Still Here">
-<meta name="theme-color" content="#241d33">
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Still Here — a forest that grows as you keep your oath</title>
+<link rel="icon" type="image/png" href="/icon-180.png">
 <link rel="apple-touch-icon" href="/icon-180.png">
-<link rel="icon" href="/icon-180.png">
-<link rel="manifest" href="manifest.json">
-<script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0"></script>
 
+<meta name="description" content="A quiet app for cutting down on something you can't quit cold turkey. Log honestly, and a small forest grows with every good day. No ads, no subscription, no streak to shame you.">
+<meta property="og:title" content="Still Here">
+<meta property="og:description" content="A forest that grows as you keep your oath.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
   :root{
-    --plum:#241d33;
-    --plum2:#2f2743;
-    --plum3:#3a3152;
-    --ink:#f3ede4;
-    --muted:#b9aecb;
-    --honey:#f4b860;
-    --honey-deep:#e0954a;
-    --leaf:#8fce6b;
-    --soft-warn:#e8926a;
-    --locked:#4a4160;
-    --line:rgba(255,255,255,.08);
-    --radius:18px;
+    --plum:#241d33; --plum2:#2f2743; --plum3:#3a3152;
+    --ink:#f3ede4; --muted:#c3b9d2; --honey:#f4b860; --honey-deep:#e0954a;
+    --leaf:#8fce6b; --cendol:#8ed36a; --line:rgba(255,255,255,.09);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-  html,body{margin:0;height:100%}
-  body{
+  html{scroll-behavior:smooth}
+  body{margin:0; font-family:'Nunito',system-ui,sans-serif; color:var(--ink);
     background:
-      radial-gradient(120% 80% at 50% -10%, #4a3d63 0%, #2a2140 45%, #1c1630 100%);
-    font-family:'Nunito',system-ui,sans-serif;
-    color:var(--ink);
-    display:flex; justify-content:center;
-    overflow:hidden;
-  }
-  #app{
-    width:100%; max-width:440px; height:100dvh;
-    display:flex; flex-direction:column;
-    position:relative;
-  }
+      radial-gradient(120% 60% at 50% -5%, #4a3d63 0%, #2a2140 42%, #1c1630 100%);
+    background-attachment:fixed; overflow-x:hidden}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+  a{color:inherit}
+  .pix{font-family:'Pixelify Sans',sans-serif; letter-spacing:.5px}
 
-  /* ---------- diorama ---------- */
-  #stage{position:relative; flex:1 1 auto; min-height:0; overflow:hidden}
-  #scene{
-    position:absolute; inset:0; width:100%; height:100%;
-    image-rendering:auto;
-    display:block;
-  }
-  #stageTop{
-    position:absolute; top:0; left:0; right:0;
-    display:flex; align-items:flex-start; justify-content:space-between;
-    padding:calc(14px + env(safe-area-inset-top)) 16px 0; pointer-events:none; gap:10px;
-  }
-  .wordmark{
-    font-family:'Pixelify Sans',sans-serif; font-weight:600;
-    font-size:15px; letter-spacing:.5px;
-    color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.25);
-    line-height:1;
-  }
-  .wordmark small{display:block; font-family:'Nunito'; font-weight:700;
-    font-size:9.5px; letter-spacing:2.5px; color:var(--muted); margin-top:4px; text-transform:uppercase}
-  .stagepill{
-    pointer-events:auto;
-    background:rgba(20,15,32,.55); backdrop-filter:blur(6px);
-    border:1px solid var(--line); border-radius:999px;
-    padding:7px 12px; font-weight:800; font-size:11px; letter-spacing:.3px;
-    color:var(--ink); display:flex; align-items:center; gap:7px; white-space:nowrap;
-  }
-  .stagepill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 8px var(--leaf)}
+  /* nav */
+  nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(28,22,48,.72),rgba(28,22,48,0));}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+  .brand{font-family:'Pixelify Sans'; font-size:18px}
+  .brand small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.5px;
+    color:var(--muted); text-transform:uppercase; display:block; margin-top:2px}
+  .btn{display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none;
+    font-family:'Nunito'; font-weight:800; border-radius:13px; border:none; transition:transform .08s ease}
+  .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
+    padding:12px 20px; font-size:15px; box-shadow:0 5px 0 #b06d2e}
+  .btn.primary:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
+  .btn.sm{padding:9px 15px; font-size:13.5px; box-shadow:0 4px 0 #b06d2e}
+  .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:12px 18px; font-size:14px}
+  .btn.ghost:active{background:rgba(255,255,255,.05)}
 
-  /* ambient toast (gentle messages) */
-  #toast{
-    position:absolute; left:50%; bottom:18px; transform:translate(-50%,14px);
-    background:rgba(20,15,32,.72); backdrop-filter:blur(8px);
-    border:1px solid var(--line); color:var(--ink);
-    padding:10px 15px; border-radius:14px; font-weight:700; font-size:13px;
-    max-width:82%; text-align:center; opacity:0; transition:.45s ease; pointer-events:none;
-    line-height:1.35;
-  }
-  #toast.show{opacity:1; transform:translate(-50%,0)}
+  .navlinks{display:none; gap:24px}
+  @media(min-width:860px){ .navlinks{display:flex} }
+  .navlinks a{text-decoration:none; color:var(--muted); font-weight:800; font-size:14px; transition:color .15s}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks a.active{color:var(--honey)}
+  .navtog{display:inline-flex; background:transparent; border:1px solid var(--line); color:var(--ink);
+    font-size:16px; width:40px; height:40px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
+  @media(min-width:860px){ .navtog{display:none} }
+  .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.92); backdrop-filter:blur(6px);
+    flex-direction:column; align-items:center; justify-content:center; gap:8px}
+  .mobmenu.show{display:flex}
+  .mobmenu a{color:var(--ink); text-decoration:none; font-family:'Pixelify Sans'; font-size:24px; padding:14px}
+  .mobmenu .close{position:absolute; top:18px; right:20px; background:none; border:none; color:var(--muted); font-size:26px; cursor:pointer}
+  section{padding:64px 0; scroll-margin-top:72px}
+  h1{font-family:'Pixelify Sans'; font-size:clamp(30px,7vw,52px); line-height:1.08; margin:0 0 16px}
+  h2{font-family:'Pixelify Sans'; font-size:clamp(23px,5vw,34px); margin:0 0 10px}
+  .lead{color:var(--muted); font-size:clamp(15px,2.4vw,18px); line-height:1.6; margin:0}
+  .eyebrow{font-weight:800; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--honey); margin-bottom:14px}
 
-  /* ---------- control deck ---------- */
-  #deck{
-    flex:0 0 auto;
-    background:linear-gradient(180deg,var(--plum2),var(--plum));
-    border-top:1px solid var(--line);
-    border-radius:22px 22px 0 0;
-    padding:16px 16px calc(14px + env(safe-area-inset-bottom));
-    box-shadow:0 -18px 40px rgba(10,6,20,.45);
-    position:relative; z-index:5;
-  }
+  /* hero */
+  .hero{padding-top:26px}
+  .hero .grid{display:grid; grid-template-columns:1fr; gap:30px; align-items:center}
+  @media(min-width:860px){ .hero .grid{grid-template-columns:1.05fr .95fr; gap:44px} }
+  .hero h1 span{color:var(--honey)}
+  .herobadge{display:inline-flex; align-items:center; gap:9px; margin-bottom:18px;
+    background:rgba(20,15,32,.5); border:1px solid var(--line); border-radius:999px;
+    padding:9px 16px; font-weight:800; font-size:13.5px; color:var(--leaf)}
+  .herobadge .hbdot{width:9px; height:9px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
+  .heroCtas{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
+  .trust{display:flex; flex-wrap:wrap; gap:16px; margin-top:22px; color:var(--muted); font-size:12.5px; font-weight:700}
+  .trust span{display:inline-flex; align-items:center; gap:6px}
+  .trust b{color:var(--leaf)}
 
-  .stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px}
-  .stat{
-    background:var(--plum3); border:1px solid var(--line);
-    border-radius:14px; padding:11px 13px;
-  }
-  .stat .k{font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); font-weight:800}
-  .stat .v{font-family:'Pixelify Sans',sans-serif; font-size:23px; margin-top:3px; line-height:1}
-  .stat .v span{font-family:'Nunito'; font-size:12px; font-weight:800; color:var(--muted)}
-  .stat.warn .v{color:var(--soft-warn)}
-  .stat.good .v{color:var(--leaf)}
-  .meter{height:6px; border-radius:6px; background:rgba(0,0,0,.28); margin-top:9px; overflow:hidden}
-  .meter i{display:block; height:100%; border-radius:6px; background:var(--leaf); transition:width .5s ease, background .3s}
-  .meter i.over{background:var(--soft-warn)}
-
-  .logbtn{
-    width:100%; border:none; cursor:pointer;
-    background:linear-gradient(180deg,var(--honey),var(--honey-deep));
-    color:#3a2410; font-family:'Nunito'; font-weight:800; font-size:16px;
-    padding:16px; border-radius:16px; letter-spacing:.2px;
-    box-shadow:0 6px 0 #b06d2e, 0 12px 22px rgba(224,149,74,.28);
-    transition:transform .08s ease, box-shadow .08s ease;
-    display:flex; align-items:center; justify-content:center; gap:9px;
-  }
-  .logbtn:active{transform:translateY(4px); box-shadow:0 2px 0 #b06d2e, 0 6px 14px rgba(224,149,74,.25)}
-  .logbtn .puff{font-size:18px}
-
-  .subrow{display:flex; gap:10px; margin-top:11px}
-  .ghost{
-    flex:1; background:transparent; border:1px solid var(--line);
-    color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:12.5px;
-    padding:11px; border-radius:12px; cursor:pointer; letter-spacing:.2px;
-  }
-  .ghost:active{background:rgba(255,255,255,.04)}
-
-  /* ---------- day-confirm prompt ---------- */
-  #confirm{
-    margin-bottom:14px; background:var(--plum3);
-    border:1px solid rgba(244,184,96,.35); border-radius:14px; padding:13px 14px;
-    display:none;
-  }
-  #confirm.show{display:block}
-  #confirm .q{font-weight:800; font-size:13.5px; margin-bottom:3px}
-  #confirm .sub{font-size:11.5px; color:var(--muted); margin-bottom:11px; line-height:1.35}
-  #confirm .row{display:flex; gap:9px}
-  #confirm button{
-    flex:1; border-radius:11px; padding:10px; font-family:'Nunito'; font-weight:800;
-    font-size:12.5px; cursor:pointer; border:none;
-  }
-  #confirm .clean{background:var(--leaf); color:#173311}
-  #confirm .some{background:var(--plum2); color:var(--ink); border:1px solid var(--line)}
-
-  /* ---------- sheet (sanctuary / settings) ---------- */
-  #scrim{position:absolute; inset:0; background:rgba(8,4,16,.55); opacity:0; pointer-events:none; transition:.3s; z-index:9}
-  #scrim.show{opacity:1; pointer-events:auto}
-  .sheet{
-    position:absolute; left:0; right:0; bottom:0; z-index:10;
-    background:linear-gradient(180deg,var(--plum2),var(--plum));
-    border-radius:22px 22px 0 0; border-top:1px solid var(--line);
-    padding:8px 16px calc(20px + env(safe-area-inset-bottom));
-    transform:translateY(105%); transition:transform .32s cubic-bezier(.2,.8,.2,1);
-    max-height:82%; overflow:auto;
-  }
-  .sheet.show{transform:translateY(0)}
-  .grab{width:38px; height:4px; border-radius:4px; background:var(--locked); margin:6px auto 14px}
-  .sheet h3{font-family:'Pixelify Sans'; font-weight:600; font-size:17px; margin:2px 0 3px}
-  .sheet p.lead{color:var(--muted); font-size:12.5px; margin:0 0 16px; line-height:1.45}
-
-  .sanct{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px}
-  .crt{
-    aspect-ratio:1; border-radius:14px; background:var(--plum3);
-    border:1px dashed var(--locked); display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:6px; position:relative; text-align:center;
-  }
-  .crt .glyph{font-size:24px; filter:grayscale(1) brightness(.6)}
-  .crt .lock{font-size:10px; color:var(--muted); font-weight:800; letter-spacing:.3px}
-  .crt.filled{border-style:solid; border-color:rgba(143,206,107,.4); background:linear-gradient(180deg,#33422f,#293a26)}
-  .crt.filled .glyph{filter:none}
-  .crt.filled .lock{color:var(--leaf)}
-  .soonpill{display:inline-block; margin-top:14px; font-size:11px; font-weight:800; color:var(--honey);
-    background:rgba(244,184,96,.12); border:1px solid rgba(244,184,96,.3); padding:6px 11px; border-radius:999px}
-
-  .setrow{display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line)}
-  .setrow:last-child{border-bottom:none}
-  .setrow .lbl{font-weight:800; font-size:13.5px}
-  .setrow .lbl small{display:block; color:var(--muted); font-weight:700; font-size:11px; margin-top:2px}
-  .seg{display:flex; gap:6px}
-  .seg button{border:1px solid var(--line); background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:11.5px; padding:7px 11px; border-radius:10px; cursor:pointer}
-  .seg button.on{background:var(--honey); color:#3a2410; border-color:transparent}
-  .seg button:disabled{opacity:.45; cursor:not-allowed}
-  .reset{width:100%; margin-top:16px; background:transparent; border:1px solid rgba(232,146,106,.4);
-    color:var(--soft-warn); font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:12px; border-radius:12px; cursor:pointer}
-
-  .tabbar{display:flex; gap:8px; margin:6px 0 16px}
-  .tabbar button{flex:1; border:none; background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:9px; border-radius:11px; cursor:pointer}
-  .tabbar button.on{background:var(--plum3); color:var(--ink); box-shadow:inset 0 -2px 0 var(--honey)}
-  .pane{display:none} .pane.on{display:block}
-
-  /* ---------- tracker ---------- */
-  .mstat{cursor:pointer}
-  .mstat .chev{position:absolute; top:9px; right:11px; color:var(--muted); font-size:15px; font-weight:800; line-height:1}
-  .stat{position:relative}
-  .back{background:transparent; border:none; color:var(--muted); font-family:'Nunito';
-    font-weight:800; font-size:13px; cursor:pointer; padding:2px 0 8px}
-  .chart{position:relative; overflow-x:auto; padding:6px 2px 0; margin-bottom:4px; -webkit-overflow-scrolling:touch}
-  .chart .row{display:flex; align-items:flex-end; gap:12px; padding:0 2px}
-  .bar{position:relative; flex:0 0 40px; height:172px; cursor:pointer}
-  .bar .col{position:absolute; bottom:22px; left:9px; width:22px; border-radius:6px 6px 2px 2px;
-    background:var(--leaf); transition:height .45s cubic-bezier(.2,.8,.2,1); min-height:3px}
-  .bar .col.mid{background:var(--honey)} .bar .col.hi{background:var(--soft-warn)}
-  .bar .col.now{box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)}
-  .bar .val{position:absolute; left:0; right:0; text-align:center; font-family:'Pixelify Sans'; font-size:11px; color:var(--ink)}
-  .bar .mo{position:absolute; bottom:0; left:0; right:0; text-align:center; font-size:9.5px;
-    color:var(--muted); font-weight:800; white-space:nowrap}
-  .bar.sel .mo{color:var(--honey)} .bar.sel .col{filter:brightness(1.12)}
-  .guide{position:absolute; left:6px; right:6px; border-top:1px dashed rgba(255,255,255,.16); pointer-events:none}
-  .guide span{position:absolute; right:0; top:-8px; font-size:9px; font-weight:800; color:var(--muted);
-    background:var(--plum2); padding:0 4px; transform:translateY(-50%)}
-  .guide.goal{border-top-color:rgba(143,206,107,.5)} .guide.goal span{color:var(--leaf)}
-  .leg{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-size:10.5px; color:var(--muted); font-weight:700}
-  .leg i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px}
-
-  .dtstats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:12px 0 16px}
-  .dtcell{background:var(--plum3); border:1px solid var(--line); border-radius:12px; padding:10px}
-  .dtcell .k{font-size:9px; letter-spacing:.6px; text-transform:uppercase; color:var(--muted); font-weight:800}
-  .dtcell .v{font-family:'Pixelify Sans'; font-size:18px; margin-top:3px; line-height:1}
-  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:5px}
-  .cal .wd{font-size:9px; text-align:center; color:var(--muted); font-weight:800; padding-bottom:1px}
-  .cell{aspect-ratio:1; border-radius:7px; background:rgba(255,255,255,.04);
-    display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:rgba(255,255,255,.5)}
-  .cell.clean{background:var(--leaf); color:#173311}
-  .cell.mid{background:rgba(244,184,96,.9); color:#3a2410}
-  .cell.hi{background:var(--soft-warn); color:#3a1410}
-  .cell.foggy{background:transparent; border:1px dashed var(--locked); color:var(--muted)}
-  .cell.today{outline:2px solid var(--honey); outline-offset:1px}
-  /* ---------- onboarding (oath setup) ---------- */
-  #onboard{position:fixed; inset:0; z-index:55; display:none; overflow:auto;
-    background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
-    padding:30px 22px calc(30px + env(safe-area-inset-bottom))}
-  #onboard.show{display:block}
-  #onboard .obwrap{max-width:400px; margin:0 auto}
-  #onboard .logo{font-family:'Pixelify Sans'; font-size:24px; text-align:center; margin-bottom:6px}
-  #onboard .tag{text-align:center; color:var(--muted); font-size:12.5px; margin-bottom:20px; line-height:1.5}
-  #onboard label{display:block; font-weight:800; font-size:12px; color:var(--muted); margin:14px 2px 6px; letter-spacing:.3px}
-  #onboard input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:13px 14px; outline:none}
-  #onboard input:focus{border-color:var(--honey)}
-  .seg3{display:flex; gap:8px}
-  .seg3 button{flex:1; border:1px solid var(--line); background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:11px 4px; border-radius:11px; cursor:pointer}
-  .seg3 button.on{background:var(--honey); color:#3a2410; border-color:transparent}
-  .obhint{color:var(--leaf); font-size:12.5px; font-weight:800; margin:16px 2px 0; min-height:18px}
-  #onboard .big{width:100%; margin-top:18px; border:none; cursor:pointer;
+  /* the interactive forest frame */
+  .stagecard{position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.55); background:#1c1630;
+    width:100%; height:min(74vh,560px)}
+  @media(max-width:859px){ .stagecard{height:min(78vh,540px); max-width:420px; margin:0 auto} }
+  .stagecard canvas{display:block; width:100%; height:100%}
+  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between;
+    align-items:flex-start; padding:14px 16px; pointer-events:none}
+  .stagetop .wm{font-family:'Pixelify Sans'; font-size:14px; text-shadow:0 2px 0 rgba(0,0,0,.25)}
+  .stagetop .wm small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.4px;
+    color:var(--muted); text-transform:uppercase; display:block; margin-top:3px}
+  .pill{background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+    border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
+  .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+    display:flex; flex-direction:column; gap:8px;
+    background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
+  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s}
+  .growbtn{width:100%; border:none; cursor:pointer; border-radius:14px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
-    font-family:'Nunito'; font-weight:800; font-size:16px; padding:15px; border-radius:14px; box-shadow:0 5px 0 #b06d2e}
-  #onboard .big:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
-  #onboard .link{display:block;width:100%;text-align:center;background:none;border:none;color:var(--muted);
-    font-family:'Nunito';font-weight:800;font-size:13px;margin-top:14px;cursor:pointer;text-decoration:underline}
-  #onboard .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:12px; text-align:center; min-height:16px}
+    font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
+  .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
+  .daybtn{position:absolute; top:52px; right:16px; pointer-events:auto; cursor:pointer;
+    background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+    color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
 
-  /* ---------- progress panel ---------- */
-  .stagepill{cursor:pointer}
-  .prog{background:var(--plum3); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px}
-  .prog .big{font-family:'Pixelify Sans'; font-size:20px; margin-bottom:2px}
-  .prog .sub{color:var(--muted); font-size:12px; font-weight:700}
-  .pbar{height:8px; border-radius:8px; background:rgba(0,0,0,.28); margin-top:11px; overflow:hidden}
-  .pbar i{display:block; height:100%; background:var(--leaf); border-radius:8px; transition:width .5s ease}
-  .steplist{margin-top:2px}
-  .phase{border:1px solid var(--line); border-radius:14px; padding:13px 14px; margin-bottom:10px;
-    background:rgba(255,255,255,.02)}
-  .phase.done{border-color:rgba(143,206,107,.35)}
-  .phase.active{border-color:var(--honey); background:rgba(244,184,96,.08)}
-  .ptop{display:flex; align-items:center; gap:9px; margin-bottom:5px}
-  .pmk{width:18px; height:18px; border-radius:50%; flex:0 0 18px; display:flex; align-items:center;
-    justify-content:center; font-size:10px; font-weight:800; background:transparent;
-    border:1px dashed var(--locked); color:var(--muted)}
-  .phase.done .pmk{background:var(--leaf); color:#173311; border:none}
-  .phase.active .pmk{background:var(--honey); color:#3a2410; border:none}
-  .pname{font-family:'Pixelify Sans'; font-size:16px}
-  .phase.active .pname{color:var(--honey)}
-  .pnum{margin-left:auto; font-size:10px; font-weight:800; color:var(--muted); letter-spacing:.4px}
-  .pdesc{color:var(--muted); font-size:12.5px; line-height:1.5}
-  .phase.active .pdesc{color:var(--ink)}
+  /* steps */
+  .steps{display:grid; grid-template-columns:1fr; gap:16px; margin-top:30px}
+  @media(min-width:760px){ .steps{grid-template-columns:repeat(3,1fr)} }
+  .step{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:18px; padding:22px}
+  .step .n{font-family:'Pixelify Sans'; font-size:15px; color:var(--honey);
+    width:34px; height:34px; border-radius:50%; background:rgba(244,184,96,.12);
+    border:1px solid rgba(244,184,96,.3); display:flex; align-items:center; justify-content:center; margin-bottom:14px}
+  .step h3{font-family:'Pixelify Sans'; font-size:18px; margin:0 0 8px}
+  .step p{color:var(--muted); font-size:14px; line-height:1.55; margin:0}
 
-  /* ---------- hourly rhythm + day detail ---------- */
-  .hours{display:flex; align-items:flex-end; gap:3px; height:110px; padding:6px 2px 0}
-  .hr{flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%}
-  .hr i{display:block; width:100%; border-radius:3px 3px 1px 1px; background:var(--honey); min-height:2px;
-    transition:height .4s ease}
-  .hr i.peak{background:var(--soft-warn)}
-  .hr i.none{background:rgba(255,255,255,.07)}
-  .hr b{font-size:8px; color:var(--muted); font-weight:800; margin-top:5px; letter-spacing:-.2px}
-  .hr span{font-size:8.5px; color:var(--ink); font-weight:800; margin-bottom:2px; height:10px}
-  .times{display:flex; flex-wrap:wrap; gap:7px}
-  .tchip{background:var(--plum3); border:1px solid var(--line); border-radius:9px; padding:7px 10px;
-    font-weight:800; font-size:12.5px; font-variant-numeric:tabular-nums}
-  .cell{flex-direction:column; gap:1px; cursor:pointer}
-  .cell .dn{font-size:9px; opacity:.75; line-height:1}
-  .cell .cn{font-size:11px; font-weight:800; line-height:1}
-  .cell.blank{cursor:default}
+  /* journey */
+  .journey{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:30px}
+  @media(min-width:860px){ .journey{grid-template-columns:repeat(4,1fr)} }
+  .vig{background:#1c1630; border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    animation:float 6s ease-in-out infinite}
+  .vig:nth-child(2){animation-delay:.8s} .vig:nth-child(3){animation-delay:1.6s} .vig:nth-child(4){animation-delay:2.4s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .vig .cvbox{position:relative; width:100%; padding-top:100%}
+  .vig .cvbox canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .vig .cap{padding:13px 15px 16px}
+  .vig .cap b{font-family:'Pixelify Sans'; font-size:15px; display:block; margin-bottom:4px}
+  .vig .cap span{color:var(--muted); font-size:12px; line-height:1.5}
+  .mythline{text-align:center; margin-top:24px; color:var(--muted); font-size:14px}
+  .mythline b{color:var(--ink)}
 
-  body.locked{position:fixed; left:0; right:0; width:100%; overflow:hidden}
+  /* kind grid */
+  .kind{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:28px}
+  @media(min-width:760px){ .kind{grid-template-columns:repeat(4,1fr)} }
+  .kcard{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:16px; padding:20px 16px; text-align:center}
+  .kcard .ic{font-size:24px; margin-bottom:10px}
+  .kcard b{display:block; font-size:14px; margin-bottom:5px}
+  .kcard span{color:var(--muted); font-size:12px; line-height:1.45}
 
-  /* ---------- homestead chip + panel ---------- */
-  .homechip{display:flex; align-items:center; gap:9px; width:100%; margin-bottom:12px; cursor:pointer;
-    background:linear-gradient(180deg,rgba(244,184,96,.12),rgba(47,39,67,.35)); border:1px solid rgba(244,184,96,.28);
-    color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:13px; padding:11px 14px; border-radius:13px}
-  .homechip .hc-fire{filter:saturate(1.2)}
-  .homechip b{color:var(--honey)}
-  .homechip .hc-div{color:var(--muted); opacity:.6}
-  .homechip .hc-cabin{color:var(--ink)}
-  .homechip .hc-go{margin-left:auto; color:var(--muted); font-size:16px}
-  .homeStage{position:relative; width:100%; height:210px; border-radius:16px; overflow:hidden;
-    border:1px solid var(--line); background:#1c1630; margin-top:6px}
-  .homeStage canvas{display:block; width:100%; height:100%}
-  .homeTier{position:absolute; top:10px; left:12px; background:rgba(20,15,32,.55); backdrop-filter:blur(6px);
-    border:1px solid var(--line); border-radius:999px; padding:5px 11px; font-family:'Pixelify Sans'; font-size:13px}
-  .homeStats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
-  .homeStats .hs{background:var(--plum3); border:1px solid var(--line); border-radius:13px; padding:13px 10px; text-align:center}
-  .homeStats .hs .n{font-family:'Pixelify Sans'; font-size:22px; color:var(--honey)}
-  .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
+  /* kind / dashboard preview */
+  .dash{display:grid; grid-template-columns:1fr; gap:16px; margin-top:34px}
+  @media(min-width:820px){ .dash{grid-template-columns:1fr 1fr} }
+  .panel{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
+    border-radius:20px; padding:24px}
+  .panel h3{font-family:'Pixelify Sans'; font-size:19px; margin:0 0 6px}
+  .panel .psub{color:var(--muted); font-size:13px; margin:0 0 20px; line-height:1.5}
+  .leaf{background:var(--leaf)} .amber{background:var(--honey)} .coral{background:#e8926a}
 
-  /* ---------- crossing-point dialog ---------- */
-  #cross, #donate, #feedback, #enjoy, #reset, #install{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
-    padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
-  #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show{display:flex}
-  #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
-    border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
-    box-shadow:0 24px 60px rgba(6,3,16,.6)}
-  #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
-  #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
-  #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
-    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
-    font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
-  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
-  #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
-    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
-  #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
-    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:6px; cursor:pointer; text-decoration:underline}
+  .chart{display:flex; align-items:flex-end; gap:14px; height:180px; padding:0 4px}
+  .chart .bar{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%}
+  .chart .bar .v{font-weight:800; font-size:12px; margin-bottom:6px; color:var(--ink)}
+  .chart .bar i{display:block; width:100%; max-width:40px; border-radius:7px 7px 3px 3px; min-height:6px}
+  .chart .bar b{font-size:11px; color:var(--muted); font-weight:800; margin-top:8px}
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin-top:16px; font-size:12px; font-weight:700; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+  .legend i{width:11px; height:11px; border-radius:50%; display:inline-block}
 
-  #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
-    background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311;
-    font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #4d8a36}
-  #donate .mgreen:active{transform:translateY(3px); box-shadow:0 1px 0 #4d8a36}
-  #donate .msub{display:block; font-weight:700; font-size:11px; opacity:.75; margin-top:2px}
+  .toneseg{display:flex; gap:10px; margin-bottom:18px}
+  .toneseg button{flex:1; border:1px solid var(--line); background:var(--plum3); color:var(--muted);
+    font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px 6px; border-radius:12px; cursor:pointer; transition:.12s}
+  .toneseg button.on{background:var(--honey); color:#3a2410; border-color:transparent}
+  .quotebox{background:var(--plum3); border:1px solid var(--line); border-radius:14px; padding:22px 20px;
+    font-weight:800; font-size:16px; line-height:1.5; min-height:118px; display:flex; align-items:center}
 
-  #feedback input, #feedback textarea{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:12px 14px; outline:none; margin-bottom:10px}
-  #feedback textarea{resize:vertical; min-height:96px; line-height:1.5}
-  #feedback input:focus, #feedback textarea:focus{border-color:var(--honey)}
+  .sanct{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+  .crt{aspect-ratio:1/1; border-radius:14px; background:var(--plum3); border:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    font-weight:800; font-size:12px; color:var(--muted)}
+  .crt span{font-size:26px; filter:grayscale(1) opacity(.5)}
+  .crt.filled{background:rgba(143,206,107,.12); border-color:rgba(143,206,107,.4); color:var(--leaf)}
+  .crt.filled span{filter:none}
+  .soon{margin-top:16px; display:inline-block; background:rgba(244,184,96,.12); border:1px solid rgba(244,184,96,.35);
+    color:var(--honey); font-weight:800; font-size:12px; padding:8px 14px; border-radius:999px}
 
-  #install .icon{width:64px; height:64px; border-radius:16px; display:block; margin:0 auto 14px; box-shadow:0 8px 20px rgba(0,0,0,.35)}
-  #install .insteps{list-style:none; padding:0; margin:0 0 4px}
-  #install .insteps li{display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--line);
-    font-size:14px; line-height:1.5; text-align:left}
-  #install .insteps li:last-child{border-bottom:none}
-  #install .insteps .num{flex:0 0 24px; width:24px; height:24px; border-radius:50%; background:rgba(244,184,96,.14);
-    border:1px solid rgba(244,184,96,.4); color:var(--honey); font-weight:800; font-size:12px;
-    display:flex; align-items:center; justify-content:center; margin-top:1px}
-  #install .insteps b{color:var(--ink)}
-  #install .plat{display:inline-block; margin-bottom:14px; font-size:11px; font-weight:800; letter-spacing:1px;
-    text-transform:uppercase; color:var(--muted); background:var(--plum3); border:1px solid var(--line);
-    padding:5px 11px; border-radius:999px}
-  #reset .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
-  #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
+  .cal{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
+  .cal .d{aspect-ratio:1/1; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:13px; color:#2b2438}
+  .cal .d.foggy{background:transparent; border:1px dashed var(--line); color:var(--muted)}
 
-  /* ---------- ten-minute hold ---------- */
-  #waitPill{position:absolute; left:50%; transform:translate(-50%,10px); bottom:14px; z-index:6;
-    display:none; align-items:center; gap:11px; opacity:0; transition:.35s ease;
-    background:rgba(20,15,32,.72); backdrop-filter:blur(8px); border:1px solid rgba(244,184,96,.4);
-    border-radius:999px; padding:9px 10px 9px 15px}
-  #waitPill.show{display:flex; opacity:1; transform:translate(-50%,0)}
-  #waitPill .wt{font-weight:800; font-size:13px; color:var(--ink); font-variant-numeric:tabular-nums}
-  #waitPill .wt b{color:var(--honey)}
-  #waitPill button{background:rgba(255,255,255,.08); border:none; color:var(--muted); font-family:'Nunito';
-    font-weight:800; font-size:11.5px; padding:6px 11px; border-radius:999px; cursor:pointer}
+  .cabincard{margin-top:26px; border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630; max-width:560px}
+  @media(min-width:860px){ .cabincard{margin-left:auto; margin-right:auto} }
+  .cvbox2{position:relative; width:100%; padding-top:64%}
+  .cvbox2 canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
 
-  /* ---------- boot / loading ---------- */
-  #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:26px;
-    background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
-    transition:opacity .55s ease; }
-  #boot.hide{opacity:0; pointer-events:none}
-  #boot .bl{font-family:'Pixelify Sans'; font-size:24px; letter-spacing:.5px; color:var(--ink)}
-  #boot .bl small{display:block; font-family:'Nunito'; font-weight:800; font-size:9.5px;
-    letter-spacing:2.5px; color:var(--muted); text-transform:uppercase; margin-top:6px; text-align:center}
-  .sprout{position:relative; width:64px; height:56px}
-  .sprout .soil{position:absolute; left:12px; bottom:0; width:40px; height:6px; border-radius:4px;
-    background:#5b4128; opacity:.85}
-  .sprout .stem{position:absolute; left:31px; bottom:5px; width:3px; background:#6f8f45; border-radius:2px;
-    animation:stemGrow 1.9s ease-in-out infinite}
-  .sprout .lf{position:absolute; width:14px; height:11px; border-radius:60% 10% 60% 10%; background:#7ccf5b}
-  .sprout .l1{left:17px; bottom:26px; animation:leafPop 1.9s ease-in-out infinite .5s; transform-origin:right center}
-  .sprout .l2{left:33px; bottom:33px; animation:leafPop 1.9s ease-in-out infinite .8s; transform-origin:left center;
-    border-radius:10% 60% 10% 60%; background:#67bf4c}
-  @keyframes stemGrow{0%{height:4px}45%{height:34px}100%{height:34px}}
-  @keyframes leafPop{0%,25%{transform:scale(0);opacity:0}55%{transform:scale(1.12);opacity:1}70%,100%{transform:scale(1);opacity:1}}
-  #boot .bt{color:var(--muted); font-size:12.5px; font-weight:700; letter-spacing:.2px}
+  /* about teaser */
+  .about{max-width:920px; margin:0 auto; text-align:center}
+  .abouttease{display:grid; grid-template-columns:1fr; gap:22px; margin-top:22px; text-align:left; align-items:center}
+  @media(min-width:820px){ .abouttease{grid-template-columns:1.1fr .9fr; gap:34px} }
+  .teasetext .lead{margin:0 0 14px}
+  .teasetext .btn{margin-top:8px}
+  .teasephoto{position:relative; display:block; border-radius:20px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 22px 50px rgba(8,4,20,.5); text-decoration:none}
+  .teasephoto img{display:block; width:100%; height:100%; object-fit:cover; aspect-ratio:4/3; transition:transform .5s ease}
+  .teasephoto:hover img{transform:scale(1.04)}
+  .teasephoto span{position:absolute; left:0; right:0; bottom:0; padding:22px 16px 13px; font-size:12px; font-weight:800;
+    color:var(--ink); background:linear-gradient(0deg,rgba(12,8,22,.8),rgba(12,8,22,0))}
 
-  .cell.blank{background:transparent; border:none}
+  /* final cta */
+  .final{text-align:center; background:linear-gradient(180deg,rgba(58,49,82,.5),rgba(36,29,51,.5));
+    border:1px solid var(--line); border-radius:26px; padding:52px 24px; margin:20px 0}
+  .final .lead{max-width:520px; margin:0 auto 26px}
 
-  /* ---------- auth ---------- */
-  #auth{position:fixed; inset:0; z-index:50; display:none; flex-direction:column; justify-content:center;
-    padding:26px 22px calc(26px + env(safe-area-inset-bottom));
-    background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
-    overflow:auto}
-  #auth.show{display:flex}
-  #auth .logo{font-family:'Pixelify Sans'; font-size:26px; text-align:center; margin-bottom:4px}
-  #auth .tag{text-align:center; color:var(--muted); font-size:13px; margin-bottom:26px; line-height:1.5}
-  .authview{display:none; max-width:400px; width:100%; margin:0 auto}
-  .authview.on{display:block}
-  #auth label{display:block; font-weight:800; font-size:12px; color:var(--muted); margin:14px 2px 6px; letter-spacing:.3px}
-  #auth input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:13px 14px; outline:none}
-  #auth input:focus{border-color:var(--honey)}
-  #auth .big{width:100%; margin-top:20px; border:none; cursor:pointer;
-    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
-    font-family:'Nunito'; font-weight:800; font-size:16px; padding:15px; border-radius:14px;
-    box-shadow:0 5px 0 #b06d2e}
-  #auth .big:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
-  #auth .big:disabled{opacity:.6}
-  #auth .alt{width:100%; margin-top:11px; background:transparent; border:1px solid var(--line);
-    color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:14px; padding:13px; border-radius:12px; cursor:pointer}
-  #auth .link{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:13px; margin-top:16px; cursor:pointer; text-decoration:underline}
-  #auth .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:14px; text-align:center; min-height:16px; line-height:1.4}
-  #auth .back{background:none;border:none;color:var(--muted);font-family:'Nunito';font-weight:800;font-size:13px;cursor:pointer;margin-bottom:6px;padding:2px 0}
-
-  .acctrow{display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line)}
-  .acctrow .lbl{font-weight:800;font-size:13.5px}
-  .acctrow .lbl small{display:block;color:var(--muted);font-weight:700;font-size:11px;margin-top:2px}
-  .acctbtn{border:1px solid var(--line);background:var(--plum3);color:var(--ink);font-family:'Nunito';
-    font-weight:800;font-size:12px;padding:9px 13px;border-radius:10px;cursor:pointer}
-  .acctbtn.primary{background:var(--honey);color:#3a2410;border-color:transparent}
+  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:13px}
+  footer .wrap{display:flex; flex-direction:column; gap:18px}
+  .fdon{display:flex; flex-wrap:wrap; gap:12px}
+  .fdon a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:13.5px;
+    border-radius:12px; padding:11px 16px; border:1px solid var(--line)}
+  .fdon a.kofi{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410; border:none}
+  .fdon a.teer{background:linear-gradient(180deg,var(--cendol),#66ad4a); color:#173311; border:none}
+  .fnote{line-height:1.6}
+  .fnote a{color:var(--honey); font-weight:800}
 </style>
-
-<div id="boot">
-  <div class="bl">Still Here<small>your quiet forest</small></div>
-  <div class="sprout">
-    <span class="soil"></span><span class="stem"></span>
-    <span class="lf l1"></span><span class="lf l2"></span>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="brand">Still Here<small>your quiet forest</small></div>
+  <div class="navlinks" id="navlinks">
+    <a href="#try">Try it</a>
+    <a href="#how">How it works</a>
+    <a href="#journey">The forest</a>
+    <a href="#about">About</a>
   </div>
-  <div class="bt" id="bootMsg">Waking the forest…</div>
+  <div style="display:flex; align-items:center; gap:10px">
+    <button class="navtog" id="navtog" aria-label="Menu">☰</button>
+    <a class="btn primary sm" href="/app" target="_blank" rel="noopener">Open app</a>
+  </div>
+</div></nav>
+
+<div class="mobmenu" id="mobmenu">
+  <button class="close" onclick="toggleMenu(false)">✕</button>
+  <a href="#try" onclick="toggleMenu(false)">Try it</a>
+  <a href="#how" onclick="toggleMenu(false)">How it works</a>
+  <a href="#journey" onclick="toggleMenu(false)">The forest</a>
+  <a href="#about" onclick="toggleMenu(false)">About</a>
+  <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)">Open the app →</a>
 </div>
 
-<div id="app">
-  <div id="stage">
-    <canvas id="scene"></canvas>
-    <div id="stageTop">
-      <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
-      <div class="stagepill" onclick="openProgress()"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6">›</span></div>
+<!-- HERO -->
+<section class="hero"><div class="wrap"><div class="grid">
+  <div>
+    <div class="herobadge"><span class="hbdot"></span>A free, no-ads habit companion</div>
+    <h1>A forest that grows as you <span>keep your oath</span>.</h1>
+    <p class="lead">Still Here turns any habit you're reducing — cigarettes, drinks, screen time, anything you can count — into a living island. Every honest day plants something new.</p>
+    <div class="heroCtas">
+      <a class="btn primary" href="/app" target="_blank" rel="noopener">Open Still Here — free</a>
     </div>
-    <div id="toast"></div>
-    <div id="waitPill">
-      <span class="wt">Holding on · <b id="waitTime">10:00</b></span>
-      <button onclick="logNowFromWait()">Log now</button>
-      <button onclick="cancelWait()">✕</button>
-    </div>
-  </div>
-
-  <div id="deck">
-    <div id="confirm">
-      <div class="q" id="cfQ">How was yesterday?</div>
-      <div class="sub" id="cfSub">A day left blank stays foggy — not a loss, just unknown. Take a second to close it honestly.</div>
-      <div class="row">
-        <button class="clean" onclick="resolveDay('clean')">Smoke-free</button>
-        <button class="some" onclick="resolveDay('some')">I smoked some</button>
-      </div>
-    </div>
-
-    <button class="homechip" id="homeChip" onclick="openHomestead()">
-      <span class="hc-run"><span class="hc-fire">🔥</span> <b id="hcRun">0</b> <span id="hcRunLbl">day run</span></span>
-      <span class="hc-div">·</span>
-      <span class="hc-cabin">🏡 <b id="hcCabin">Bedroll</b></span>
-      <span class="hc-go">›</span>
-    </button>
-
-    <div class="stats">
-      <div class="stat" id="stToday">
-        <div class="k">Today</div>
-        <div class="v"><span id="tSticks">0</span> <span>/ <span id="tAllow">0</span> <span id="tUnit">times</span></span></div>
-        <div class="meter"><i id="tMeter" style="width:0%"></i></div>
-      </div>
-      <div class="stat mstat" id="stMonth" onclick="openTracker()">
-        <div class="chev">›</div>
-        <div class="k" id="mLabel">This month</div>
-        <div class="v"><span id="mPacks">0</span> <span>/ <span id="mTarget">0</span> <span id="mUnit">times</span></span></div>
-        <div class="meter"><i id="mMeter" style="width:0%"></i></div>
-      </div>
-    </div>
-
-    <button class="logbtn" onclick="onLogTap()"><span class="puff">💨</span> <span id="logBtnLabel">I had one</span></button>
-
-    <div class="subrow">
-      <button class="ghost" onclick="openSheet('sanctuary')">✦ Sanctuary</button>
-      <button class="ghost" onclick="openSheet('settings')">⚙ Oath &amp; tone</button>
+    <div class="trust">
+      <span>📲 <b>Installs straight to your home screen</b></span>
     </div>
   </div>
 
-  <div id="scrim" onclick="closeSheet()"></div>
-
-  <div id="cross">
-    <div class="mbox">
-      <div class="mtitle" id="crossTitle"></div>
-      <div class="mbody" id="crossBody"></div>
-      <button class="mprimary" id="crossWait" onclick="startWait()">Wait 10 minutes</button>
-      <button class="mghost" id="crossGo" onclick="crossProceed()">Log it anyway</button>
-      <button class="mlink" onclick="muteToday()">Don't ask me again today</button>
+  <div id="try" class="stagecard">
+    <canvas id="heroForest" width="500" height="600"></canvas>
+    <div class="stagetop">
+      <div class="wm">Still Here<small>your quiet forest</small></div>
+      <div class="pill"><span class="dot"></span><span id="heroPhase">Sapling</span></div>
+    </div>
+    <button class="daybtn" id="heroDay">☀ Day</button>
+    <div class="stagebar">
+      <div class="grewline" id="heroGrew">This little island is yours to grow. Give it a good day.</div>
+      <button class="growbtn" id="heroGrow">🌱 Plant a good day</button>
     </div>
   </div>
+</div></div></section>
 
-  <div id="donate">
-    <div class="mbox">
-      <div class="mtitle">Support Still Here</div>
-      <div class="mbody">No ads, no subscription — just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
-      <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
-      <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
-      <button class="mghost" onclick="openFeedback()">💬 Got an idea? Tell me</button>
-      <button class="mlink" onclick="hideDonate()">Maybe later</button>
-    </div>
-  </div>
+<!-- PROBLEM -->
+<section><div class="wrap" style="max-width:720px; text-align:center">
+  <h2>Cold turkey doesn't work for everyone.</h2>
+  <p class="lead">Most apps count perfect streaks and reset you to zero the moment you slip — which, for a habit you're <i>reducing</i>, means failing constantly. Still Here is built the <span style="color:var(--honey);font-weight:800">opposite way</span>. You're not chasing perfection. You're tending something that remembers every step you've taken, and forgives the ones you stumble on.</p>
+</div></section>
 
-  <div id="install">
-    <div class="mbox">
-      <img class="icon" src="/icon-180.png" alt="Still Here">
-      <div class="mtitle" style="text-align:center">Keep it one tap away</div>
-      <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app — full-screen, and always right there when you need it.</div>
-      <div style="text-align:center"><span class="plat" id="inPlat">Your device</span></div>
-      <ol class="insteps" id="inSteps"></ol>
-      <button class="mprimary" id="inNow" onclick="installNow()" style="display:none; margin-top:16px">➕ Add to Home Screen</button>
-      <button class="mlink" onclick="hideInstall()">I'll do it later</button>
-    </div>
-  </div>
+<!-- KIND / DASHBOARD PREVIEW -->
+<section id="kind"><div class="wrap" style="max-width:1040px">
+  <div class="eyebrow" style="text-align:center">Kind by design</div>
+  <h2 style="text-align:center">Everything you need to see progress.</h2>
+  <p class="lead" style="text-align:center; max-width:560px; margin:0 auto">No streak-shaming, no ads — just an honest picture of your habit over time.</p>
 
-  <div id="reset">
-    <div class="mbox">
-      <div class="mtitle">Start the forest over?</div>
-      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil — the homestead resets too. Your account, name, and voice stay. This can't be undone.</div>
-      <button class="mprimary" onclick="doReset('same')">Start over — keep my oath</button>
-      <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
-      <button class="mlink" onclick="hideReset()">Cancel — keep my forest</button>
-    </div>
-  </div>
-
-  <div id="enjoy">
-    <div class="mbox">
-      <div class="mtitle">Seven days strong 🌱</div>
-      <div class="mbody">You've kept your oath a whole week — the builders noticed. If you've a moment, I'd love to hear what's working, or what you'd change. It's just me building this, and your words steer it.</div>
-      <button class="mprimary" onclick="enjoyToFeedback()">Share a thought</button>
-      <button class="mlink" onclick="hideEnjoy()">Maybe another time</button>
-    </div>
-  </div>
-
-  <div id="feedback">
-    <div class="mbox">
-      <div class="mtitle">Got any words or ideas?</div>
-      <div class="mbody">I read every single one — it's how Still Here gets better. A feature, a bug, or just a hello.</div>
-      <input id="fbEmail" type="email" autocomplete="email" placeholder="your email (so I can reply — optional)">
-      <textarea id="fbMsg" rows="4" placeholder="Tell me anything…"></textarea>
-      <button class="mprimary" id="fbSend" onclick="submitFeedback()">Send it my way</button>
-      <button class="mlink" onclick="hideFeedback()">Maybe later</button>
-      <div class="err" id="fbErr"></div>
-    </div>
-  </div>
-
-  <div id="onboard">
-    <div class="obwrap">
-      <div class="logo" id="obTitle">Make your oath</div>
-      <div class="tag">The forest grows around this promise. You can change it later.</div>
-
-      <label>What oath do you want to make?</label>
-      <input id="obWhat" type="text" placeholder="What would you like to reduce?">
-
-      <label>What are you counting?</label>
-      <input id="obUnit" type="text" placeholder="e.g. sticks, drinks, hours">
-
-      <label>What is your current rate?</label>
-      <input id="obCurrent" type="number" inputmode="numeric" min="0" placeholder="e.g. 600">
-
-      <label>What is your target?</label>
-      <input id="obTarget" type="number" inputmode="numeric" min="0" placeholder="e.g. 200">
-
-      <label>Set the target per</label>
-      <div class="seg3">
-        <button type="button" data-p="daily"   onclick="pickPeriod('daily')">Daily</button>
-        <button type="button" data-p="weekly"  onclick="pickPeriod('weekly')">Weekly</button>
-        <button type="button" data-p="monthly" class="on" onclick="pickPeriod('monthly')">Monthly</button>
+  <div class="dash">
+    <!-- months bar chart -->
+    <div class="panel">
+      <h3>Your months, at a glance</h3>
+      <p class="psub">Every bar is one month. The green line is your goal.</p>
+      <div class="chart">
+        <div class="bar"><span class="v">190</span><i class="coral" style="height:100%"></i><b>Mar</b></div>
+        <div class="bar"><span class="v">180</span><i class="coral" style="height:95%"></i><b>Apr</b></div>
+        <div class="bar"><span class="v">110</span><i class="amber" style="height:58%"></i><b>May</b></div>
+        <div class="bar"><span class="v">80</span><i class="amber" style="height:42%"></i><b>Jun</b></div>
+        <div class="bar"><span class="v">62</span><i class="leaf" style="height:33%"></i><b>Jul</b></div>
       </div>
-
-      <div class="obhint" id="obHint">That works out to about — a day.</div>
-      <button class="big" onclick="submitOath()">Plant my forest</button>
-      <button class="link" id="obLogin" onclick="onboardToLogin()">Already have a forest? Log in</button>
-      <button class="link" id="obCancel" style="display:none" onclick="hideOnboard()">Cancel</button>
-      <div class="err" id="obErr"></div>
-    </div>
-  </div>
-
-  <div id="auth">
-    <div class="logo">Still Here</div>
-    <div class="tag">A quiet forest that grows as you keep your oath.</div>
-
-    <div class="authview on" id="avWelcome">
-      <button class="big" onclick="showAuthView('register')">Create an account</button>
-      <button class="alt" onclick="showAuthView('login')">I already have one</button>
-      <button class="link" onclick="hideAuth()">Just explore for now</button>
-    </div>
-
-    <div class="authview" id="avRegister">
-      <button class="back" onclick="showAuthView('welcome')">‹ Back</button>
-      <label>Email</label>
-      <input id="rgEmail" type="email" autocomplete="email" placeholder="you@example.com">
-      <label>Password</label>
-      <input id="rgPass" type="password" autocomplete="new-password" placeholder="at least 8 characters">
-      <label>What should we call you?</label>
-      <input id="rgName" type="text" autocomplete="nickname" placeholder="e.g. Agung">
-      <label>Favourite animal</label>
-      <input id="rgAnimal" type="text" placeholder="e.g. fox">
-      <button class="big" id="rgBtn" onclick="submitRegister()">Create account</button>
-      <div class="err" id="rgErr"></div>
-    </div>
-
-    <div class="authview" id="avLogin">
-      <button class="back" onclick="showAuthView('welcome')">‹ Back</button>
-      <label>Email</label>
-      <input id="lgEmail" type="email" autocomplete="email" placeholder="you@example.com">
-      <label>Password</label>
-      <input id="lgPass" type="password" autocomplete="current-password" placeholder="your password">
-      <button class="big" id="lgBtn" onclick="submitLogin()">Log in</button>
-      <div class="err" id="lgErr"></div>
-    </div>
-  </div>
-
-  <div class="sheet" id="homeSheet">
-    <div class="grab"></div>
-    <h3>Your homestead</h3>
-    <p class="lead">Every good day, the builders add a little more. It's never torn down — on an off day they simply rest by the fire, and pick the hammer back up when you're on track again.</p>
-    <div class="homeStage" id="homeStage"><canvas id="cabinCv"></canvas>
-      <div class="homeTier" id="homeTierPill">Bedroll</div>
-    </div>
-    <div class="homeStats" id="homeStats"></div>
-    <div class="pbar" style="margin-top:16px"><i id="homeBar" style="width:0%"></i></div>
-    <p class="lead" id="homeNext" style="margin-top:12px; font-size:13px"></p>
-  </div>
-
-  <div class="sheet" id="progSheet">
-    <div class="grab"></div>
-    <h3>Your ecosystem</h3>
-    <p class="lead">Every good day adds one living thing to your island. Here is everything that has arrived, and what comes next.</p>
-    <div class="prog" id="progHead"></div>
-    <div class="steplist" id="progList"></div>
-    <p class="lead" id="progNext" style="margin-top:14px"></p>
-  </div>
-
-  <div class="sheet" id="trackerSheet">
-    <div class="grab"></div>
-
-    <div id="trkOverview">
-      <h3>Your months</h3>
-      <p class="lead" id="trkLead">Every bar is one month. The green line is your goal; the faint line above is where you began. Tap a month to open it.</p>
-      <div class="chart" id="trkChart"></div>
-      <div class="leg">
-        <span><i style="background:var(--leaf)"></i>at / under goal</span>
-        <span><i style="background:var(--honey)"></i>getting there</span>
-        <span><i style="background:var(--soft-warn)"></i>near old habit</span>
+      <div class="legend">
+        <span><i class="leaf"></i>at / under goal</span>
+        <span><i class="amber"></i>getting there</span>
+        <span><i class="coral"></i>near old habit</span>
       </div>
     </div>
 
-    <div id="trkDetail" style="display:none">
-      <button class="back" onclick="trkBack()">‹ All months</button>
-      <h3 id="dtTitle">Month</h3>
-      <div class="dtstats" id="dtStats"></div>
-      <div class="cal" id="dtCal"></div>
-      <div class="leg" style="margin-top:14px">
-        <span><i style="background:var(--leaf)"></i>zero</span>
-        <span><i style="background:rgba(244,184,96,.9)"></i>within allowance</span>
-        <span><i style="background:var(--soft-warn)"></i>over</span>
-        <span><i style="background:transparent;border:1px dashed var(--locked)"></i>foggy</span>
+    <!-- tone -->
+    <div class="panel">
+      <h3>Speaks your language</h3>
+      <p class="psub">Choose how the forest talks to you.</p>
+      <div class="toneseg" id="toneseg">
+        <button data-t="gentle" onclick="pickTone('gentle')">Gentle</button>
+        <button data-t="plain" onclick="pickTone('plain')">Plain</button>
+        <button data-t="honest" class="on" onclick="pickTone('honest')">Honest</button>
       </div>
-      <h3 style="margin-top:22px">Your rhythm</h3>
-      <p class="lead" id="rhythmLead">When this happens across the day. Tap any date above to see that day on its own.</p>
-      <div class="hours" id="dtHours"></div>
+      <div class="quotebox" id="toneQuote">"That's your third today. You said you wanted fewer. Still your call."</div>
     </div>
 
-    <div id="trkDay" style="display:none">
-      <button class="back" onclick="dayBack()">‹ Back to month</button>
-      <h3 id="dyTitle">Day</h3>
-      <div class="dtstats" id="dyStats"></div>
-      <div class="hours" id="dyHours"></div>
-      <h3 style="margin-top:20px;font-size:15px">Every log</h3>
-      <div class="times" id="dyTimes"></div>
+    <!-- sanctuary -->
+    <div class="panel">
+      <h3>A living sanctuary</h3>
+      <p class="psub">As your forest matures, companions come to live in it.</p>
+      <div class="sanct">
+        <div class="crt filled"><span>🦋</span>Arrived</div>
+        <div class="crt filled"><span>🐓</span>Arrived</div>
+        <div class="crt"><span>🐇</span>Locked</div>
+        <div class="crt"><span>🦊</span>Locked</div>
+        <div class="crt"><span>🦄</span>Locked</div>
+        <div class="crt"><span>🐉</span>Locked</div>
+      </div>
+      <div class="soon">More companions arriving as you grow</div>
+    </div>
+
+    <!-- calendar -->
+    <div class="panel">
+      <h3>Honest, not punishing</h3>
+      <p class="psub">A blank day just stays foggy — never a red mark against you.</p>
+      <div class="cal" id="calGrid"></div>
     </div>
   </div>
+</div></section>
 
-  <div class="sheet" id="sheet">
-    <div class="grab"></div>
-    <div class="tabbar">
-      <button id="tabSanctuary" class="on" onclick="showPane('sanctuary')">Sanctuary</button>
-      <button id="tabSettings" onclick="showPane('settings')">Oath &amp; tone</button>
-    </div>
-
-    <div class="pane on" id="paneSanctuary">
-      <h3>The Sanctuary</h3>
-      <p class="lead">As your forest matures, companions come to live in it. The first few arrive on their own. The rare ones — the spirits — are for a later chapter.</p>
-      <div class="sanct" id="sanctGrid"></div>
-      <span class="soonpill">More companions arriving in a future update</span>
-    </div>
-
-    <div class="pane" id="paneSettings">
-      <h3>Your oath &amp; tone</h3>
-      <p class="lead" id="oathLead">Your promise, and how the forest speaks to you.</p>
-      <div class="setrow">
-        <div class="lbl" id="oathTitle">Your oath</div>
-        <div class="lbl" style="text-align:right;color:var(--honey)"><span id="oathDetail">—</span><small style="color:var(--muted)" id="oathUnitPeriod">&nbsp;</small></div>
-      </div>
-      <div class="setrow">
-        <div class="lbl">Edit oath<small>change the promise or its numbers</small></div>
-        <button class="acctbtn" onclick="showOnboard(true)">Edit</button>
-      </div>
-      <div class="setrow">
-        <div class="lbl">Voice<small>how the forest speaks to you</small></div>
-        <div class="seg" id="toneSeg">
-          <button data-t="gentle" onclick="setTone('gentle')">Gentle</button>
-          <button data-t="plain"  onclick="setTone('plain')">Plain</button>
-          <button data-t="honest" onclick="setTone('honest')">Honest</button>
-        </div>
-      </div>
-      <div class="setrow">
-        <div class="lbl">Daily allowance<small>keeps the weather kind</small></div>
-        <div class="lbl" style="color:var(--leaf)"><span id="setAllow">—</span></div>
-      </div>
-      <div class="setrow">
-        <div class="lbl">Sync<small>where your forest lives</small></div>
-        <div class="lbl" id="syncState" style="color:var(--muted)">This device only</div>
-      </div>
-      <div class="acctrow" id="acctRow">
-        <div class="lbl">Account<small id="acctStatus">Guest</small></div>
-        <div id="acctBtns"></div>
-      </div>
-      <div class="acctrow">
-        <div class="lbl">Support this project<small>keeps the forest growing for everyone</small></div>
-        <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
-      </div>
-      <div class="acctrow" id="installRow">
-        <div class="lbl">Add to home screen<small>open it like a real app</small></div>
-        <button class="acctbtn" onclick="showInstallTutorial()">How?</button>
-      </div>
-      <button class="reset" onclick="openReset()">Start the forest over</button>
-    </div>
+<!-- JOURNEY -->
+<section id="journey"><div class="wrap">
+  <div class="eyebrow">Watch it come alive</div>
+  <h2>From bare soil to a living haven.</h2>
+  <p class="lead" style="max-width:640px">Every good day is one small arrival. Weeks in, your island is full of life — and at dusk the everyday animals curl up asleep while the rare visitors glow.</p>
+  <div class="journey">
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="1" data-dusk="0"></canvas></div><div class="cap"><b>Seed</b><span>A first sprout breaks the soil.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="12" data-dusk="0"></canvas></div><div class="cap"><b>Sapling</b><span>A tree, flowering bushes, a butterfly, a rooster.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="34" data-dusk="0"></canvas></div><div class="cap"><b>Grove</b><span>More trees, a pond, and animals moving in.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="54" data-dusk="1"></canvas></div><div class="cap"><b>Haven, at dusk</b><span>A waterfall, sleeping animals — and glowing visitors.</span></div></div>
   </div>
-</div>
+  <p class="mythline">Keep going, and the rarest of all may come: a <b>unicorn</b>, a <b>pegasus</b>, even a <b>little dragon</b>.</p>
+</div></section>
+
+<!-- HOMESTEAD -->
+<section id="homestead"><div class="wrap">
+  <div class="eyebrow">A second thing grows too</div>
+  <h2>Keep a run going, and a home takes shape.</h2>
+  <p class="lead" style="max-width:640px">Alongside the forest, little builders raise a home for every good day you string together — a bedroll, a tent, a snug cabin, and finally a warm homestead with a crackling fire. Slip up and nothing is torn down; they just rest by the fire until you're back.</p>
+  <div class="cabincard">
+    <div class="cvbox2"><canvas id="cabinDemo" width="440" height="300"></canvas></div>
+  </div>
+  <p class="mythline">On an off day the builders <b>rest, never scold</b> — because progress you've earned should stay earned.</p>
+</div></section>
+
+<!-- HOW -->
+<section id="how"><div class="wrap">
+  <div class="eyebrow">How it works</div>
+  <h2>Three small things.</h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Log honestly</h3><p>One tap each time — with the exact time quietly recorded, so you can later see when you're most tempted.</p></div>
+    <div class="step"><div class="n">2</div><h3>Good days grow it</h3><p>Every day you stay within your limit adds one new living thing — a flower, a butterfly, a rabbit, a rare creature.</p></div>
+    <div class="step"><div class="n">3</div><h3>Slips never destroy it</h3><p>Go over and nothing is torn down. The forest holds everything you've grown. No zero. No shame. Just tomorrow.</p></div>
+  </div>
+</div></section>
+
+<!-- ABOUT -->
+<section id="about"><div class="wrap"><div class="about">
+  <div class="eyebrow">Why I made this</div>
+  <h2>It started on a road trip to Halls Gap.</h2>
+  <div class="abouttease">
+    <div class="teasetext">
+      <p class="lead">Fresh air, a clean river, birds flocking to the benches — and my first thought was still <i>"what a perfect spot to smoke."</i> The only smoke around came from the meat shop. Everyone else was just reading, licking ice cream, sipping coffee. For the first time in my life, I felt ashamed of the thought.</p>
+      <p class="lead">That day became this app — a tribute to Halls Gap, and a promise to enjoy the good things without a cigarette in my hand.</p>
+      <a class="btn primary" href="about.html">Read the full story →</a>
+    </div>
+    <a class="teasephoto" href="about.html" aria-label="Read the full story">
+      <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria" loading="lazy">
+      <span>Halls Gap, Victoria — where it began</span>
+    </a>
+  </div>
+</div></div></section>
+
+<!-- FINAL -->
+<section><div class="wrap"><div class="final">
+  <h2>Grow something instead of counting failures.</h2>
+  <p class="lead">Open it, make your oath, and plant your first day. It's free, and it starts the moment you tap.</p>
+  <a class="btn primary" href="/app" target="_blank" rel="noopener" style="font-size:17px; padding:16px 28px">Open Still Here</a>
+</div></div></section>
+
+<footer><div class="wrap">
+  <div>
+    <div class="brand" style="margin-bottom:8px">Still Here</div>
+    <p class="fnote">Built by one person, for anyone trying to do a little better each day. No ads, no subscription — support keeps it that way.</p>
+  </div>
+  <div class="fdon">
+    <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener">🌏 Buy me a coffee</a>
+    <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener">🇮🇩 Traktir cendol</a>
+  </div>
+  <p class="fnote"><a href="/">Still Here</a> · © 2026</p>
+</div></footer>
 
 <script>
-/* ============================================================
-   APPWRITE CONFIG  —  paste your project values here.
-   These are meant to live in the browser; per-document
-   permissions keep your data private. Leave as-is to run
-   on-device only.   Appwrite Console → Settings.
-============================================================ */
-const APPWRITE_ENDPOINT = 'https://sgp.cloud.appwrite.io/v1'; // copy the exact endpoint shown in Settings
-const APPWRITE_PROJECT  = '6a5dbcef0011289fb163';            // Project ID from Settings
+/* ---- nav: mobile menu + active-section highlight ---- */
+function toggleMenu(open){ document.getElementById('mobmenu').classList.toggle('show', open); }
+document.getElementById('navtog').addEventListener('click', ()=>toggleMenu(true));
 
-// database + table IDs (see APPWRITE_SETUP.md)
-const AW_DB    = '6a5dc0440033a02989ef';   // your Appwrite database ID
-const AW_STATE = 'state';   // one table holding your whole forest as a single JSON document
-const AW_FEEDBACK = 'feedback';   // collection for user ideas/feedback
+const spy=[...document.querySelectorAll('.navlinks a')];
+const spyMap={};
+spy.forEach(a=>{ const id=a.getAttribute('href').slice(1); const sec=document.getElementById(id); if(sec) spyMap[id]=a; });
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ spy.forEach(a=>a.classList.remove('active'));
+      const a=spyMap[e.target.id]; if(a) a.classList.add('active'); } });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  Object.keys(spyMap).forEach(id=>{ const sec=document.getElementById(id); if(sec) io.observe(sec); });
+}
 
-/* ============================================================
-   STORAGE  (window.storage if present, else in-memory)
-============================================================ */
-const mem = {};
-const store = {
-  async get(k){
-    try{ if(window.storage){ const r = await window.storage.get(k); return r? JSON.parse(r.value): null; } }
-    catch(e){}
-    return (k in mem)? JSON.parse(mem[k]) : null;
-  },
-  async set(k,v){
-    const s = JSON.stringify(v); mem[k]=s;
-    try{ if(window.storage){ await window.storage.set(k,s); } }catch(e){}
-  }
+/* ---- dashboard preview: interactive tone + dummy calendar ---- */
+const TONE_QUOTES={
+  gentle:'"That\u2019s your seven for today. No penalty here \u2014 the forest keeps everything you\u2019ve grown."',
+  plain:'"You\u2019re at 7 of 7. Anything past this counts as over. Your call."',
+  honest:'"That\u2019s your third today. You said you wanted fewer. Still your call."'
 };
-
-/* ============================================================
-   STATE
-============================================================ */
-let oath, logs, dayStatus, prefs, profile;
-const PACK = 20;
-
-/* ============================================================
-   OATH MODEL  (generic: any habit, any unit, any period)
-   oath = { title, unit, baseline, target, period:'daily'|'weekly'|'monthly', start }
-============================================================ */
-const PERIOD_DAYS = { daily:1, weekly:7, monthly:30 };
-function periodDays(){ return PERIOD_DAYS[(oath&&oath.period)||'monthly'] || 30; }
-function periodWord(){ return (oath&&oath.period)||'monthly'; }
-function unitLabel(n){
-  const u=(oath&&oath.unit)?oath.unit:'times';
-  if(n===1){ return u.endsWith('s')? u.slice(0,-1) : u; }
-  return u;
+function pickTone(t){
+  document.querySelectorAll('#toneseg button').forEach(b=>b.classList.toggle('on', b.dataset.t===t));
+  const q=document.getElementById('toneQuote'); q.style.opacity=0;
+  setTimeout(()=>{ q.textContent=TONE_QUOTES[t]; q.style.opacity=1; }, 140);
 }
-function defaultOath(){
-  return { title:'', unit:'', baseline:0, target:0, period:'monthly', start:todayKey(), configured:false };
-}
-// bring the original IQOS/packs oath (and any half-set oath) into the generic shape
-function migrateOath(o){
-  if(!o) return defaultOath();
-  if(o.baselinePacks!=null || o.sticksPerPack!=null){
-    const per=o.sticksPerPack||PACK;
-    return { title:'Reduce '+(o.substance||'IQOS'), unit:'sticks',
-             baseline:(o.baselinePacks||30)*per, target:(o.targetPacks||10)*per,
-             period:'monthly', start:o.start||todayKey(), configured:true };
+(function buildCal(){
+  const g=document.getElementById('calGrid'); if(!g) return;
+  for(let d=1; d<=28; d++){
+    const col=((d-1)%7)+1;
+    let cls='d ';
+    if(col===7) cls+='foggy';
+    else if(col===3) cls+='amber';
+    else if(col===5) cls+='coral';
+    else cls+='leaf';
+    const el=document.createElement('div'); el.className=cls; el.textContent=d; g.appendChild(el);
   }
-  if(o.configured===undefined) o.configured = !!(o.unit && o.target>0);
-  if(!o.period) o.period='monthly';
-  if(!o.start) o.start=todayKey();
-  return o;
-}
-function dailyAllowance(){
-  const d=periodDays(); const t=Number(oath&&oath.target)||0;
-  return Math.max(0, Math.round(t/d));
-}
-// scale a per-period figure into a 30-day equivalent (the tracker shows months)
-function monthlyEquivalent(v){ return (Number(v)||0) * (30/periodDays()); }
-
-/* ============================================================
-   BACKEND  (Appwrite cloud if configured, else on-device)
-============================================================ */
-let aw=null, backend='local', authUser=null, stateDocId=null, cloudError='';
-
-function ownerPerms(){
-  const { Permission, Role } = Appwrite;
-  const me = Role.user(authUser.$id);
-  return [Permission.read(me), Permission.update(me), Permission.delete(me)];
-}
-
-async function initBackend(){
-  cloudError='';
-  const hasKeys = APPWRITE_PROJECT && !APPWRITE_PROJECT.includes('PASTE') && !APPWRITE_ENDPOINT.includes('<REGION>');
-  if(!hasKeys){ cloudError='Config missing in this file — an old version may be deployed.'; return 'local'; }
-  if(typeof Appwrite==='undefined'){ cloudError='Appwrite SDK did not load (network/CDN blocked).'; return 'local'; }
-  try{
-    const client = new Appwrite.Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
-    aw = { client, account:new Appwrite.Account(client), databases:new Appwrite.Databases(client) };
-    try { authUser = await aw.account.get(); }
-    catch(_){ await aw.account.createAnonymousSession(); authUser = await aw.account.get(); }
-    return 'cloud';
-  }catch(e){
-    cloudError = (e && e.message) ? e.message : String(e);
-    console.warn('Cloud sync unavailable — running on-device.', cloudError);
-    aw=null; return 'local';
-  }
-}
-
-// the whole forest lives in one JSON document
-async function cloudLoadState(){
-  const list = await aw.databases.listDocuments(AW_DB, AW_STATE, [Appwrite.Query.limit(1)]);
-  if(list.documents.length){
-    stateDocId = list.documents[0].$id;
-    try { return JSON.parse(list.documents[0].data); } catch(_){ return null; }
-  }
-  return null;
-}
-async function cloudSaveState(){
-  const payload = JSON.stringify({ oath, logs, dayStatus, prefs, profile });
-  if(stateDocId){
-    await aw.databases.updateDocument(AW_DB, AW_STATE, stateDocId, { data:payload });
-  } else {
-    const doc = await aw.databases.createDocument(AW_DB, AW_STATE, Appwrite.ID.unique(),
-                  { data:payload }, ownerPerms());
-    stateDocId = doc.$id;
-  }
-}
-
-/* persist helpers — one cloud write saves the whole state; on-device saves per-key */
-async function persistStick(){      if(backend==='cloud') await cloudSaveState(); else await store.set('logs', logs); }
-async function persistDayStatus(){  if(backend==='cloud') await cloudSaveState(); else await store.set('dayStatus', dayStatus); }
-async function persistGrowthMax(){  if(backend==='cloud') await cloudSaveState(); else await store.set('prefs', prefs); }
-async function persistReset(){
-  if(backend==='cloud'){ await cloudSaveState(); }
-  else {
-    await store.set('logs',logs); await store.set('dayStatus',dayStatus);
-    await store.set('prefs',prefs); await store.set('oath',oath);
-  }
-}
-
-function updateSyncUI(){
-  const el=document.getElementById('syncState'); if(!el) return;
-  if(backend==='cloud'){
-    el.innerHTML='Cloud · synced'; el.style.color='var(--leaf)';
-    el.style.cursor='default'; el.onclick=null;
-  } else {
-    const short=(cloudError||'not configured').replace(/</g,'&lt;');
-    el.innerHTML='This device only<br><small style="font-weight:700;color:#d59">'+short+'</small>';
-    el.style.color='var(--muted)'; el.style.cursor='pointer';
-    el.onclick=()=>alert('Cloud sync OFF\n\nReason: '+(cloudError||'not configured')+
-      '\n\nEndpoint: '+APPWRITE_ENDPOINT+'\nProject: '+APPWRITE_PROJECT+'\nOpened from: '+location.hostname);
-  }
-}
-
-function todayKey(d=new Date()){
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function keyToDate(k){ const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d); }
-function daysBetween(a,b){ return Math.round((keyToDate(b)-keyToDate(a))/86400000); }
-
-async function load(){
-  backend = await initBackend();
-
-  if(backend==='cloud'){
-    try{ await reloadStateFromCloud(); return; }
-    catch(e){
-      cloudError = 'Cloud data: '+((e && e.message) ? e.message : String(e));
-      console.warn('Cloud read/write failed — using device.', cloudError);
-      backend='local';
-    }
-  }
-
-  // ---- on-device (default, and fallback if cloud failed) ----
-  oath = migrateOath(await store.get('oath'));
-  await store.set('oath', oath);
-  logs = (await store.get('logs')) || [];
-  dayStatus = (await store.get('dayStatus')) || {};
-  prefs = (await store.get('prefs')) || { max:0 };
-  profile = (await store.get('profile')) || { name:'', animal:'' };
-}
-
-// hydrate the in-memory forest from the current cloud account's document
-async function reloadStateFromCloud(){
-  const s = await cloudLoadState();
-  if(s && s.oath){
-    oath = migrateOath(s.oath);
-    logs = s.logs || [];
-    dayStatus = s.dayStatus || {};
-    prefs = s.prefs || { max:0 };
-    profile = s.profile || { name:'', animal:'' };
-  } else {
-    oath = defaultOath();
-    logs = []; dayStatus = {}; prefs = { max:0 }; profile = { name:'', animal:'' };
-    await cloudSaveState();   // create the initial document
-  }
-}
-
-/* ============================================================
-   ACCOUNTS  (email register / login, anonymous by default)
-============================================================ */
-function accountIsGuest(){ return !(authUser && authUser.email); }
-
-// Register: create a permanent email account and MIGRATE the current forest into it
-async function doRegister(email, password, name, animal){
-  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — accounts need a connection.'};
-  const snapshot = { oath, logs, dayStatus, prefs, profile:{ name:(name||'').trim(), animal:(animal||'').trim() } };
-  try{
-    await aw.account.create(Appwrite.ID.unique(), email.trim(), password, (name||'').trim());
-    try{ await aw.account.deleteSession('current'); }catch(_){}
-    await aw.account.createEmailPasswordSession(email.trim(), password);
-    authUser = await aw.account.get();
-    stateDocId = null;                      // new account gets its own document
-    oath=snapshot.oath; logs=snapshot.logs; dayStatus=snapshot.dayStatus; prefs=snapshot.prefs; profile=snapshot.profile;
-    await cloudSaveState();                 // write the migrated forest + profile
-    return {ok:true};
-  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
-}
-
-// Login to an existing account and load its forest
-async function doLogin(email, password){
-  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — log in needs a connection.'};
-  try{
-    try{ await aw.account.deleteSession('current'); }catch(_){}
-    await aw.account.createEmailPasswordSession(email.trim(), password);
-    authUser = await aw.account.get();
-    stateDocId = null;
-    await reloadStateFromCloud();
-    return {ok:true};
-  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
-}
-
-// Log out → fall back to a fresh guest session so the app still works
-async function doLogout(){
-  if(backend!=='cloud') return;
-  try{ await aw.account.deleteSession('current'); }catch(_){}
-  try{ await aw.account.createAnonymousSession(); authUser = await aw.account.get(); }
-  catch(_){ authUser=null; }
-  stateDocId = null;
-  await reloadStateFromCloud();
-}
-
-function hideBoot(){
-  const b=document.getElementById('boot'); if(!b || b.classList.contains('hide')) return;
-  b.classList.add('hide');
-  setTimeout(()=>{ if(b && b.parentNode) b.parentNode.removeChild(b); }, 700);
-}
-function bootMsg(m){ const el=document.getElementById('bootMsg'); if(el) el.textContent=m; }
-
-/* ---- donations ---- */
-const DONATE_KOFI     = 'https://ko-fi.com/aradnaksi';
-const DONATE_TRAKTEER = 'https://teer.id/iskandar_agung3';
-function openDonate(){ closeAllSheets();
-  const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
-  document.getElementById('donate').classList.add('show'); }
-function hideDonate(){ document.getElementById('donate').classList.remove('show'); }
-
-function openFeedback(){
-  hideDonate();
-  const em=document.getElementById('fbEmail');
-  em.value = (authUser && authUser.email) ? authUser.email : '';
-  document.getElementById('fbMsg').value='';
-  document.getElementById('fbErr').textContent='';
-  const el=document.getElementById('feedback'); el.scrollTop=0; el.classList.add('show'); lockScroll();
-}
-function hideEnjoy(){ document.getElementById('enjoy').classList.remove('show'); }
-function enjoyToFeedback(){ hideEnjoy(); openFeedback(); }
-function anyModalOpen(){
-  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install'].some(id=>{
-    const el=document.getElementById(id); return el && el.classList.contains('show');
-  });
-}
-// one-time, gentle nudge for feedback once someone reaches a 7-day run
-function maybeAskFeedback(){
-  if(!D || !oath || !oath.configured) return;
-  if(prefs.askedFeedback) return;
-  if(D.currentRun < 7) return;
-  if(backend!=='cloud') return;         // needs the feedback collection
-  if(anyModalOpen()) return;
-  prefs.askedFeedback = true; persistPrefs();
-  setTimeout(()=>{ if(!anyModalOpen()) document.getElementById('enjoy').classList.add('show'); }, 700);
-}
-function hideFeedback(){ dismissOverlay(document.getElementById('feedback')); }
-async function sendFeedback(email, message){
-  if(backend!=='cloud') return {ok:false, msg:'Feedback needs a connection — please try again online.'};
-  try{
-    await aw.databases.createDocument(AW_DB, AW_FEEDBACK, Appwrite.ID.unique(), {
-      email:(email||'').slice(0,320),
-      message:(message||'').slice(0,5000)
-    });
-    return {ok:true};
-  }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
-}
-async function submitFeedback(){
-  const email=(document.getElementById('fbEmail').value||'').trim();
-  const msg=(document.getElementById('fbMsg').value||'').trim();
-  const err=document.getElementById('fbErr'); err.textContent='';
-  if(msg.length<2){ err.textContent='Add a few words first 🙂'; return; }
-  const btn=document.getElementById('fbSend'); btn.disabled=true; btn.textContent='Sending…';
-  const r=await sendFeedback(email, msg);
-  btn.disabled=false; btn.textContent='Send it my way';
-  if(r.ok){ hideFeedback(); toast('Thank you — I read every word. It means a lot.'); }
-  else err.textContent = r.msg.toLowerCase().includes('not found')
-      ? 'Feedback isn\u2019t set up yet (missing collection).'
-      : ('Couldn\u2019t send: '+r.msg);
-}
-function goDonate(which){
-  const url = which==='kofi' ? DONATE_KOFI : DONATE_TRAKTEER;
-  hideDonate();
-  window.open(url, '_blank', 'noopener');
-  toast('Thank you — truly. It keeps the forest growing.');
-}
-
-/* ============================================================
-   TONE, THE CROSSING POINT, AND THE TEN-MINUTE HOLD
-============================================================ */
-function tone(){ return (prefs && prefs.tone) || 'gentle'; }
-async function persistPrefs(){
-  if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} }
-  else { await store.set('prefs', prefs); }
-}
-function setTone(t){
-  prefs.tone=t; persistPrefs(); renderTone();
-  const line={gentle:'The forest will speak gently.',plain:'Plain and factual it is.',honest:'Honest it is — no softening.'}[t];
-  toast(line);
-}
-function renderTone(){
-  const seg=document.getElementById('toneSeg'); if(!seg) return;
-  [...seg.children].forEach(b=>b.classList.toggle('on', b.dataset.t===tone()));
-}
-
-const TONE_COPY={
-  gentle:{
-    title: a=>`That’s your ${a} for today`,
-    body:  ()=>'No penalty here — the forest keeps everything you’ve grown. Want to give it ten minutes first?',
-    wait:'Wait 10 minutes', go:'Log it anyway',
-    held:'Ten minutes, and you’re still here. That craving passed on its own.',
-    ended:'The ten minutes are up. Whatever you choose next, the forest is still yours.'
-  },
-  plain:{
-    title: (a,n)=>`You’re at ${n} of ${a}`,
-    body:  ()=>'Anything past this counts as over. Your call.',
-    wait:'Wait 10 minutes', go:'Log it',
-    held:'Ten minutes held. Craving passed without one.',
-    ended:'Ten minutes done.'
-  },
-  honest:{
-    title: ()=>'This one puts you over',
-    body:  (a,n)=>`You said ${a}. This is ${n+1}. Nothing bad happens to your forest — you just asked me to say it plainly.`,
-    wait:'Hold off', go:'Log it',
-    held:'You waited it out. That’s the whole skill, right there.',
-    ended:'Ten minutes are up. Your call now.'
-  }
-};
-
-/* ---- the homestead (cabin reward track) ---- */
-let cabinView=null;
-function updateHomeChip(){
-  if(!D) return;
-  document.getElementById('hcRun').textContent=D.currentRun;
-  document.getElementById('hcRunLbl').textContent=(D.currentRun===1?'day run':'day run');
-  const nm=(CABIN_TIERS[D.cabinTier]||CABIN_TIERS[0]).name;
-  document.getElementById('hcCabin').textContent=nm;
-  const fire=document.querySelector('#homeChip .hc-fire');
-  if(fire) fire.style.opacity = D.currentRun>0 ? '1' : '.4';
-}
-function openHomestead(){
-  closeAllSheets();
-  document.getElementById('scrim').classList.add('show');
-  document.getElementById('homeSheet').classList.add('show');
-  renderHomestead();
-}
-function renderHomestead(){
-  if(!D) return;
-  const dusk=(new Date().getHours()>=18 || new Date().getHours()<6);
-  const cv=document.getElementById('cabinCv');
-  if(!cabinView) cabinView=makeCabin(cv, document.getElementById('homeStage'));
-  cabinView.startAnim(D.cabinTier, D.building, dusk);
-  // the builders introduce themselves the first time they ever start work
-  if(D.building && !prefs.homesteadGreeted){
-    prefs.homesteadGreeted=true; persistPrefs();
-    setTimeout(()=>{ if(cabinView && cabinView.greet) cabinView.greet(); }, 450);
-  }
-
-  const cur=CABIN_TIERS[D.cabinTier], next=CABIN_TIERS[D.cabinTier+1];
-  document.getElementById('homeTierPill').textContent=cur.name;
-  document.getElementById('homeStats').innerHTML=
-    `<div class="hs"><div class="n">${D.currentRun}</div><div class="l">DAY RUN</div></div>`+
-    `<div class="hs"><div class="n">${D.bestRun}</div><div class="l">BEST RUN</div></div>`+
-    `<div class="hs"><div class="n">${D.homesteadDays}</div><div class="l">GOOD DAYS</div></div>`;
-  const bar=document.getElementById('homeBar'), nx=document.getElementById('homeNext');
-  if(next){
-    const span=next.days-cur.days, into=D.homesteadDays-cur.days;
-    bar.style.width=Math.max(4,Math.min(100,Math.round(into/span*100)))+'%';
-    const left=Math.max(0,next.days-D.homesteadDays);
-    nx.textContent=`${left} more good ${left===1?'day':'days'} and the builders raise your ${next.name.toLowerCase()}.`;
-  } else {
-    bar.style.width='100%';
-    nx.textContent='The Homestead is complete — fireplace lit, windows warm. The builders have made themselves at home.';
-  }
-  nx.innerHTML += D.building
-    ? ' <span style="color:var(--leaf);font-weight:800">The builders are hard at work.</span>'
-    : ' <span style="color:var(--muted)">The builders are resting by the fire — log a good day to get them going again.</span>';
-}
-
-/* ---- the crossing point ---- */
-function shouldPrompt(){
-  if(!D || !oath || !oath.configured) return false;
-  const a=D.allowance;
-  if(a<=0) return false;                       // no meaningful daily line
-  if(D.todayCount !== a) return false;          // only the log that crosses 7 → 8
-  const tk=todayKey();
-  if(prefs.muteDay===tk) return false;          // "don't ask me again today"
-  if(prefs.promptDay===tk) return false;        // once per day, maximum
-  return true;
-}
-function onLogTap(){
-  if(shouldPrompt()) showCross(); else logStick();
-}
-function showCross(){
-  const c=TONE_COPY[tone()]||TONE_COPY.gentle, a=D.allowance, n=D.todayCount;
-  document.getElementById('crossTitle').textContent=c.title(a,n);
-  document.getElementById('crossBody').textContent=c.body(a,n);
-  document.getElementById('crossWait').textContent=c.wait;
-  document.getElementById('crossGo').textContent=c.go;
-  prefs.promptDay=todayKey(); persistPrefs();
-  document.getElementById('cross').classList.add('show');
-}
-function hideCross(){ document.getElementById('cross').classList.remove('show'); }
-function crossProceed(){ hideCross(); logStick(); }
-function muteToday(){ prefs.muteDay=todayKey(); persistPrefs(); hideCross();
-  toast('Understood — no more nudges today.'); }
-
-/* ---- the ten-minute hold ---- */
-let waitTimer=null, waitUntil=0;
-function startWait(){
-  hideCross();
-  waitUntil=Date.now()+10*60*1000;
-  store.set('waitUntil', waitUntil);            // device-only; survives a reload
-  runWait();
-}
-function runWait(){
-  if(waitTimer) clearInterval(waitTimer);
-  document.getElementById('waitPill').classList.add('show');
-  tickWait();
-  waitTimer=setInterval(tickWait,1000);
-}
-function tickWait(){
-  const left=waitUntil-Date.now();
-  if(left<=0){ finishWait(true); return; }
-  const m=Math.floor(left/60000), sec=Math.floor((left%60000)/1000);
-  document.getElementById('waitTime').textContent=m+':'+String(sec).padStart(2,'0');
-}
-function finishWait(completed){
-  if(waitTimer){ clearInterval(waitTimer); waitTimer=null; }
-  waitUntil=0; store.set('waitUntil', 0);
-  document.getElementById('waitPill').classList.remove('show');
-  if(completed){
-    const c=TONE_COPY[tone()]||TONE_COPY.gentle;
-    toast(c.held);
-    try{ if('vibrate' in navigator) navigator.vibrate([40,60,40]); }catch(_){}
-  }
-}
-function cancelWait(){ finishWait(false); }
-function logNowFromWait(){ finishWait(false); logStick(); }
-async function restoreWait(){
-  try{
-    const w=await store.get('waitUntil');
-    if(w && w>Date.now()+1000){ waitUntil=w; runWait(); }
-    else if(w){ await store.set('waitUntil',0); }
-  }catch(_){}
-}
-
-/* ---- full-screen overlay helpers (iOS keyboard-safe) ---- */
-let lockedScrollY=0;
-function lockScroll(){
-  if(document.body.classList.contains('locked')) return;
-  lockedScrollY = window.scrollY || 0;
-  document.body.classList.add('locked');
-  document.body.style.top = (-lockedScrollY)+'px';
-}
-function unlockScroll(){
-  if(!document.body.classList.contains('locked')) return;
-  document.body.classList.remove('locked');
-  document.body.style.top='';
-  window.scrollTo(0, lockedScrollY);
-}
-// closing a full-screen overlay: drop the keyboard, release the lock, reset any drift
-function dismissOverlay(el){
-  try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(_){}
-  if(el){ el.classList.remove('show'); el.scrollTop=0; }
-  unlockScroll();
-  closeAllSheets();
-  const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
-  window.scrollTo(0,0);
-  setTimeout(()=>window.scrollTo(0,0), 60);   // iOS settles the viewport a beat later
-}
-
-function overlayOpen(){
-  return ['onboard','auth','feedback','reset','enjoy','install'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
-}
-// iOS can leave the page scrolled after the keyboard closes — put it back
-window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
-window.addEventListener('orientationchange', ()=>setTimeout(()=>window.scrollTo(0,0),120));
-
-/* ---- oath onboarding ---- */
-let obPeriod='monthly';
-function pickPeriod(p){ obPeriod=p;
-  document.querySelectorAll('.seg3 button').forEach(b=>b.classList.toggle('on', b.dataset.p===p));
-  obUpdateHint();
-}
-function obUpdateHint(){
-  const t=parseFloat(document.getElementById('obTarget').value);
-  const u=(document.getElementById('obUnit').value||'times').trim();
-  const h=document.getElementById('obHint');
-  if(!isFinite(t)||t<0){ h.textContent=''; return; }
-  const per=PERIOD_DAYS[obPeriod]||30;
-  const perDay=Math.round(t/per);
-  h.textContent='That works out to about '+perDay+' '+(perDay===1?(u.endsWith('s')?u.slice(0,-1):u):u)+' a day.';
-}
-function showOnboard(isEdit){
-  const ob=document.getElementById('onboard');
-  document.getElementById('obTitle').textContent = isEdit? 'Edit your oath' : 'Make your oath';
-  document.getElementById('obCancel').style.display = isEdit? 'block':'none';
-  // "already have a forest? log in" only makes sense during first-time setup for a guest
-  const lg=document.getElementById('obLogin');
-  if(lg) lg.style.display = (!isEdit && accountIsGuest && accountIsGuest()) ? 'block' : 'none';
-  document.getElementById('obErr').textContent='';
-  if(isEdit && oath){
-    document.getElementById('obWhat').value=oath.title||'';
-    document.getElementById('obUnit').value=oath.unit||'';
-    document.getElementById('obCurrent').value=(oath.baseline!=null?oath.baseline:'');
-    document.getElementById('obTarget').value=(oath.target!=null?oath.target:'');
-    pickPeriod(oath.period||'monthly');
-  } else { pickPeriod('monthly'); }
-  obUpdateHint();
-  ob.scrollTop=0;
-  ob.classList.add('show');
-  lockScroll();
-}
-function onboardToLogin(){
-  hideOnboard();
-  showAuth('login');
-}
-function hideOnboard(){ dismissOverlay(document.getElementById('onboard')); }
-async function submitOath(){
-  const what=(document.getElementById('obWhat').value||'').trim();
-  const unit=(document.getElementById('obUnit').value||'').trim();
-  const cur=parseFloat(document.getElementById('obCurrent').value);
-  const tgt=parseFloat(document.getElementById('obTarget').value);
-  const err=document.getElementById('obErr'); err.textContent='';
-  if(!what){ err.textContent='Please describe the oath you want to make.'; return; }
-  if(!unit){ err.textContent='Please say what you are counting (e.g. sticks).'; return; }
-  if(!isFinite(cur)||cur<0){ err.textContent='Please enter your current rate.'; return; }
-  if(!isFinite(tgt)||tgt<0){ err.textContent='Please enter your target.'; return; }
-  if(tgt>cur){ err.textContent='Your target should be lower than your current rate.'; return; }
-  const first = !(oath && oath.configured);
-  oath = Object.assign({}, oath||{}, {
-    title:what, unit:unit, baseline:cur, target:tgt, period:obPeriod,
-    start:(oath&&oath.start)?oath.start:todayKey(), configured:true
-  });
-  if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} } else { await store.set('oath', oath); }
-  hideOnboard(); refresh();
-  toast(first? 'Your oath is planted. The forest is watching over it.' : 'Oath updated.');
-  // first-run only: offer to add the app to the home screen
-  if(first && !prefs.seenInstall){
-    prefs.seenInstall=true; persistPrefs();
-    setTimeout(()=>{ try{ showInstallTutorial(); }catch(_){} }, 1200);
-  }
-}
-
-/* ---- ecosystem progress panel ---- */
-function closeAllSheets(){
-  ['sheet','trackerSheet','progSheet','homeSheet'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.classList.remove('show');
-  });
-}
-function openProgress(){
-  closeAllSheets(); renderProgress();
-  document.getElementById('scrim').classList.add('show');
-  document.getElementById('progSheet').classList.add('show');
-}
-function renderProgress(){
-  if(!D) return;
-  const lvl=D.growthLevel, len=ISO.LEN, phs=ISO.phases(), cur=ISO.phaseOf(lvl);
-  const pct=Math.round(lvl/len*100);
-  document.getElementById('progHead').innerHTML=
-    `<div class="big">${cur}</div>`+
-    `<div class="sub">${lvl} of ${len} grown · ${D.goodDays} good ${D.goodDays===1?'day':'days'} so far</div>`+
-    `<div class="pbar"><i style="width:${pct}%"></i></div>`;
-  const list=document.getElementById('progList'); list.innerHTML='';
-  phs.forEach(p=>{
-    const done = lvl > p.to;
-    const active = p.name===cur;
-    const el=document.createElement('div');
-    el.className='phase'+(active?' active':(done?' done':''));
-    const mark = active? '●' : (done? '✓' : '');
-    el.innerHTML=`<div class="ptop"><span class="pmk">${mark}</span><span class="pname">${p.name}</span>`+
-      `<span class="pnum">${p.from===p.to? p.from : p.from+'–'+p.to}</span></div>`+
-      `<div class="pdesc">${p.desc}</div>`;
-    list.appendChild(el);
-  });
-  const steps=ISO.steps(), nxt=steps[lvl];
-  document.getElementById('progNext').textContent = nxt
-    ? 'Your next good day brings: '+nxt.label.toLowerCase()+'.'
-    : 'Your sanctuary is complete — every creature has come home.';
-}
-
-function updateHeader(){
-  const w=document.getElementById('wordmark'); if(!w) return;
-  const nm = (profile && profile.name) ? (', '+profile.name) : '';
-  w.innerHTML = 'Still Here'+nm+'<small>your quiet forest</small>';
-}
-
-/* ---- auth screen control ---- */
-function showAuth(view){
-  showAuthView(view||'welcome');
-  const el=document.getElementById('auth'); el.scrollTop=0; el.classList.add('show');
-  lockScroll();
-}
-function hideAuth(){
-  dismissOverlay(document.getElementById('auth'));
-  if(!(oath && oath.configured)) showOnboard(false);
-}
-function showAuthView(v){
-  for(const id of ['Welcome','Register','Login']) document.getElementById('av'+id).classList.toggle('on', id.toLowerCase()===v);
-  const err=v==='register'?document.getElementById('rgErr'):v==='login'?document.getElementById('lgErr'):null;
-  if(err) err.textContent='';
-}
-function val(id){ return (document.getElementById(id).value||'').trim(); }
-function friendlyAuthError(m){
-  m=(m||'').toLowerCase();
-  if(m.includes('already')) return 'That email is already registered — try logging in instead.';
-  if(m.includes('invalid credentials')||m.includes('invalid email or password')) return 'Email or password is incorrect.';
-  if(m.includes('password')) return 'Please use a stronger password (at least 8 characters).';
-  if(m.includes('rate')||m.includes('too many')) return 'Too many attempts — please wait a moment and try again.';
-  return m ? ('Couldn’t do that: '+m) : 'Something went wrong. Please try again.';
-}
-async function submitRegister(){
-  const email=val('rgEmail'), pass=document.getElementById('rgPass').value, name=val('rgName'), animal=val('rgAnimal');
-  const err=document.getElementById('rgErr'); err.textContent='';
-  if(!email||!pass){ err.textContent='Please enter an email and password.'; return; }
-  if(pass.length<8){ err.textContent='Password needs at least 8 characters.'; return; }
-  if(!name){ err.textContent='Please tell us what to call you.'; return; }
-  const btn=document.getElementById('rgBtn'); btn.disabled=true; btn.textContent='Creating…';
-  const r=await doRegister(email,pass,name,animal);
-  btn.disabled=false; btn.textContent='Create account';
-  if(r.ok){ hideAuth(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
-    if(!(oath && oath.configured)) showOnboard(false);
-    else toast('Welcome'+(name?', '+name:'')+' — your forest is saved to your account now.'); }
-  else err.textContent=friendlyAuthError(r.msg);
-}
-async function submitLogin(){
-  const email=val('lgEmail'), pass=document.getElementById('lgPass').value;
-  const err=document.getElementById('lgErr'); err.textContent='';
-  if(!email||!pass){ err.textContent='Please enter your email and password.'; return; }
-  const btn=document.getElementById('lgBtn'); btn.disabled=true; btn.textContent='Logging in…';
-  const r=await doLogin(email,pass);
-  btn.disabled=false; btn.textContent='Log in';
-  if(r.ok){ hideAuth(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
-    if(!(oath && oath.configured)) showOnboard(false); }
-  else err.textContent=friendlyAuthError(r.msg);
-}
-async function logoutAccount(){
-  if(!confirm('Log out? Your forest is saved to your account and will be here when you log back in.')) return;
-  await doLogout(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
-}
-function renderAccount(){
-  const status=document.getElementById('acctStatus'), btns=document.getElementById('acctBtns');
-  if(!status||!btns) return;
-  if(backend!=='cloud'){ status.textContent='Offline — accounts need a connection'; btns.innerHTML=''; return; }
-  if(accountIsGuest()){
-    status.textContent='Guest — not saved across devices';
-    btns.innerHTML='<button class="acctbtn primary" onclick="showAuth(\'register\')">Create account</button>';
-  } else {
-    status.textContent=authUser.email;
-    btns.innerHTML='<button class="acctbtn" onclick="logoutAccount()">Log out</button>';
-  }
-}
-
-/* per-day stick counts derived from logs */
-function sticksByDay(){
-  const m={};
-  for(const iso of logs){ const k=todayKey(new Date(iso)); m[k]=(m[k]||0)+1; }
-  return m;
-}
-
-/* the value we treat a day as, or null if unconfirmed/foggy */
-function dayValue(k, byDay){
-  if(byDay[k]!=null) return byDay[k];               // logged sticks win
-  const s=dayStatus[k];
-  if(s && s.state==='clean') return 0;
-  if(s && s.state==='estimate') return s.sticks;
-  return null;                                        // foggy
-}
-
-/* ============================================================
-   DERIVATION
-============================================================ */
-function derive(){
-  const byDay = sticksByDay();
-  const tk = todayKey();
-  const allowance = dailyAllowance();
-  const pd = periodDays();
-
-  const todayCount = byDay[tk]||0;
-
-  // --- trailing window (up to 30 days) of KNOWN days ---
-  const elapsed = Math.min(30, Math.max(1, daysBetween(oath.start, tk)+1));
-  let knownSum=0, knownDays=0, recent3=[];
-  for(let i=0;i<elapsed;i++){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const v=dayValue(todayKey(d),byDay);
-    if(v!=null){ knownSum+=v; knownDays++; if(i<3) recent3.push(v); }
-  }
-  const paceDaily = knownDays? knownSum/knownDays : 0;
-  const recent3avg = recent3.length? recent3.reduce((a,b)=>a+b,0)/recent3.length : 0;
-
-  // --- calendar-month total (the second stat card is always the month) ---
-  const monthPrefix=tk.slice(0,7);
-  let monthCount=0;
-  for(const k in byDay){ if(k.startsWith(monthPrefix)) monthCount+=byDay[k]; }
-  for(const k in dayStatus){
-    if(k.startsWith(monthPrefix) && byDay[k]==null && dayStatus[k].state==='estimate') monthCount+=dayStatus[k].sticks;
-  }
-
-  // --- current period total (kept for the oath's own framing) ---
-  const pStart=new Date(); 
-  if(periodWord()==='monthly'){ pStart.setDate(1); }
-  else if(periodWord()==='weekly'){ pStart.setDate(pStart.getDate()-pStart.getDay()); }
-  const pStartKey=todayKey(pStart);
-  let periodCount=0;
-  for(let i=0;i<=daysBetween(pStartKey,tk);i++){
-    const d=keyToDate(pStartKey); d.setDate(d.getDate()+i);
-    const v=dayValue(todayKey(d),byDay); if(v!=null) periodCount+=v;
-  }
-
-  // --- seamless growth: each good day (at/under allowance) adds one element ---
-  // For low-frequency oaths (e.g. 12 a month) a daily allowance rounds to 0, so a day
-  // also counts as good whenever the overall pace is on track.
-  const targetMonthly = monthlyEquivalent(oath.target);
-  const paceMonthly = paceDaily*30;
-  const lowFrequency = (Number(oath.target)||0)/pd < 1;
-  const onTrack = targetMonthly>0 && paceMonthly<=targetMonthly;
-  const isGood = v => v!=null && (v<=allowance || (lowFrequency && onTrack));
-
-  const totalDays = Math.max(1, daysBetween(oath.start, tk)+1);
-  const states=[];                       // oldest → newest
-  for(let i=totalDays-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
-    const v=dayValue(todayKey(d), byDay);
-    states.push(v==null ? 'foggy' : (isGood(v) ? 'good' : 'bad')); }
-  const goodDays = states.filter(s=>s==='good').length;
-
-  // current run (trailing good days; a not-yet-logged today doesn't break it) + best run ever
-  let bestRun=0, r=0; for(const s of states){ if(s==='good'){ r++; if(r>bestRun) bestRun=r; } else r=0; }
-  let idx=states.length-1, currentRun=0;
-  if(idx>=0 && states[idx]==='foggy') idx--;
-  for(; idx>=0; idx--){ if(states[idx]==='good') currentRun++; else break; }
-
-  const cap = ISO.LEN;
-  let growthLevel = Math.min(cap, goodDays);
-  if(growthLevel > (prefs.max||0)){ prefs.max=growthLevel; persistGrowthMax(prefs.max); }   // ratchet: forest never loses elements
-  growthLevel = Math.max(growthLevel, Math.min(cap, prefs.max||0));
-
-  // --- the homestead: cumulative good days, ratcheted (never torn down) ---
-  const homesteadDays = Math.max(goodDays, prefs.homestead||0);
-  if(goodDays > (prefs.homestead||0)){ prefs.homestead=goodDays; persistGrowthMax(prefs.homestead); }
-  let cabinTier=0; for(const T of CABIN_TIERS){ if(homesteadDays>=T.days) cabinTier=T.t; }
-  const building = currentRun>0;
-
-  // --- weather (fast axis) ---
-  let weather='clear';
-  if(todayCount>=allowance*2 || recent3avg>=allowance*1.5) weather='storm';
-  else if(todayCount>allowance || recent3avg>allowance) weather='cloudy';
-
-  // --- unconfirmed past days (foggy) ---
-  const pending=[];
-  for(let i=1;i<elapsed;i++){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const k=todayKey(d);
-    if(dayValue(k,byDay)===null) pending.push(k);
-  }
-
-  return {allowance, todayCount, periodCount, monthCount, goodDays, paceDaily, growthLevel,
-          cabinTier, currentRun, bestRun, homesteadDays, building, weather, pending, foggy:pending.length>0};
-}
-
-
-/* ============================================================
-   UI  RENDER
-============================================================ */
-let D;
-function refresh(){
-  D=derive();
-  // stage pill + push growth/time-of-day to the iso scene
-  const dusk = (new Date().getHours()>=18 || new Date().getHours()<6);
-  document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
-  const dot=document.getElementById('stageDot');
-  dot.style.background = dusk?'var(--honey)':'var(--leaf)';
-  dot.style.boxShadow = `0 0 8px ${dusk?'var(--honey)':'var(--leaf)'}`;
-  ISO.setState(D.growthLevel, dusk);
-  ISO.setCabin(D.cabinTier, D.building);
-  updateHomeChip();
-  maybeAskFeedback();
-  if(document.getElementById('homeSheet').classList.contains('show')) renderHomestead();
-
-  // today
-  document.getElementById('tSticks').textContent=D.todayCount;
-  document.getElementById('tAllow').textContent=D.allowance;
-  document.getElementById('tUnit').textContent=unitLabel(D.allowance);
-  const tm=document.getElementById('tMeter');
-  const tp=D.allowance>0? Math.min(100, D.todayCount/D.allowance*100) : (D.todayCount>0?100:0);
-  tm.style.width=tp+'%'; tm.classList.toggle('over', D.todayCount>D.allowance);
-  document.getElementById('stToday').className='stat'+(D.todayCount>D.allowance?' warn':' good');
-
-  // this month (always the month, whatever period the oath uses)
-  const pw=periodWord();
-  const monthGoal=Math.round(monthlyEquivalent(oath.target));
-  document.getElementById('mLabel').textContent = monthLabel(todayKey().slice(0,7));
-  document.getElementById('mPacks').textContent=D.monthCount;
-  document.getElementById('mTarget').textContent=monthGoal;
-  document.getElementById('mUnit').textContent=unitLabel(monthGoal);
-  const mm=document.getElementById('mMeter');
-  const mp=monthGoal>0? Math.min(100, D.monthCount/monthGoal*100) : (D.monthCount>0?100:0);
-  mm.style.width=mp+'%'; mm.classList.toggle('over', D.monthCount>monthGoal);
-  document.getElementById('stMonth').className='stat mstat'+(D.monthCount>monthGoal?' warn':' good');
-  if(document.getElementById('trackerSheet').classList.contains('show') &&
-     document.getElementById('trkOverview').style.display!=='none') renderTracker();
-
-  document.getElementById('setAllow').textContent=D.allowance+' '+unitLabel(D.allowance);
-  document.getElementById('logBtnLabel').textContent='I had one '+unitLabel(1);
-  const ot=document.getElementById('oathTitle'); if(ot) ot.textContent=oath.title||'Your oath';
-  const od=document.getElementById('oathDetail');
-  if(od) od.innerHTML=(Number(oath.baseline)||0)+' → <b>'+(Number(oath.target)||0)+'</b>';
-  const ou=document.getElementById('oathUnitPeriod');
-  if(ou) ou.textContent=unitLabel(2)+' / '+({daily:'day',weekly:'week',monthly:'month'})[pw];
-  const ol=document.getElementById('oathLead');
-  if(ol) ol.textContent='Going from '+(Number(oath.baseline)||0)+' to '+(Number(oath.target)||0)+' '+unitLabel(2)+' a '+({daily:'day',weekly:'week',monthly:'month'})[pw]+'. That\u2019s the promise the forest is holding for you.';
-
-  // confirm prompt (show most recent foggy day)
-  const cf=document.getElementById('confirm');
-  if(D.pending.length){
-    pendingKey=D.pending[0];
-    const dt=keyToDate(pendingKey);
-    const label = daysBetween(pendingKey,todayKey())===1?'yesterday':dt.toLocaleDateString(undefined,{weekday:'long', month:'short', day:'numeric'});
-    document.getElementById('cfQ').textContent=`How was ${label}?`;
-    cf.classList.add('show');
-  } else { cf.classList.remove('show'); pendingKey=null; }
-
-  renderSanctuary();
-}
-
-/* ---------- gentle voice ---------- */
-const LOG_LINES={
-  gentle:[
-    "Logged. One breath at a time — you’re still here.",
-    "Noted, gently. The forest holds steady.",
-    "That’s honesty, and honesty is the whole practice.",
-    "Counted. No judgement — just clear eyes.",
-    "Okay. Tomorrow’s soil is already softening.",
-  ],
-  plain:[ "Logged.", "Counted.", "Noted.", "Added to today." ],
-  honest:[
-    "Logged. That’s one more than a moment ago.",
-    "Counted — the number is the number.",
-    "Noted. No spin on it.",
-  ]
-};
-const CLEAN_LINES={
-  gentle:[ "A clean day. The roots drink it in.", "Nothing logged — the birds noticed.", "That day closes bright. Well held." ],
-  plain:[ "Marked as a zero day.", "Day closed at zero." ],
-  honest:[ "Zero. That one you earned.", "A clear day, plainly." ]
-};
-function pickLine(set){ const arr=set[tone()]||set.gentle; return arr[Math.floor(Math.random()*arr.length)]; }
-let toastT;
-function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), 2600);
-}
-
-/* ============================================================
-   ACTIONS
-============================================================ */
-let pendingKey=null;
-async function logStick(){
-  const iso=new Date().toISOString();
-  logs.push(iso);
-  await persistStick(iso);
-  ISO.spawnPuff();
-  toast(pickLine(LOG_LINES));
-  refresh();
-}
-async function resolveDay(kind){
-  if(!pendingKey) return;
-  const key=pendingKey;
-  if(kind==='clean'){
-    dayStatus[key]={state:'clean'};
-    await persistDayStatus(key, dayStatus[key]);
-    toast(pickLine(CLEAN_LINES));
-    refresh();
-  } else {
-    const n = prompt('Roughly how many sticks that day?', '5');
-    if(n===null) return;
-    const val=Math.max(0, Math.min(60, parseInt(n)||0));
-    dayStatus[key]={state:'estimate', sticks:val};
-    await persistDayStatus(key, dayStatus[key]);
-    toast('Thank you for closing it honestly.');
-    refresh();
-  }
-}
-/* ---- add to home screen tutorial ---- */
-let deferredInstall=null;
-window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredInstall=e; });
-function isStandalone(){ return window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }
-function detectPlatform(){
-  const ua=navigator.userAgent||'';
-  if(/iphone|ipad|ipod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1)) return 'ios';
-  if(/android/i.test(ua)) return 'android';
-  return 'other';
-}
-const INSTALL_STEPS={
-  ios:[['Tap the <b>Share</b> button', 'the square with an ↑ arrow, in Safari\u2019s bar'],
-       ['Choose <b>Add to Home Screen</b>', 'scroll down the share menu to find it'],
-       ['Tap <b>Add</b>', 'and Still Here appears on your home screen']],
-  android:[['Tap the <b>⋮ menu</b>', 'top-right of Chrome'],
-       ['Tap <b>Add to Home screen</b>', 'or \u201cInstall app\u201d'],
-       ['Tap <b>Add</b>', 'and you\u2019re done']],
-  other:[['Open your browser\u2019s <b>menu</b>', 'usually top-right'],
-       ['Choose <b>Install</b> or <b>Add to Home Screen</b>', 'look for an install icon in the address bar too'],
-       ['Confirm', 'and Still Here installs like an app']]
-};
-function showInstallTutorial(){
-  if(isStandalone()) return;                        // already installed
-  const plat=detectPlatform();
-  document.getElementById('inPlat').textContent = plat==='ios'?'iPhone / iPad':plat==='android'?'Android':'Your device';
-  const ol=document.getElementById('inSteps'); ol.innerHTML='';
-  INSTALL_STEPS[plat].forEach((st,i)=>{
-    const li=document.createElement('li');
-    li.innerHTML=`<span class="num">${i+1}</span><span>${st[0]}<br><span style="color:var(--muted);font-size:12.5px">${st[1]}</span></span>`;
-    ol.appendChild(li);
-  });
-  // Android/desktop Chrome can trigger the real prompt in one tap
-  document.getElementById('inNow').style.display = deferredInstall ? 'block' : 'none';
-  document.getElementById('install').classList.add('show');
-}
-function hideInstall(){ document.getElementById('install').classList.remove('show'); }
-async function installNow(){
-  if(!deferredInstall){ return; }
-  hideInstall();
-  deferredInstall.prompt();
-  try{ await deferredInstall.userChoice; }catch(_){}
-  deferredInstall=null;
-}
-
-function openReset(){
-  closeAllSheets();
-  document.getElementById('scrim').classList.remove('show');
-  document.getElementById('reset').classList.add('show');
-}
-function hideReset(){ document.getElementById('reset').classList.remove('show'); }
-async function doReset(mode){
-  hideReset();
-  logs=[]; dayStatus={};
-  prefs={ max:0, tone:(prefs && prefs.tone) || 'gentle' };   // keep voice; clear all progress
-  if(mode==='new'){
-    oath = Object.assign(defaultOath(), { start:todayKey(), configured:false });
-    await persistReset();
-    updateHomeChip(); refresh();
-    showOnboard(false);                                       // let them define the new oath
-  } else {
-    oath.start = todayKey();
-    await persistReset();
-    updateHomeChip(); refresh();
-    toast('A fresh start — your forest begins again from bare soil.');
-  }
-}
-
-/* ---------- sheet ---------- */
-function openSheet(which){
-  closeAllSheets(); showPane(which);
-  document.getElementById('scrim').classList.add('show');
-  document.getElementById('sheet').classList.add('show');
-}
-function closeSheet(){
-  document.getElementById('scrim').classList.remove('show');
-  closeAllSheets();
-}
-function showPane(which){
-  document.getElementById('paneSanctuary').classList.toggle('on', which==='sanctuary');
-  document.getElementById('paneSettings').classList.toggle('on', which==='settings');
-  document.getElementById('tabSanctuary').classList.toggle('on', which==='sanctuary');
-  document.getElementById('tabSettings').classList.toggle('on', which==='settings');
-}
-
-/* companions unlocked as the forest grows (level = good days) */
-const COMPANIONS=[
-  {g:'🦋', name:'Flit',     type:'butterfly'},
-  {g:'🐓', name:'Rooster',  type:'rooster'},
-  {g:'🐇', name:'Rabbit',   type:'rabbit'},
-  {g:'🐸', name:'Frog',     type:'frog'},
-  {g:'🐦', name:'Robin',    type:'bird'},
-  {g:'🐑', name:'Sheep',    type:'sheep'},
-  {g:'🐄', name:'Cow',      type:'cow'},
-  {g:'🦘', name:'Kangaroo', type:'kangaroo'},
-  {g:'🦜', name:'Cockatoo', type:'cockatoo'},
-  {g:'🦊', name:'Fox',      type:'fox'},
-  {g:'🐟', name:'Fish',     type:'fish'},
-  {g:'🦌', name:'Deer',     type:'deer'},
-  {g:'🦄', name:'Unicorn',  type:'unicorn'},
-  {g:'🐉', name:'Dragon',   type:'dragon'},
-];
-function renderSanctuary(){
-  const grid=document.getElementById('sanctGrid'); grid.innerHTML='';
-  for(const c of COMPANIONS){
-    const lvl = ISO.levelOf(c.type);
-    const filled = D && lvl>0 && D.growthLevel>=lvl;
-    const el=document.createElement('div');
-    el.className='crt'+(filled?' filled':'');
-    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${filled?c.name:'Locked'}</div>`;
-    grid.appendChild(el);
-  }
-}
-
-/* ============================================================
-   TRACKER  (monthly stats + per-month calendar)
-============================================================ */
-const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function monthLabel(key){ const [y,m]=key.split('-').map(Number); return `${MON[m-1]} '${String(y).slice(2)}`; }
-
-function monthKeysFromStart(){
-  const [sy,sm]=oath.start.split('-').map(Number);
-  const now=new Date(); const ey=now.getFullYear(), em=now.getMonth()+1;
-  const keys=[]; let y=sy,m=sm;
-  while(y<ey || (y===ey && m<=em)){ keys.push(`${y}-${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;} }
-  return keys;
-}
-function monthAgg(key){
-  const byDay=sticksByDay();
-  const [y,m]=key.split('-').map(Number);
-  const daysIn=new Date(y,m,0).getDate();
-  const tk=todayKey();
-  let sticks=0, tracked=0, clean=0, worst=0; const days=[];
-  for(let d=1;d<=daysIn;d++){
-    const k=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const future = k>tk;
-    const v = future? null : dayValue(k,byDay);
-    days.push({d,k,v,future});
-    if(v!=null){ tracked++; sticks+=v; if(v===0) clean++; if(v>worst) worst=v; }
-  }
-  return {key, label:monthLabel(key), sticks, packs:sticks,
-    tracked, clean, worst, avg:tracked?sticks/tracked:0, days, inProgress:key===tk.slice(0,7)};
-}
-
-let selMonth=null;
-function renderTracker(){
-  const aggs=monthKeysFromStart().map(monthAgg);
-  const target=monthlyEquivalent(oath.target), baseline=monthlyEquivalent(oath.baseline);
-  const maxP=Math.max(baseline, ...aggs.map(a=>a.packs));
-  const scale=Math.max(5, Math.ceil(maxP/5)*5);
-  const plotH=140, base=22;
-  const chart=document.getElementById('trkChart'); chart.innerHTML='';
-  const row=document.createElement('div'); row.className='row';
-
-  aggs.forEach(a=>{
-    const h=Math.max(3, a.packs/scale*plotH);
-    const cls = a.packs<=target ? '' : (a.packs<=baseline*0.66 ? 'mid':'hi');
-    const bar=document.createElement('div'); bar.className='bar'+(a.key===selMonth?' sel':'');
-    bar.innerHTML=
-      `<div class="val" style="bottom:${base+h+4}px">${Math.round(a.packs)}</div>`+
-      `<div class="col ${cls} ${a.inProgress?'now':''}" style="height:${h}px"></div>`+
-      `<div class="mo">${a.label}</div>`;
-    bar.onclick=()=>openMonthDetail(a.key);
-    row.appendChild(bar);
-  });
-  chart.appendChild(row);
-
-  const guide=(packs,cls,txt)=>{ const g=document.createElement('div'); g.className='guide '+cls;
-    g.style.bottom=(base+packs/scale*plotH)+'px'; g.innerHTML=`<span>${txt}</span>`; chart.appendChild(g); };
-  guide(baseline,'', 'start '+Math.round(baseline));
-  guide(target,'goal','goal '+Math.round(target));
-}
-
-
-/* ---- hourly rhythm (uses the timestamp already stored with every log) ---- */
-function logsByDay(){
-  const m={};
-  for(const iso of logs){ const d=new Date(iso); const k=todayKey(d); (m[k]=m[k]||[]).push(d); }
-  for(const k in m) m[k].sort((a,b)=>a-b);
-  return m;
-}
-function hourCounts(dayKeys){
-  const by=logsByDay(); const h=new Array(24).fill(0);
-  for(const k of dayKeys){ (by[k]||[]).forEach(d=>{ h[d.getHours()]++; }); }
-  return h;
-}
-function renderHours(elId, h){
-  const el=document.getElementById(elId); if(!el) return;
-  const max=Math.max(1, ...h);
-  el.innerHTML=h.map((v,i)=>{
-    const pct=Math.round(v/max*100);
-    const cls = v===0? 'none' : (v===max? 'peak':'');
-    const lbl = (i%6===0)? (i===0?'12a':(i===12?'12p':(i<12? i+'a' : (i-12)+'p'))) : '';
-    return `<div class="hr" title="${i}:00 — ${v}"><span>${v>0?v:''}</span>`+
-           `<i class="${cls}" style="height:${Math.max(2,pct)}%"></i><b>${lbl}</b></div>`;
-  }).join('');
-}
-function peakHourText(h){
-  const max=Math.max(...h); if(max<=0) return 'No logs yet in this stretch.';
-  const idx=h.indexOf(max);
-  const fmt=x=>{ const ap=x<12?'am':'pm'; const hr=x%12===0?12:x%12; return hr+' '+ap; };
-  const quiet=[]; for(let i=6;i<24;i++){ if(h[i]===0) quiet.push(i); }
-  let msg='Your heaviest hour is around '+fmt(idx)+'.';
-  if(quiet.length>=3) msg+=' You are clear through '+fmt(quiet[0])+' and '+(quiet.length-1)+' other waking hours.';
-  return msg;
-}
-
-/* ---- single-day detail ---- */
-let dayFrom=null;
-function openDayDetail(key){
-  dayFrom=selMonth;
-  const by=logsByDay(); const times=(by[key]||[]);
-  const st=dayStatus[key];
-  const count = times.length ? times.length : (st? (st.state==='estimate'? st.sticks : 0) : null);
-  const allow=dailyAllowance();
-  const d=keyToDate(key);
-  document.getElementById('trkDetail').style.display='none';
-  document.getElementById('trkOverview').style.display='none';
-  document.getElementById('trkDay').style.display='block';
-  document.getElementById('dyTitle').textContent=d.toLocaleDateString(undefined,{weekday:'long', day:'numeric', month:'long'});
-  const overBy = (count==null)? 0 : count-allow;
-  document.getElementById('dyStats').innerHTML=
-    `<div class="dtcell"><div class="k">${unitLabel(2)}</div><div class="v">${count==null?'·':count}</div></div>`+
-    `<div class="dtcell"><div class="k">vs allowance ${allow}</div><div class="v" style="color:${overBy<=0?'var(--leaf)':'var(--soft-warn)'}">${count==null?'·':(overBy<=0?'−':'+')+Math.abs(overBy)}</div></div>`+
-    `<div class="dtcell"><div class="k">First → last</div><div class="v" style="font-size:13px">${times.length? (fmtTime(times[0])+' → '+fmtTime(times[times.length-1])) : '·'}</div></div>`;
-  renderHours('dyHours', hourCounts([key]));
-  const tl=document.getElementById('dyTimes');
-  if(times.length){
-    tl.innerHTML=times.map((t,i)=>{
-      const gap = i>0 ? Math.round((t-times[i-1])/60000) : null;
-      const gapTxt = gap!=null ? ` <span style="color:var(--muted);font-weight:700">+${gap>=60? Math.floor(gap/60)+'h'+(gap%60?(gap%60)+'m':'') : gap+'m'}</span>` : '';
-      return `<span class="tchip">${fmtTime(t)}${gapTxt}</span>`;
-    }).join('');
-  } else if(st && st.state==='estimate'){
-    tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">Logged later from memory ('+st.sticks+'), so there are no times for this day.</span>';
-  } else if(st && st.state==='clean'){
-    tl.innerHTML='<span style="color:var(--leaf);font-size:12.5px;font-weight:800">A clear day — nothing logged.</span>';
-  } else {
-    tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">This day was never closed, so it stays foggy.</span>';
-  }
-}
-function fmtTime(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
-function dayBack(){
-  document.getElementById('trkDay').style.display='none';
-  if(dayFrom) openMonthDetail(dayFrom); else trkBack();
-}
-
-function openMonthDetail(key){
-  selMonth=key; const a=monthAgg(key);
-  document.getElementById('trkOverview').style.display='none';
-  document.getElementById('trkDay').style.display='none';
-  document.getElementById('trkDetail').style.display='block';
-  document.getElementById('dtTitle').textContent=a.label+(a.inProgress?' · so far':'');
-  const target=monthlyEquivalent(oath.target), diff=a.packs-target;
-  document.getElementById('dtStats').innerHTML=
-    `<div class="dtcell"><div class="k">${unitLabel(2)}</div><div class="v">${a.sticks}</div></div>`+
-    `<div class="dtcell"><div class="k">vs goal ${Math.round(target)}</div><div class="v" style="color:${diff<=0?'var(--leaf)':'var(--soft-warn)'}">${diff<=0?'−':'+'}${Math.abs(Math.round(diff))}</div></div>`+
-    `<div class="dtcell"><div class="k">Tracked days</div><div class="v">${a.tracked}</div></div>`+
-    `<div class="dtcell"><div class="k">Zero days</div><div class="v">${a.clean}</div></div>`+
-    `<div class="dtcell"><div class="k">Avg / day</div><div class="v">${a.avg.toFixed(1)}</div></div>`+
-    `<div class="dtcell"><div class="k">Toughest</div><div class="v">${a.worst}</div></div>`;
-
-  const allow=dailyAllowance();
-  const [y,m]=key.split('-').map(Number);
-  const firstWd=new Date(y,m-1,1).getDay();
-  const tk=todayKey();
-  let html=['S','M','T','W','T','F','S'].map(d=>`<div class="wd">${d}</div>`).join('');
-  for(let i=0;i<firstWd;i++) html+=`<div class="cell blank"></div>`;
-  for(const day of a.days){
-    let cls='cell';
-    if(day.future) cls+=' blank';
-    else if(day.v===null) cls+=' foggy';
-    else if(day.v===0) cls+=' clean';
-    else if(day.v<=allow) cls+=' mid';
-    else cls+=' hi';
-    if(day.k===tk) cls+=' today';
-    const cnt = day.future? '' : (day.v===null? '·' : day.v);
-    const click = day.future? '' : ` onclick="openDayDetail('${day.k}')"`;
-    html+=`<div class="${cls}"${click}><span class="dn">${day.d}</span><span class="cn">${cnt}</span></div>`;
-  }
-  document.getElementById('dtCal').innerHTML=html;
-  const mh=hourCounts(a.days.filter(d=>!d.future).map(d=>d.k));
-  renderHours('dtHours', mh);
-  document.getElementById('rhythmLead').textContent=peakHourText(mh)+' Tap any date above to open that day.';
-}
-function trkBack(){
-  selMonth=null;
-  document.getElementById('trkDay').style.display='none';
-  document.getElementById('trkDetail').style.display='none';
-  document.getElementById('trkOverview').style.display='block';
-  renderTracker();
-}
-function openTracker(){
-  closeAllSheets(); trkBack();
-  document.getElementById('scrim').classList.add('show');
-  document.getElementById('trackerSheet').classList.add('show');
-}
-
-const CABIN_TIERS=[{t:0,days:0,name:'Bedroll'},{t:1,days:3,name:'Tent'},{t:2,days:7,name:'Lean-to'},{t:3,days:14,name:'Cabin frame'},{t:4,days:25,name:'Snug cabin'},{t:5,days:40,name:'Cabin with porch'},{t:6,days:60,name:'The Homestead'}];
-
-/* ============================================================
-   THE HOMESTEAD — a cabin that builds itself as good days add up.
-   Ratcheted (never torn down). Builders work on a run, rest otherwise.
-   makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
-                             setState(tier,building,dusk), TIERS }
-============================================================ */
-function makeCabin(cv, boxEl){
+})();
+document.getElementById('toneQuote').style.transition='opacity .18s ease';
+
+/* ---- tiny persistence (localStorage on the real site, memory in preview) ---- */
+const mem={};
+const save=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){ mem[k]=v; } };
+const load=(k,d)=>{ try{ const r=localStorage.getItem(k); return r==null?d:JSON.parse(r); }catch(_){ return (k in mem)?mem[k]:d; } };
+
+function makeForest(cv, stageEl){
   const ctx=cv.getContext('2d');
-  const VW=440, VH=300, GY=214;             // virtual size + ground line
-  let tier=0, building=true, dusk=false, animating=false;
-
-  const TIERS=[
-    {t:0, days:0,  name:'Bedroll'},
-    {t:1, days:3,  name:'Tent'},
-    {t:2, days:7,  name:'Lean-to'},
-    {t:3, days:14, name:'Cabin frame'},
-    {t:4, days:25, name:'Snug cabin'},
-    {t:5, days:40, name:'Cabin with porch'},
-    {t:6, days:60, name:'The Homestead'},
-  ];
-
-  const rr=(x,y,w,h,r)=>{ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); };
-  const blob=(x,y,r,c)=>{ ctx.fillStyle=c; ctx.beginPath(); ctx.ellipse(x,y,r,r*0.85,0,0,7); ctx.fill(); };
-  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
-  function shadow(x,y,w){ ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y,w,w*0.32,0,0,7); ctx.fill(); }
-
-  function ground(){
-    const p = dusk ? {g1:'#4f7a48',g2:'#456a40'} : {g1:'#8ecb63',g2:'#80bd57'};
-    ctx.fillStyle=p.g2; rr(30,GY,VW-60,64,26);
-    ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
-  }
-
-  // ---- little builders ----
-  // rare ambient lines while working, and a warm one-time arrival greeting
-  const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
-  const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
-  const ARRIVAL=[
-    'Morning! We heard you kept your oath — mind if we build here?',
-    'A good day, is it? Then let\u2019s lay the first plank.',
-    'You\u2019re still here. So are we. Let\u2019s build something.',
-    'Room for a cabin on this island? We\u2019ll get started.'
-  ];
-  let bubble=null;                 // {x,y,text,until}
-  let nextQuip=0;                  // timestamp gate so lines stay rare
-  function say(x,y,text,ms){ bubble={x,y,text,until:performance.now()+(ms||2600)}; }
-  function greet(){ say(150,GY-52, ARRIVAL[Math.floor(Math.random()*ARRIVAL.length)], 5200); }
-  function maybeQuip(t){
-    const now=performance.now();
-    if(bubble && now<bubble.until) return;
-    if(now<nextQuip) return;
-    nextQuip = now + 9000 + Math.random()*11000;     // one line every ~9–20s, at most
-    if(Math.random()<0.55){                           // and only ~half the time even then
-      const pool = building ? WORK_LINES : REST_LINES;
-      const bx = building ? (Math.random()<0.5?150:320) : 150;
-      say(bx, GY-52, pool[Math.floor(Math.random()*pool.length)], 2400);
-    }
-  }
-  function drawBubble(){
-    if(!bubble || performance.now()>bubble.until){ bubble=null; return; }
-    ctx.font='bold 13px Nunito';
-    const w=ctx.measureText(bubble.text).width+20, h=24, x=bubble.x-w/2, y=bubble.y-h;
-    ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,w,h,9);
-    ctx.beginPath(); ctx.moveTo(bubble.x-5,y+h); ctx.lineTo(bubble.x+5,y+h); ctx.lineTo(bubble.x,y+h+6); ctx.closePath(); ctx.fill();
-    ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(bubble.text, bubble.x, y+h/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-  }
-
-  function head(x,y){ ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y,6,6,0,0,7); ctx.fill();
-    ctx.fillStyle='#5a3b22'; rr(x-6,y-8,12,5,3); }                                  // hair
-  function builderWork(x,y,t,seed){ shadow(x,y+16,15);
-    const sw=Math.sin(t*7+seed);
-    ctx.fillStyle='#3f7f8a'; rr(x-7,y-2,14,16,4);                                   // body
-    ctx.fillStyle='#2f5f68'; rr(x-6,y+10,5,8,2); rr(x+1,y+10,5,8,2);               // legs
-    head(x,y-8);
-    // swinging arm + hammer
-    ctx.save(); ctx.translate(x+4,y); ctx.rotate(-0.5 - sw*0.7);
-    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(12,0); ctx.stroke();
-    ctx.fillStyle='#7a5230'; rr(11,-3,4,10,1); ctx.fillStyle='#9aa2a8'; rr(9,-6,10,5,1);  // hammer head
-    ctx.restore();
-    if(sw>0.85){ ctx.fillStyle='#fff2a0'; ctx.globalAlpha=.9; for(let k=0;k<3;k++){ ctx.fillRect(x+14+k*3, y-8-k*2, 2,2);} ctx.globalAlpha=1; }
-  }
-  function builderRest(x,y,t,seed,dusk){ shadow(x,y+16,15);
-    ctx.fillStyle='#3f7f8a'; rr(x-8,y+2,16,12,5);                                   // sitting body
-    ctx.fillStyle='#2f5f68'; rr(x-8,y+12,14,5,3);                                   // lap/legs
-    head(x,y-3);
-    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';               // hands toward fire
-    ctx.beginPath(); ctx.moveTo(x+4,y+4); ctx.lineTo(x+12,y+8); ctx.stroke();
-    if(dusk){ ctx.font='bold 12px Nunito'; ctx.fillStyle='#e9e4f5'; const o=(t*0.5%1);
-      ctx.globalAlpha=(1-o); ctx.fillText('z', x-10+o*6, y-8-o*12); ctx.globalAlpha=1; }
-  }
-  function campfire(x,y,t,dusk){ shadow(x,y+4,16);
-    ctx.strokeStyle='#7a5230'; ctx.lineWidth=4; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(x-9,y+3); ctx.lineTo(x+9,y-2); ctx.moveTo(x-9,y-2); ctx.lineTo(x+9,y+3); ctx.stroke();
-    const f=0.6+0.4*Math.sin(t*8);
-    if(dusk) glow(x,y-6,34,'#ffca6a',0.5*f+0.2);
-    ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(x-6,y); ctx.quadraticCurveTo(x-3,y-14-f*4,x,y-20-f*5); ctx.quadraticCurveTo(x+3,y-14-f*4,x+6,y); ctx.closePath(); ctx.fill();
-    ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(x-3,y); ctx.quadraticCurveTo(x-1,y-9-f*3,x,y-13-f*4); ctx.quadraticCurveTo(x+2,y-9-f*3,x+3,y); ctx.closePath(); ctx.fill();
-  }
-  function smoke(x,y,t){ for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.5;
-    ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(x+Math.sin(t*1.2+k)*5, y-o*30, 5+o*4,5+o*4,0,0,7); ctx.fill(); } ctx.globalAlpha=1; }
-  function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
-    if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
-
-  // ---- the cabin, per tier, centered on cx ----
-  function cabin(t){
-    const cx=248, base=GY;
-    if(tier===0){ // bedroll
-      shadow(cx,base+6,40); ctx.fillStyle='#8a6f4a'; rr(cx-34,base-10,68,14,7);
-      ctx.fillStyle='#a98a5c'; rr(cx-34,base-10,20,14,7); return; }
-    if(tier===1){ // tent
-      shadow(cx,base+6,52);
-      ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx+40,base+2); ctx.lineTo(cx-40,base+2); ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx-40,base+2); ctx.lineTo(cx-14,base+2); ctx.lineTo(cx,base-30); ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(cx,base-30); ctx.lineTo(cx+8,base+2); ctx.lineTo(cx-8,base+2); ctx.closePath(); ctx.fill(); return; }
-    if(tier===2){ // lean-to
-      shadow(cx,base+6,54);
-      ctx.fillStyle='#7a5230'; rr(cx-34,base-30,5,32,1); rr(cx+30,base-56,5,58,1);
-      ctx.fillStyle='#a86f3c'; ctx.save(); ctx.translate(cx,base); ctx.beginPath();
-      ctx.moveTo(-40,-28); ctx.lineTo(38,-54); ctx.lineTo(42,-46); ctx.lineTo(-36,-20); ctx.closePath(); ctx.fill(); ctx.restore();
-      ctx.fillStyle='#6e4a2a'; rr(cx-36,base-4,72,5,2); return; }
-    if(tier===3){ // frame
-      shadow(cx,base+6,58);
-      ctx.fillStyle='#8a5e37'; [-44,-15,15,44].forEach(dx=>rr(cx+dx,base-60,6,62,1));  // posts
-      ctx.fillStyle='#7a5230'; rr(cx-46,base-62,94,6,1); rr(cx-46,base-34,94,5,1);      // beams
-      ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-46,base-56); ctx.lineTo(cx+48,base-84); ctx.lineTo(cx+48,base-60); ctx.stroke(); // roof skeleton
-      return; }
-    // tiers 4-6 have solid walls
-    const big = tier>=6;
-    const w = big?120:96, h=big?66:56, x=cx-w/2, y=base-h;
-    shadow(cx, base+6, w*0.62);
-    if(tier>=6){ // homestead: outdoor fireplace to the right
-      const fx=cx+w/2+34, fy=base;
-      ctx.fillStyle='#8f8a86'; rr(fx-16,fy-40,32,42,5); ctx.fillStyle='#7a756f'; rr(fx-12,fy-52,24,14,4);
-      ctx.fillStyle='#2b2438'; rr(fx-9,fy-24,18,24,3);
-      const f=0.6+0.4*Math.sin(t*8); if(dusk) glow(fx,fy-14,40,'#ffca6a',0.45*f+0.2);
-      ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-6,fy-4); ctx.quadraticCurveTo(fx,fy-22-f*5,fx,fy-26-f*6); ctx.quadraticCurveTo(fx,fy-22-f*5,fx+6,fy-4); ctx.fill();
-      ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(fx-3,fy-4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx,fy-18-f*4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx+3,fy-4); ctx.fill();
-    }
-    // walls
-    ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,4);
-    ctx.fillStyle= dusk?'#6a4830':'#9a6a3c'; for(let ly=y+8; ly<y+h-4; ly+=11){ ctx.fillRect(x+3,ly,w-6,1.5); } // planks
-    // roof
-    ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath();
-    ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(x+w+8,y+4); ctx.closePath(); ctx.fill();
-    ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; ctx.beginPath(); ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(cx,y-24); ctx.lineTo(x-4,y+4); ctx.closePath(); ctx.fill();
-    // chimney + smoke
-    ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(cx+w*0.24,y-26,10,16,1); smoke(cx+w*0.24+5,y-26,t);
-    // door
-    ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(cx-9,y+h-24,18,24,3);
-    ctx.fillStyle='#f4b860'; ctx.beginPath(); ctx.ellipse(cx+4,y+h-12,1.6,1.6,0,0,7); ctx.fill(); // handle
-    // windows
-    windows(x+10,y+16,16,14);
-    if(tier>=6) windows(x+w-26,y+16,16,14);
-    // porch (tiers 5-6)
-    if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,base-2,w+4,4,2);
-      ctx.fillStyle='#8a5e37'; rr(x-2,base-20,4,20,1); rr(x+w-2,base-20,4,20,1);
-      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-8,base-26,w+16,8,3);              // porch roof
-      ctx.fillStyle='#a5703e'; rr(x+8,base-12,20,4,2); ctx.fillStyle='#6e472b'; rr(x+9,base-9,4,9,1); rr(x+24,base-9,4,9,1); // bench
-    }
-  }
-
-  function paint(t){
-    // sky
-    const sky = dusk
-      ? ['#2b2450','#b5786a'] : ['#a9def0','#ffedcf'];
-    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,sky[0]); g.addColorStop(1,sky[1]);
-    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
-    const DPR=Math.min(2,window.devicePixelRatio||1);
-    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR;
-    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
-    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,VW,VH); }
-    ground(); cabin(t);
-    if(building){ builderWork(150,GY-14,t,0); builderWork(320,GY-12,t,2.1); }
-    else { campfire(180,GY-2,t,dusk); builderRest(150,GY-14,t,0,dusk); builderRest(210,GY-14,t,1.5,dusk); }
-    maybeQuip(t); drawBubble();
-  }
-
-  function fit(now){
-    try{
-      const r=boxEl.getBoundingClientRect(); const DPR=Math.min(2,window.devicePixelRatio||1);
-      const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
-      if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
-      paint((now||0)/1000);
-    }catch(_){}
-    if(animating) requestAnimationFrame(fit);
-  }
-  function setState(ti,b,d){ tier=Math.max(0,Math.min(6,ti|0)); building=!!b; dusk=!!d; }
-  function startAnim(ti,b,d){ setState(ti,b,d); if(!animating){ animating=true; requestAnimationFrame(fit);} }
-  function render(ti,b,d){ setState(ti,b,d); fit(0); }
-  return { render, startAnim, setState, TIERS, greet };
-}
-
-
-/* ============================================================
-   THE FOREST  (isometric, grows with your good days)
-============================================================ */
-const ISO = (function(){
-  const cv=document.getElementById('scene'), ctx=cv.getContext('2d');
-  const stageEl=document.getElementById('stage');
   const VW=760, VH=620, TW=112, TH=56, C=6, R=6, originX=380, originY=215, THICK=42;
   function iso(i,j){ return { x:originX+(i-j)*(TW/2), y:originY+(i+j)*(TH/2) }; }
 
@@ -2476,71 +771,6 @@ const ISO = (function(){
     ctx.fillStyle='#3f7f52'; ctx.beginPath(); ctx.moveTo(c.x+9,y-26); ctx.lineTo(c.x+11,y-21); ctx.lineTo(c.x+7,y-22); ctx.fill(); ctx.beginPath(); ctx.moveTo(c.x+15,y-26); ctx.lineTo(c.x+16,y-21); ctx.lineTo(c.x+13,y-22); ctx.fill();
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
 
-
-  // ---------- the homestead on the island (compact; grows with good-day runs) ----------
-  let cabinTier=-1, cabinBuilding=false, showCabin=false;
-  const ISLE_WORK=['tok','phew','hey!','nice','*taps*'];
-  const ISLE_REST=['zzz','brr','...'];
-  let isleBubble=null, isleNext=0;
-  function isleSay(x,y,txt){ isleBubble={x,y,txt,until:performance.now()+2200}; }
-  function isleQuip(c){
-    const now=performance.now();
-    if(isleBubble && now<isleBubble.until) return;
-    if(now<isleNext) return;
-    isleNext=now+12000+Math.random()*14000;      // rare: every 12–26s at most
-    if(Math.random()<0.4){ const pool=cabinBuilding?ISLE_WORK:ISLE_REST;
-      isleSay(c.x+6, c.y-58, pool[Math.floor(Math.random()*pool.length)]); }
-  }
-  function isleWorker(x,y,t,building){
-    ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y+2,9,4,0,0,7); ctx.fill();
-    ctx.fillStyle='#3f7f8a'; rr(x-4,y-11,8,11,3);
-    ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y-14,4,4,0,0,7); ctx.fill();
-    ctx.fillStyle='#5a3b22'; rr(x-4,y-18,8,3,2);
-    if(building){ const sw=Math.sin(t*7+x); ctx.save(); ctx.translate(x+3,y-8); ctx.rotate(-0.4-sw*0.6);
-      ctx.strokeStyle='#e8b48a'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(7,0); ctx.stroke();
-      ctx.fillStyle='#9aa2a8'; rr(6,-3,6,3,1); ctx.restore(); }
-  }
-  function drawHomesteadIso(c,tier,t){
-    const bx=c.x, by=c.y;
-    function sh(w){ ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(bx,by+2,w,w*0.34,0,0,7); ctx.fill(); }
-    if(tier<=0){ sh(20); ctx.fillStyle='#8a6f4a'; rr(bx-16,by-8,32,9,4); ctx.fillStyle='#a98a5c'; rr(bx-16,by-8,10,9,4); }
-    else if(tier===1){ sh(24); ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(bx,by-34); ctx.lineTo(bx+22,by+2); ctx.lineTo(bx-22,by+2); ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(bx,by-34); ctx.lineTo(bx-22,by+2); ctx.lineTo(bx-8,by+2); ctx.lineTo(bx,by-18); ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(bx,by-18); ctx.lineTo(bx+5,by+2); ctx.lineTo(bx-5,by+2); ctx.closePath(); ctx.fill(); }
-    else if(tier===2){ sh(26); ctx.fillStyle='#7a5230'; rr(bx-20,by-18,3,20,1); rr(bx+17,by-34,3,36,1);
-      ctx.fillStyle='#a86f3c'; ctx.beginPath(); ctx.moveTo(bx-22,by-16); ctx.lineTo(bx+20,by-32); ctx.lineTo(bx+23,by-27); ctx.lineTo(bx-19,by-11); ctx.closePath(); ctx.fill(); }
-    else if(tier===3){ sh(28); ctx.fillStyle='#8a5e37'; [-22,-7,8,22].forEach(dx=>rr(bx+dx,by-34,4,36,1));
-      ctx.fillStyle='#7a5230'; rr(bx-24,by-36,50,4,1); ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.moveTo(bx-24,by-34); ctx.lineTo(bx+26,by-48); ctx.lineTo(bx+26,by-34); ctx.stroke(); }
-    else { const big=tier>=6, w=big?64:52, h=big?38:32, x=bx-w/2, y=by-h;
-      sh(w*0.6);
-      if(tier>=6){ const fx=bx+w/2+16, f=0.6+0.4*Math.sin(t*8);
-        ctx.fillStyle='#8f8a86'; rr(fx-8,by-22,16,24,3); ctx.fillStyle='#2b2438'; rr(fx-5,by-12,10,14,2);
-        if(dusk) glow(fx,by-10,22,'#ffca6a',0.4*f+0.2);
-        ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-3,by-2); ctx.quadraticCurveTo(fx,by-13-f*3,fx,by-15-f*4); ctx.quadraticCurveTo(fx,by-13-f*3,fx+3,by-2); ctx.fill(); }
-      ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,3);
-      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath(); ctx.moveTo(x-5,y+3); ctx.lineTo(bx,y-18); ctx.lineTo(x+w+5,y+3); ctx.closePath(); ctx.fill();
-      ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(bx+w*0.22,y-16,7,10,1);
-      for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.4; ctx.fillStyle='#d9d2e2';
-        ctx.beginPath(); ctx.ellipse(bx+w*0.22+3, y-16-o*16, 3,3,0,0,7); ctx.fill(); } ctx.globalAlpha=1;
-      ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(bx-6,y+h-16,12,16,2);
-      ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x+7,y+9,11,9,2); if(dusk) glow(x+12,y+13,16,'#ffdf9a',0.5);
-      if(tier>=6){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x+w-18,y+9,11,9,2); if(dusk) glow(x+w-13,y+13,16,'#ffdf9a',0.5); }
-      if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,by-2,w+4,3,1); ctx.fillStyle='#8a5e37'; rr(x-2,by-12,3,12,1); rr(x+w-1,by-12,3,12,1);
-        ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-5,by-15,w+10,5,2); }
-    }
-    // one worker beside the build, plus rare short speech
-    isleWorker(bx-Math.max(20,18), by-2, t, cabinBuilding);
-    isleQuip(c);
-    if(isleBubble && performance.now()<isleBubble.until){
-      ctx.font='bold 11px Nunito'; const tw=ctx.measureText(isleBubble.txt).width+14, h=18, x=isleBubble.x-tw/2, y=isleBubble.y-h;
-      ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,tw,h,7);
-      ctx.beginPath(); ctx.moveTo(isleBubble.x-4,y+h); ctx.lineTo(isleBubble.x+4,y+h); ctx.lineTo(isleBubble.x,y+h+5); ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(isleBubble.txt, isleBubble.x, y+h/2);
-      ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-    }
-  }
-
   // ---------- growth script (each step ≈ one good day) ----------
   const S=[
     {t:'tree',id:'A',i:2,j:2,lvl:1,label:'A tender sprout breaks the soil'},
@@ -2574,7 +804,7 @@ const ISO = (function(){
     {t:'tree',id:'C',lvl:2,label:'The third tree grows'},
     {t:'obj',type:'mushroom',i:0,j:4,label:'Mushrooms appear in the shade'},
     {t:'obj',type:'cow',i:2,j:0,label:'A cow comes to the meadow'},
-    {t:'obj',type:'kangaroo',i:0,j:5,label:'A kangaroo bounds onto the island'},
+    {t:'obj',type:'kangaroo',i:0,j:0,label:'A kangaroo bounds onto the island'},
     {t:'obj',type:'cockatoo',i:4,j:0,label:'A sulphur-crested cockatoo lands in the branches'},
     {t:'obj',type:'fox',i:5,j:4,label:'A fox curls up at the edge'},
     {t:'tree',id:'C',lvl:3,label:'The third tree finds its trunk'},
@@ -2637,7 +867,6 @@ const ISO = (function(){
         unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
       if(f) items.push({d,fn:f}); }
     for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
-    if(showCabin){ const hc=iso(0,0); items.push({d:-1,fn:()=>drawHomesteadIso(hc,cabinTier,t)}); }
     items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
     for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
   }
@@ -2668,47 +897,274 @@ const ISO = (function(){
     VIS={ l:-ox/scale, t:-oy/scale, r:(cv.width-ox)/scale, b:(cv.height-oy)/scale };
     drawScene(t); drawPuffs(t);
    }catch(_e){}
-    requestAnimationFrame(fitFrame);
+    if(animating) requestAnimationFrame(fitFrame);
   }
 
-  function setState(lvl, isDusk){ lvl=Math.max(0,Math.min(S.length, lvl|0)); if(lvl!==level){ level=lvl; STATE=apply(level); } dusk=!!isDusk; }
-  function start(){ requestAnimationFrame(fitFrame); }
-  function steps(){ return S.map((x,i)=>({label:x.label||'A new life arrives', phase:phaseOf(i+1)})); }
-  // level at which a given creature/object first appears (1-based); 0 if never
-  function levelOf(type){ const i=S.findIndex(x=> x.type===type || (type==='butterfly' && x.t==='flutter') ); return i<0?0:i+1; }
-  function setCabin(tier, building){ cabinTier=tier|0; cabinBuilding=!!building; showCabin=tier>=0; }
-  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, LEN:S.length };
-})();
-
+  function setLevel(lvl){ lvl=Math.max(0,Math.min(S.length, lvl|0)); level=lvl; STATE=apply(level); }
+  function setDusk(v){ dusk=!!v; }
+  let animating=false;
+  function startAnim(lvl,isDusk){ setLevel(lvl); dusk=!!isDusk; if(!animating){ animating=true; requestAnimationFrame(fitFrame);} }
+  function renderStatic(lvl,isDusk){ setLevel(lvl); dusk=!!isDusk; fitFrame(0); }
+  function grow(){ if(level>=S.length) return null; level++; STATE=apply(level); return S[level-1]; }
+  function start(){ startAnim(level,dusk); }
+  return { S, LEN:S.length, phaseOf, phases, startAnim, renderStatic, grow, setLevel, setDusk, spawnPuff };
+}
 /* ============================================================
-   BOOT
+   THE HOMESTEAD — a cabin that builds itself as good days add up.
+   Ratcheted (never torn down). Builders work on a run, rest otherwise.
+   makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
+                             setState(tier,building,dusk), TIERS }
 ============================================================ */
-(async function(){
-  bootMsg('Waking the forest…');
-  try{ await load(); }
-  catch(e){
-    cloudError = 'Startup: '+((e && e.message) ? e.message : String(e));
-    backend='local';
-    if(!oath){ oath=defaultOath(); logs=[]; dayStatus={}; prefs={max:0}; }
+function makeCabin(cv, boxEl){
+  const ctx=cv.getContext('2d');
+  const VW=440, VH=300, GY=214;             // virtual size + ground line
+  let tier=0, building=true, dusk=false, animating=false;
+
+  const TIERS=[
+    {t:0, days:0,  name:'Bedroll'},
+    {t:1, days:3,  name:'Tent'},
+    {t:2, days:7,  name:'Lean-to'},
+    {t:3, days:14, name:'Cabin frame'},
+    {t:4, days:25, name:'Snug cabin'},
+    {t:5, days:40, name:'Cabin with porch'},
+    {t:6, days:60, name:'The Homestead'},
+  ];
+
+  const rr=(x,y,w,h,r)=>{ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); };
+  const blob=(x,y,r,c)=>{ ctx.fillStyle=c; ctx.beginPath(); ctx.ellipse(x,y,r,r*0.85,0,0,7); ctx.fill(); };
+  function glow(x,y,r,color,a){ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,color); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=a; ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,y,r,r,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
+  function shadow(x,y,w){ ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y,w,w*0.32,0,0,7); ctx.fill(); }
+
+  function ground(){
+    const p = dusk ? {g1:'#4f7a48',g2:'#456a40'} : {g1:'#8ecb63',g2:'#80bd57'};
+    ctx.fillStyle=p.g2; rr(30,GY,VW-60,64,26);
+    ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
   }
-  if(!profile) profile={ name:'', animal:'' };
-  bootMsg('Planting the ground…');
-  try{ updateSyncUI(); }catch(_){}
-  try{ updateHeader(); renderAccount(); renderTone(); }catch(_){}
-  try{ restoreWait(); }catch(_){}
-  try{ refresh(); }catch(e){ console.error('render init failed', e); }
-  ISO.start();
-  try{ if(isStandalone()){ const r=document.getElementById('installRow'); if(r) r.style.display='none'; } }catch(_){}
-  // first run: gently invite a guest to make an account (fully skippable)
-  try{
-    if(backend==='cloud' && accountIsGuest() && !(profile&&profile.name)) showAuth('welcome');
-    else if(!(oath && oath.configured)) showOnboard(false);
-  }catch(_){}
-  // hide the loader once the scene has actually painted a frame
-  try{ ['obTarget','obUnit'].forEach(id=>document.getElementById(id).addEventListener('input',obUpdateHint)); }catch(_){}
-  requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(hideBoot,220)));
-  setTimeout(hideBoot, 6000);   // safety net: never trap the user on the loader
-  setInterval(()=>{ try{ refresh(); }catch(_){} }, 60000);
-  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every good day is what grows it.'); }catch(_){} }, 900);
+
+  // ---- little builders ----
+  // rare ambient lines while working, and a warm one-time arrival greeting
+  const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
+  const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
+  const ARRIVAL=[
+    'Morning! We heard you kept your oath — mind if we build here?',
+    'A good day, is it? Then let’s lay the first plank.',
+    'You’re still here. So are we. Let’s build something.',
+    'Room for a cabin on this island? We’ll get started.'
+  ];
+  let bubble=null; let nextQuip=0;
+  function say(x,y,text,ms){ bubble={x,y,text,until:performance.now()+(ms||2600)}; }
+  function greet(){ say(150,GY-52, ARRIVAL[Math.floor(Math.random()*ARRIVAL.length)], 5200); }
+  function maybeQuip(t){
+    const now=performance.now();
+    if(bubble && now<bubble.until) return;
+    if(now<nextQuip) return;
+    nextQuip = now + 9000 + Math.random()*11000;
+    if(Math.random()<0.55){
+      const pool = building ? WORK_LINES : REST_LINES;
+      const bx = building ? (Math.random()<0.5?150:320) : 150;
+      say(bx, GY-52, pool[Math.floor(Math.random()*pool.length)], 2400);
+    }
+  }
+  function drawBubble(){
+    if(!bubble || performance.now()>bubble.until){ bubble=null; return; }
+    ctx.font='bold 13px Nunito';
+    const w=ctx.measureText(bubble.text).width+20, h=24, x=bubble.x-w/2, y=bubble.y-h;
+    ctx.fillStyle='rgba(255,255,255,.95)'; rr(x,y,w,h,9);
+    ctx.beginPath(); ctx.moveTo(bubble.x-5,y+h); ctx.lineTo(bubble.x+5,y+h); ctx.lineTo(bubble.x,y+h+6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#2b2438'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(bubble.text, bubble.x, y+h/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  }
+  function head(x,y){ ctx.fillStyle='#e8b48a'; ctx.beginPath(); ctx.ellipse(x,y,6,6,0,0,7); ctx.fill();
+    ctx.fillStyle='#5a3b22'; rr(x-6,y-8,12,5,3); }                                  // hair
+  function builderWork(x,y,t,seed){ shadow(x,y+16,15);
+    const sw=Math.sin(t*7+seed);
+    ctx.fillStyle='#3f7f8a'; rr(x-7,y-2,14,16,4);                                   // body
+    ctx.fillStyle='#2f5f68'; rr(x-6,y+10,5,8,2); rr(x+1,y+10,5,8,2);               // legs
+    head(x,y-8);
+    // swinging arm + hammer
+    ctx.save(); ctx.translate(x+4,y); ctx.rotate(-0.5 - sw*0.7);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(12,0); ctx.stroke();
+    ctx.fillStyle='#7a5230'; rr(11,-3,4,10,1); ctx.fillStyle='#9aa2a8'; rr(9,-6,10,5,1);  // hammer head
+    ctx.restore();
+    if(sw>0.85){ ctx.fillStyle='#fff2a0'; ctx.globalAlpha=.9; for(let k=0;k<3;k++){ ctx.fillRect(x+14+k*3, y-8-k*2, 2,2);} ctx.globalAlpha=1; }
+  }
+  function builderRest(x,y,t,seed,dusk){ shadow(x,y+16,15);
+    ctx.fillStyle='#3f7f8a'; rr(x-8,y+2,16,12,5);                                   // sitting body
+    ctx.fillStyle='#2f5f68'; rr(x-8,y+12,14,5,3);                                   // lap/legs
+    head(x,y-3);
+    ctx.strokeStyle='#e8b48a'; ctx.lineWidth=4; ctx.lineCap='round';               // hands toward fire
+    ctx.beginPath(); ctx.moveTo(x+4,y+4); ctx.lineTo(x+12,y+8); ctx.stroke();
+    if(dusk){ ctx.font='bold 12px Nunito'; ctx.fillStyle='#e9e4f5'; const o=(t*0.5%1);
+      ctx.globalAlpha=(1-o); ctx.fillText('z', x-10+o*6, y-8-o*12); ctx.globalAlpha=1; }
+  }
+  function campfire(x,y,t,dusk){ shadow(x,y+4,16);
+    ctx.strokeStyle='#7a5230'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x-9,y+3); ctx.lineTo(x+9,y-2); ctx.moveTo(x-9,y-2); ctx.lineTo(x+9,y+3); ctx.stroke();
+    const f=0.6+0.4*Math.sin(t*8);
+    if(dusk) glow(x,y-6,34,'#ffca6a',0.5*f+0.2);
+    ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(x-6,y); ctx.quadraticCurveTo(x-3,y-14-f*4,x,y-20-f*5); ctx.quadraticCurveTo(x+3,y-14-f*4,x+6,y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(x-3,y); ctx.quadraticCurveTo(x-1,y-9-f*3,x,y-13-f*4); ctx.quadraticCurveTo(x+2,y-9-f*3,x+3,y); ctx.closePath(); ctx.fill();
+  }
+  function smoke(x,y,t){ for(let k=0;k<3;k++){ const o=((t*0.4+k*0.33)%1); ctx.globalAlpha=(1-o)*0.5;
+    ctx.fillStyle='#d9d2e2'; ctx.beginPath(); ctx.ellipse(x+Math.sin(t*1.2+k)*5, y-o*30, 5+o*4,5+o*4,0,0,7); ctx.fill(); } ctx.globalAlpha=1; }
+  function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
+    if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
+
+  // ---- the cabin, per tier, centered on cx ----
+  function cabin(t){
+    const cx=248, base=GY;
+    if(tier===0){ // bedroll
+      shadow(cx,base+6,40); ctx.fillStyle='#8a6f4a'; rr(cx-34,base-10,68,14,7);
+      ctx.fillStyle='#a98a5c'; rr(cx-34,base-10,20,14,7); return; }
+    if(tier===1){ // tent
+      shadow(cx,base+6,52);
+      ctx.fillStyle='#c98a4a'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx+40,base+2); ctx.lineTo(cx-40,base+2); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#a86f34'; ctx.beginPath(); ctx.moveTo(cx,base-56); ctx.lineTo(cx-40,base+2); ctx.lineTo(cx-14,base+2); ctx.lineTo(cx,base-30); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#3a2a1a'; ctx.beginPath(); ctx.moveTo(cx,base-30); ctx.lineTo(cx+8,base+2); ctx.lineTo(cx-8,base+2); ctx.closePath(); ctx.fill(); return; }
+    if(tier===2){ // lean-to
+      shadow(cx,base+6,54);
+      ctx.fillStyle='#7a5230'; rr(cx-34,base-30,5,32,1); rr(cx+30,base-56,5,58,1);
+      ctx.fillStyle='#a86f3c'; ctx.save(); ctx.translate(cx,base); ctx.beginPath();
+      ctx.moveTo(-40,-28); ctx.lineTo(38,-54); ctx.lineTo(42,-46); ctx.lineTo(-36,-20); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.fillStyle='#6e4a2a'; rr(cx-36,base-4,72,5,2); return; }
+    if(tier===3){ // frame
+      shadow(cx,base+6,58);
+      ctx.fillStyle='#8a5e37'; [-44,-15,15,44].forEach(dx=>rr(cx+dx,base-60,6,62,1));  // posts
+      ctx.fillStyle='#7a5230'; rr(cx-46,base-62,94,6,1); rr(cx-46,base-34,94,5,1);      // beams
+      ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-46,base-56); ctx.lineTo(cx+48,base-84); ctx.lineTo(cx+48,base-60); ctx.stroke(); // roof skeleton
+      return; }
+    // tiers 4-6 have solid walls
+    const big = tier>=6;
+    const w = big?120:96, h=big?66:56, x=cx-w/2, y=base-h;
+    shadow(cx, base+6, w*0.62);
+    if(tier>=6){ // homestead: outdoor fireplace to the right
+      const fx=cx+w/2+34, fy=base;
+      ctx.fillStyle='#8f8a86'; rr(fx-16,fy-40,32,42,5); ctx.fillStyle='#7a756f'; rr(fx-12,fy-52,24,14,4);
+      ctx.fillStyle='#2b2438'; rr(fx-9,fy-24,18,24,3);
+      const f=0.6+0.4*Math.sin(t*8); if(dusk) glow(fx,fy-14,40,'#ffca6a',0.45*f+0.2);
+      ctx.fillStyle='#f4a63a'; ctx.beginPath(); ctx.moveTo(fx-6,fy-4); ctx.quadraticCurveTo(fx,fy-22-f*5,fx,fy-26-f*6); ctx.quadraticCurveTo(fx,fy-22-f*5,fx+6,fy-4); ctx.fill();
+      ctx.fillStyle='#ffdd6b'; ctx.beginPath(); ctx.moveTo(fx-3,fy-4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx,fy-18-f*4); ctx.quadraticCurveTo(fx,fy-15-f*4,fx+3,fy-4); ctx.fill();
+    }
+    // walls
+    ctx.fillStyle= dusk?'#7a5334':'#b07a48'; rr(x,y,w,h,4);
+    ctx.fillStyle= dusk?'#6a4830':'#9a6a3c'; for(let ly=y+8; ly<y+h-4; ly+=11){ ctx.fillRect(x+3,ly,w-6,1.5); } // planks
+    // roof
+    ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; ctx.beginPath();
+    ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(x+w+8,y+4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; ctx.beginPath(); ctx.moveTo(x-8,y+4); ctx.lineTo(cx,y-30); ctx.lineTo(cx,y-24); ctx.lineTo(x-4,y+4); ctx.closePath(); ctx.fill();
+    // chimney + smoke
+    ctx.fillStyle= dusk?'#5a3f6a':'#8a5c34'; rr(cx+w*0.24,y-26,10,16,1); smoke(cx+w*0.24+5,y-26,t);
+    // door
+    ctx.fillStyle= dusk?'#3a2a44':'#5c3c22'; rr(cx-9,y+h-24,18,24,3);
+    ctx.fillStyle='#f4b860'; ctx.beginPath(); ctx.ellipse(cx+4,y+h-12,1.6,1.6,0,0,7); ctx.fill(); // handle
+    // windows
+    windows(x+10,y+16,16,14);
+    if(tier>=6) windows(x+w-26,y+16,16,14);
+    // porch (tiers 5-6)
+    if(tier>=5){ ctx.fillStyle= dusk?'#4a3358':'#6e4a2a'; rr(x-2,base-2,w+4,4,2);
+      ctx.fillStyle='#8a5e37'; rr(x-2,base-20,4,20,1); rr(x+w-2,base-20,4,20,1);
+      ctx.fillStyle= dusk?'#5a3f6a':'#7a5230'; rr(x-8,base-26,w+16,8,3);              // porch roof
+      ctx.fillStyle='#a5703e'; rr(x+8,base-12,20,4,2); ctx.fillStyle='#6e472b'; rr(x+9,base-9,4,9,1); rr(x+24,base-9,4,9,1); // bench
+    }
+  }
+
+  function paint(t){
+    // sky
+    const sky = dusk
+      ? ['#2b2450','#b5786a'] : ['#a9def0','#ffedcf'];
+    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,sky[0]); g.addColorStop(1,sky[1]);
+    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+    const DPR=Math.min(2,window.devicePixelRatio||1);
+    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR;
+    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
+    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,VW,VH); }
+    ground(); cabin(t);
+    if(building){ builderWork(150,GY-14,t,0); builderWork(320,GY-12,t,2.1); }
+    else { campfire(180,GY-2,t,dusk); builderRest(150,GY-14,t,0,dusk); builderRest(210,GY-14,t,1.5,dusk); }
+    maybeQuip(t); drawBubble();
+  }
+
+  function fit(now){
+    try{
+      const r=boxEl.getBoundingClientRect(); const DPR=Math.min(2,window.devicePixelRatio||1);
+      const cw=Math.max(1,Math.round(r.width)), ch=Math.max(1,Math.round(r.height));
+      if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
+      paint((now||0)/1000);
+    }catch(_){}
+    if(animating) requestAnimationFrame(fit);
+  }
+  function setState(ti,b,d){ tier=Math.max(0,Math.min(6,ti|0)); building=!!b; dusk=!!d; }
+  function startAnim(ti,b,d){ setState(ti,b,d); if(!animating){ animating=true; requestAnimationFrame(fit);} }
+  function render(ti,b,d){ setState(ti,b,d); fit(0); }
+  return { render, startAnim, setState, TIERS, greet };
+}
+
+
+/* ---- hero: live, interactive forest ---- */
+const heroCanvas=document.getElementById('heroForest');
+const hero=makeForest(heroCanvas, heroCanvas.parentElement);
+const START_LEVEL=11;                      // opens in a lush late-Sapling (tree, bushes, butterfly)
+const DEMO_CAP=20;                         // let them reach early Grove — the first animal — then hand off
+let heroLevel=START_LEVEL;                  // fresh every visit — no persistence, so it always resets
+let heroDusk=false;
+hero.startAnim(heroLevel, heroDusk);
+setHeroPhase();
+
+function setHeroPhase(){ document.getElementById('heroPhase').textContent = hero.phaseOf(heroLevel); }
+const grewEl=document.getElementById('heroGrew');
+const growBtn=document.getElementById('heroGrow');
+
+function capReached(){
+  growBtn.textContent='Open the app to keep growing →';
+  growBtn.classList.add('done');
+  growBtn.onclick=()=>window.open('/app','_blank','noopener');
+}
+
+growBtn.addEventListener('click', ()=>{
+  if(heroLevel>=DEMO_CAP) return;          // handed off to capReached's own handler
+  const step=hero.grow();
+  if(!step){ return; }
+  heroLevel++;
+  setHeroPhase();
+  grewEl.textContent = (step.label||'A new life arrives')+'.';
+  if(heroLevel>=DEMO_CAP){
+    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning \u2014 <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+  }
+});
+
+const dayBtn=document.getElementById('heroDay');
+function paintDayBtn(){ dayBtn.textContent = heroDusk ? '🌙 Dusk' : '☀ Day'; }
+paintDayBtn();
+dayBtn.addEventListener('click', ()=>{
+  heroDusk=!heroDusk;
+  hero.setDusk(heroDusk); paintDayBtn();
+});
+
+/* ---- journey vignettes: static snapshots at fixed stages ---- */
+document.querySelectorAll('.vig canvas').forEach(cv=>{
+  const f=makeForest(cv, cv.parentElement);        // parent is the fixed .cvbox
+  const lvl=parseInt(cv.dataset.lvl,10), dusk=cv.dataset.dusk==='1';
+  const draw=()=>f.renderStatic(lvl,dusk);
+  draw();
+  // re-render only when the *box* changes size (not the canvas we just resized)
+  let raf, last=0;
+  const ro=new ResizeObserver(()=>{ cancelAnimationFrame(raf); raf=requestAnimationFrame(()=>{
+    const w=cv.parentElement.clientWidth; if(w!==last){ last=w; draw(); }
+  }); });
+  ro.observe(cv.parentElement);
+});
+
+/* ---- homestead demo ---- */
+(function(){
+  const cv=document.getElementById('cabinDemo'); if(!cv) return;
+  const cab=makeCabin(cv, cv.parentElement);
+  cab.startAnim(5, true, false);   // "Cabin with porch", builders working, daytime
+  setTimeout(()=>{ if(cab.greet) cab.greet(); }, 1200);
 })();
+
+/* keep the hero fitting on resize (its own loop handles redraw, this nudges layout) */
 </script>
+</body>
+</html>
