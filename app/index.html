@@ -181,6 +181,10 @@
   .crt.filled{border-style:solid; border-color:rgba(143,206,107,.4); background:linear-gradient(180deg,#33422f,#293a26)}
   .crt.filled .glyph{filter:none}
   .crt.filled .lock{color:var(--leaf)}
+  .crt.special{border-style:solid; border-color:rgba(244,184,96,.45); background:linear-gradient(180deg,#4a3d2a,#3a301f)}
+  .crt.special .glyph{filter:none}
+  .crt.special .lock{color:var(--honey)}
+  .crt.special .lock small{display:block; font-size:9px; color:var(--muted); font-weight:700; margin-top:2px}
   .soonpill{display:inline-block; margin-top:14px; font-size:11px; font-weight:800; color:var(--honey);
     background:rgba(244,184,96,.12); border:1px solid rgba(244,184,96,.3); padding:6px 11px; border-radius:999px}
 
@@ -327,21 +331,21 @@
   .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
 
   /* ---------- crossing-point dialog ---------- */
-  #cross, #donate, #feedback, #enjoy, #reset, #install{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
+  #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
-  #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show{display:flex}
-  #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
+  #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
+  #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
     border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
     box-shadow:0 24px 60px rgba(6,3,16,.6)}
-  #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
-  #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
-  #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+  #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle, #logedit .mtitle, #cikiname .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
+  #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody, #logedit .mbody, #cikiname .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
+  #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary, #logedit .mprimary, #cikiname .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
-  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
-  #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
+  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active, #logedit .mprimary:active, #cikiname .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost, #logedit .mghost, #cikiname .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
     font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
-  #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+  #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
     font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:6px; cursor:pointer; text-decoration:underline}
 
   #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
@@ -350,10 +354,10 @@
   #donate .mgreen:active{transform:translateY(3px); box-shadow:0 1px 0 #4d8a36}
   #donate .msub{display:block; font-weight:700; font-size:11px; opacity:.75; margin-top:2px}
 
-  #feedback input, #feedback textarea{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
+  #feedback input, #feedback textarea, #logedit input, #logedit textarea, #cikiname input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
     color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:12px 14px; outline:none; margin-bottom:10px}
-  #feedback textarea{resize:vertical; min-height:96px; line-height:1.5}
-  #feedback input:focus, #feedback textarea:focus{border-color:var(--honey)}
+  #feedback textarea, #logedit textarea{resize:vertical; min-height:96px; line-height:1.5}
+  #feedback input:focus, #feedback textarea:focus, #logedit input:focus, #logedit textarea:focus, #cikiname input:focus{border-color:var(--honey)}
 
   #install .icon{width:64px; height:64px; border-radius:16px; display:block; margin:0 auto 14px; box-shadow:0 8px 20px rgba(0,0,0,.35)}
   #install .insteps{list-style:none; padding:0; margin:0 0 4px}
@@ -367,6 +371,11 @@
   #install .plat{display:inline-block; margin-bottom:14px; font-size:11px; font-weight:800; letter-spacing:1px;
     text-transform:uppercase; color:var(--muted); background:var(--plum3); border:1px solid var(--line);
     padding:5px 11px; border-radius:999px}
+  #cikiname .cikiport{width:132px; height:104px; margin:2px auto 8px; display:block; background:linear-gradient(180deg,#a9def0,#ffedcf); border-radius:16px; border:1px solid var(--line)}
+  #logedit .leRow{display:flex; align-items:center; justify-content:space-between; background:var(--plum3);
+    border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:14px; font-size:14px; color:var(--muted)}
+  #logedit .leRow b{font-family:'Pixelify Sans'; font-size:22px; color:var(--ink)}
+  #logedit .leLbl{display:block; font-weight:800; font-size:12.5px; color:var(--muted); margin:0 0 7px}
   #reset .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
   #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
 
@@ -523,6 +532,32 @@
       <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
       <button class="mghost" onclick="openFeedback()">💬 Got an idea? Tell me</button>
       <button class="mlink" onclick="hideDonate()">Maybe later</button>
+    </div>
+  </div>
+
+  <div id="cikiname">
+    <div class="mbox">
+      <canvas class="cikiport" id="cikiPort"></canvas>
+      <div class="mtitle">A new friend arrived</div>
+      <div class="mbody">A little dog wandered onto your island today — tail going the whole time — and decided this is home now. She's yours to keep. What will you call her?</div>
+      <input id="cikiNameInput" type="text" maxlength="24" autocomplete="off" placeholder="Give her a name…">
+      <button class="mprimary" onclick="saveCikiName()">That's her name</button>
+      <button class="mlink" onclick="hideCikiName()">Maybe later</button>
+    </div>
+  </div>
+
+  <div id="logedit">
+    <div class="mbox">
+      <div class="mtitle">Correct today's count</div>
+      <div class="mbody">Mis-tapped? You can fix <b>today's</b> number here. This is for genuine mistakes — the forest grows truest on honest days, so tell yourself why in a word or two.</div>
+      <div class="leRow"><span>Today is logged as</span><b id="leCurrent">0</b></div>
+      <label class="leLbl">The correct number should be</label>
+      <input id="leCount" type="number" inputmode="numeric" min="0" placeholder="e.g. 3">
+      <label class="leLbl">Why the change?</label>
+      <textarea id="leReason" rows="2" placeholder="e.g. double-tapped by accident"></textarea>
+      <button class="mprimary" id="leSave" onclick="submitLogEdit()">Save the correction</button>
+      <button class="mlink" onclick="hideLogEdit()">Cancel</button>
+      <div class="err" id="leErr"></div>
     </div>
   </div>
 
@@ -745,6 +780,10 @@
       <div class="acctrow">
         <div class="lbl">Support this project<small>keeps the forest growing for everyone</small></div>
         <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
+      </div>
+      <div class="acctrow">
+        <div class="lbl">Fix a mis-tap<small>correct today's count</small></div>
+        <button class="acctbtn" onclick="openLogEdit()">Correct</button>
       </div>
       <div class="acctrow" id="installRow">
         <div class="lbl">Add to home screen<small>open it like a real app</small></div>
@@ -1016,7 +1055,7 @@ function openFeedback(){
 function hideEnjoy(){ document.getElementById('enjoy').classList.remove('show'); }
 function enjoyToFeedback(){ hideEnjoy(); openFeedback(); }
 function anyModalOpen(){
-  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install'].some(id=>{
+  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install','logedit','cikiname'].some(id=>{
     const el=document.getElementById(id); return el && el.classList.contains('show');
   });
 }
@@ -1247,7 +1286,7 @@ function dismissOverlay(el){
 }
 
 function overlayOpen(){
-  return ['onboard','auth','feedback','reset','enjoy','install'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
+  return ['onboard','auth','feedback','reset','enjoy','install','logedit','cikiname'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
 }
 // iOS can leave the page scrolled after the keyboard closes — put it back
 window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
@@ -1551,6 +1590,11 @@ function refresh(){
   ISO.setState(D.growthLevel, dusk);
   ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
+  // Ciki arrives once the farm is alive enough — meet her, and give her a name
+  if(D.growthLevel>=ISO.CIKI_LEVEL && !prefs.cikiArrived){
+    prefs.cikiArrived=true; persistPrefs();
+    setTimeout(()=>{ if(!anyModalOpen()) openCikiName(); }, 900);
+  }
   maybeAskFeedback();
   if(document.getElementById('homeSheet').classList.contains('show')) renderHomestead();
 
@@ -1658,6 +1702,84 @@ async function resolveDay(kind){
     refresh();
   }
 }
+/* ---- Ciki's name (she arrives; you name her) ---- */
+let cikiPortRAF=null;
+function openCikiName(){
+  closeAllSheets();
+  document.getElementById('scrim').classList.remove('show');
+  document.getElementById('cikiNameInput').value = prefs.cikiName || '';
+  document.getElementById('cikiname').classList.add('show'); lockScroll();
+  // gently animate the portrait (a little tail wag) while the dialog is open
+  const pcv=document.getElementById('cikiPort');
+  cancelAnimationFrame(cikiPortRAF);
+  const loop=(now)=>{ if(!document.getElementById('cikiname').classList.contains('show')) return;
+    try{ ISO.cikiPortrait(pcv, now/1000); }catch(_){}
+    cikiPortRAF=requestAnimationFrame(loop); };
+  cikiPortRAF=requestAnimationFrame(loop);
+}
+function hideCikiName(){ cancelAnimationFrame(cikiPortRAF); dismissOverlay(document.getElementById('cikiname')); }
+async function saveCikiName(){
+  const v=(document.getElementById('cikiNameInput').value||'').trim().slice(0,24);
+  if(v) prefs.cikiName=v;
+  try{ await persistPrefs(); }catch(_){}
+  hideCikiName();
+  renderSanctuary();
+  if(v) toast(v+' it is — she\u2019s home now. 🤍');
+}
+
+/* ---- correct today's count (mis-tap fix, today only, with a reason) ---- */
+function openLogEdit(){
+  closeAllSheets();
+  document.getElementById('scrim').classList.remove('show');
+  const cur = D ? D.todayCount : 0;
+  document.getElementById('leCurrent').textContent = cur;
+  document.getElementById('leCount').value = cur;
+  document.getElementById('leReason').value = '';
+  document.getElementById('leErr').textContent = '';
+  const el=document.getElementById('logedit'); el.scrollTop=0; el.classList.add('show'); lockScroll();
+}
+function hideLogEdit(){ dismissOverlay(document.getElementById('logedit')); }
+async function submitLogEdit(){
+  const err=document.getElementById('leErr'); err.textContent='';
+  const raw=document.getElementById('leCount').value;
+  const reason=(document.getElementById('leReason').value||'').trim();
+  const target=Math.max(0, Math.floor(Number(raw)));
+  if(raw===''||isNaN(target)){ err.textContent='Enter the correct number.'; return; }
+  if(target>200){ err.textContent='That seems too high — please check.'; return; }
+  if(reason.length<3){ err.textContent='A short reason keeps it honest — even a couple of words.'; return; }
+
+  const tk=todayKey();
+  // indices of today's individual logs, newest first
+  const todayIdx = logs.map((iso,i)=>({i, t:new Date(iso).getTime(), day:todayKey(new Date(iso))}))
+                       .filter(o=>o.day===tk).sort((a,b)=>b.t-a.t);
+  const current=todayIdx.length;
+
+  if(target<current){
+    const remove=new Set(todayIdx.slice(0, current-target).map(o=>o.i));
+    logs = logs.filter((_,i)=>!remove.has(i));
+  } else if(target>current){
+    const now=Date.now();
+    for(let k=0;k<(target-current);k++) logs.push(new Date(now - k*1000).toISOString());
+  }
+  // if they set today to 0 and there was a dayStatus estimate, clear it so today reads 0
+  if(target===0 && dayStatus[tk]){ delete dayStatus[tk]; }
+
+  // audit trail — kept with your data
+  if(!Array.isArray(prefs.edits)) prefs.edits=[];
+  prefs.edits.push({ day:tk, from:current, to:target, reason:reason.slice(0,300), at:new Date().toISOString() });
+  if(prefs.edits.length>200) prefs.edits=prefs.edits.slice(-200);
+
+  const btn=document.getElementById('leSave'); btn.disabled=true; btn.textContent='Saving…';
+  try{
+    if(backend==='cloud'){ await cloudSaveState(); }
+    else { await store.set('logs',logs); await store.set('dayStatus',dayStatus); await store.set('prefs',prefs); }
+  }catch(_){}
+  btn.disabled=false; btn.textContent='Save the correction';
+
+  hideLogEdit(); refresh();
+  toast('Fixed — today now reads '+target+'. Thanks for keeping it honest.');
+}
+
 /* ---- add to home screen tutorial ---- */
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredInstall=e; });
@@ -1744,6 +1866,7 @@ function showPane(which){
 
 /* companions unlocked as the forest grows (level = good days) */
 const COMPANIONS=[
+  {g:'🐕', name:'Ciki',     type:'ciki', special:true, note:'runs free 🤍'},
   {g:'🦋', name:'Flit',     type:'butterfly'},
   {g:'🐓', name:'Rooster',  type:'rooster'},
   {g:'🐇', name:'Rabbit',   type:'rabbit'},
@@ -1762,11 +1885,17 @@ const COMPANIONS=[
 function renderSanctuary(){
   const grid=document.getElementById('sanctGrid'); grid.innerHTML='';
   for(const c of COMPANIONS){
-    const lvl = ISO.levelOf(c.type);
-    const filled = D && lvl>0 && D.growthLevel>=lvl;
+    const filled = c.special
+      ? (D && D.growthLevel>=ISO.CIKI_LEVEL)
+      : (D && ISO.levelOf(c.type)>0 && D.growthLevel>=ISO.levelOf(c.type));
     const el=document.createElement('div');
-    el.className='crt'+(filled?' filled':'');
-    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${filled?c.name:'Locked'}</div>`;
+    el.className='crt'+(filled?' filled':'')+(c.special&&filled?' special':'');
+    const cikiName = (prefs.cikiName||'Ciki');
+    const label = c.special
+      ? (filled ? (cikiName+'<small>'+c.note+'</small>') : 'Locked')
+      : (filled?c.name:'Locked');
+    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${label}</div>`;
+    if(c.special && filled){ el.style.cursor='pointer'; el.title='Rename'; el.onclick=openCikiName; }
     grid.appendChild(el);
   }
 }
@@ -2553,14 +2682,14 @@ const ISO = (function(){
     {t:'flutter',i:2,j:3,label:'A butterfly finds the flowers'},
     {t:'fruit',id:'A',n:1,label:'The first apple ripens'},
     {t:'obj',type:'bush',i:0,j:3,color:'#ff9d6a',label:'A bush with amber blossoms'},
-    {t:'obj',type:'rooster',i:1,j:1,label:'A rooster struts in to greet the mornings'},
+    {t:'obj',type:'rooster',i:2,j:4,label:'A rooster struts in to greet the mornings'},
     {t:'tree',id:'A',lvl:5,label:'The canopy spreads wide'},
     {t:'fruit',id:'A',n:1,label:'A second apple ripens'},
     {t:'tree',id:'B',i:4,j:1,lvl:1,label:'A second tree takes root'},
     {t:'tree',id:'B',lvl:2,label:'The second tree grows a stem'},
     {t:'tree',id:'B',lvl:3,label:'The second tree finds its trunk'},
     {t:'obj',type:'bush',i:5,j:2,color:'#8fd4ff',label:'A bush with sky-blue blossoms'},
-    {t:'obj',type:'bush',i:2,j:4,color:'#ffb3d9',label:'A bush with rose blossoms'},
+    {t:'obj',type:'bush',i:1,j:1,color:'#ffb3d9',label:'A bush with rose blossoms'},
     {t:'flutter',i:4,j:2,label:'A second butterfly joins'},
     {t:'obj',type:'rabbit',i:3,j:4,label:'A rabbit moves into the grass'},
     {t:'pond',i:4,j:4,label:'A small pond gathers'},
@@ -2623,6 +2752,80 @@ const ISO = (function(){
   }
   let STATE=apply(0);
 
+  // ---------- Ciki 🤍 — a beloved companion who joins once the farm is alive ----------
+  const CIKI_LEVEL=23;                        // arrives as the 3rd new animal after the rooster
+  let ciki=null;
+  function cikiInit(){ ciki={i:2.6,j:2.6,ti:2.6,tj:2.6,mode:'walk',t0:0,last:performance.now()/1000,face:1}; }
+  function cikiTarget(){ ciki.ti=0.5+Math.random()*4.3; ciki.tj=0.5+Math.random()*4.3; }
+  function cikiStep(dt,speed){ const dx=ciki.ti-ciki.i, dy=ciki.tj-ciki.j, d=Math.hypot(dx,dy);
+    if(d<0.05) return true; const s=Math.min(speed*dt,d); ciki.i+=dx/d*s; ciki.j+=dy/d*s;
+    ciki.face=((dx-dy)>=0)?1:-1; return false; }
+  function cikiUpdate(t){
+    if(!ciki) cikiInit();
+    const dt=Math.min(0.05, t-ciki.last); ciki.last=t;
+    if(dusk){
+      if(ciki.mode!=='nap' && ciki.mode!=='naptarget'){ ciki.mode='naptarget'; ciki.ti=2.7; ciki.tj=3.4; }
+      if(ciki.mode==='naptarget' && cikiStep(dt,1.1)) ciki.mode='nap';
+      return;
+    }
+    if(ciki.mode==='nap'||ciki.mode==='naptarget'){ ciki.mode='walk'; cikiTarget(); }
+    if(ciki.mode==='walk'){ if(cikiStep(dt,1.0)){ const r=Math.random();
+        if(r<0.4){ ciki.mode='play'; ciki.t0=t; } else if(r<0.6){ ciki.mode='sit'; ciki.t0=t; } else cikiTarget(); } }
+    else if(ciki.mode==='play'){ if(t-ciki.t0>4.5){ ciki.mode='walk'; cikiTarget(); } }
+    else if(ciki.mode==='sit'){ if(t-ciki.t0>2.5){ ciki.mode='walk'; cikiTarget(); } }
+  }
+  function drawCikiScene(t){
+    const c=iso(ciki.i,ciki.j);
+    const mode = dusk ? 'nap' : (ciki.mode==='play' ? 'play' : 'walk');
+    ctx.save();
+    if(ciki.face<0){ ctx.translate(c.x,c.y); ctx.scale(-1,1); ctx.translate(-c.x,-c.y); }
+    cikiSprite(ctx, c.x, c.y, t, mode);
+    ctx.restore();
+  }
+  function cikiPortrait(pcv, t){
+    const g=pcv.getContext('2d'); const DPR=Math.min(2,window.devicePixelRatio||1);
+    const w=pcv.clientWidth||132, h=pcv.clientHeight||104;
+    if(pcv.width!==Math.round(w*DPR)){ pcv.width=Math.round(w*DPR); pcv.height=Math.round(h*DPR); }
+    g.setTransform(DPR,0,0,DPR,0,0); g.clearRect(0,0,w,h);
+    g.save(); g.translate(w/2 - 6, h*0.66); g.scale(1.8,1.8);
+    cikiSprite(g, 0, 0, t||0, 'walk');
+    g.restore();
+  }
+  function cikiSprite(g,x,y,t,mode){
+    const DARK='#4b4752', DARK2='#3a3742', WHITE='#f2efe7', NOSE='#2b2438';
+    const rrc=(px,py,w,h,r)=>{ g.beginPath(); g.roundRect(px,py,w,h,r); g.fill(); };
+    const elc=(px,py,rx,ry,c)=>{ g.fillStyle=c; g.beginPath(); g.ellipse(px,py,rx,ry,0,0,7); g.fill(); };
+    g.fillStyle='rgba(0,0,0,.16)'; g.beginPath(); g.ellipse(x,y+2,16,5,0,0,7); g.fill();
+    if(mode==='nap'){
+      elc(x,y-6,17,8,DARK); elc(x-6,y-7,9,6,DARK2); elc(x+3,y-4,12,5,WHITE);
+      elc(x+14,y-7,8,6,DARK); elc(x+18,y-5,5,4,WHITE);
+      g.fillStyle=NOSE; g.beginPath(); g.ellipse(x+22,y-6,1.6,1.6,0,0,7); g.fill();
+      elc(x+11,y-11,4,5,DARK2);
+      g.strokeStyle=NOSE; g.lineWidth=1.4; g.beginPath(); g.moveTo(x+14,y-7); g.lineTo(x+18,y-7); g.stroke();
+      g.font='bold 12px Nunito'; g.fillStyle='#e9e4f5';
+      for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); g.globalAlpha=(1-o)*0.85; g.fillText('z', x+20+o*8, y-16-o*12-k*2); }
+      g.globalAlpha=1; return;
+    }
+    const play=(mode==='play'); const bob=play?Math.abs(Math.sin(t*6))*4:Math.abs(Math.sin(t*3+x))*1.5; const yy=y-bob;
+    const sw=Math.sin(t*7+x)*2;
+    g.fillStyle=WHITE;
+    rrc(x-9,yy-9,3.4,9,1.5); rrc(x-5+sw*0.2,yy-9,3.4,9,1.5); rrc(x+7-sw*0.2,yy-9,3.4,9,1.5); rrc(x+11,yy-9,3.4,9,1.5);
+    g.save(); g.translate(x-12,yy-16); g.rotate(Math.sin(t*10)*0.5-0.5); elc(0,0,5,5,DARK); elc(-2,-4,4,4,DARK2); g.restore();
+    elc(x,yy-13,13,9,DARK); elc(x-9,yy-12,7,6,DARK2); elc(x+8,yy-12,6,6,DARK2);
+    elc(x-3,yy-20,6,5,DARK2); elc(x+4,yy-20,5,4,DARK2);
+    elc(x+4,yy-9,8,5,WHITE); elc(x+8,yy-8,4,3,WHITE);
+    const hx=x+12, hy=yy-(play?20:16);
+    elc(hx-6,hy-4,4.5,6,DARK2); elc(hx,hy,8,7,DARK); elc(hx-1,hy-6,6,4,DARK2);
+    elc(hx+5,hy+3,6,5,WHITE); elc(hx+2,hy+5,4,4,WHITE); elc(hx+6,hy-3,3.5,5,DARK2);
+    g.fillStyle=NOSE; g.beginPath(); g.ellipse(hx+10,hy+2,1.8,1.8,0,0,7); g.fill();
+    g.fillStyle=NOSE; g.beginPath(); g.ellipse(hx+3,hy-1,1.5,1.7,0,0,7); g.fill();
+    g.fillStyle=WHITE; g.fillRect(hx+2,hy-4,3,2); g.fillStyle='#fff'; g.fillRect(hx+3,hy-2,1,1);
+    if(play){ const bx=hx+10+Math.sin(t*3)*6, by=hy-14+Math.cos(t*3.4)*4, f=Math.sin(t*12);
+      g.fillStyle='#ff9dc0'; g.beginPath(); g.ellipse(bx-3,by,4,2.5+2*Math.abs(f),0,0,7); g.fill();
+      g.beginPath(); g.ellipse(bx+3,by,4,2.5+2*Math.abs(f),0,0,7); g.fill();
+      g.fillStyle='#3a2c1a'; g.fillRect(bx-0.7,by-3,1.4,6); }
+  }
+
   function drawScene(t){
     pondTiles=STATE.ponds; drawGround();
     const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(VIS.l,VIS.t,VIS.r-VIS.l,VIS.b-VIS.t); }
@@ -2638,6 +2841,7 @@ const ISO = (function(){
       if(f) items.push({d,fn:f}); }
     for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
     if(showCabin){ const hc=iso(0,0); items.push({d:-1,fn:()=>drawHomesteadIso(hc,cabinTier,t)}); }
+    if(level>=CIKI_LEVEL){ cikiUpdate(t); items.push({d:ciki.i+ciki.j+0.05, fn:()=>drawCikiScene(t)}); }   // Ciki, once she's arrived
     items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
     for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
   }
@@ -2677,7 +2881,7 @@ const ISO = (function(){
   // level at which a given creature/object first appears (1-based); 0 if never
   function levelOf(type){ const i=S.findIndex(x=> x.type===type || (type==='butterfly' && x.t==='flutter') ); return i<0?0:i+1; }
   function setCabin(tier, building){ cabinTier=tier|0; cabinBuilding=!!building; showCabin=tier>=0; }
-  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, LEN:S.length };
+  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, CIKI_LEVEL, cikiPortrait, LEN:S.length };
 })();
 
 /* ============================================================
