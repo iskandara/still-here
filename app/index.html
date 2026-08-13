@@ -15,6 +15,7 @@
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="icon" href="/icon-180.png">
 <link rel="manifest" href="manifest.json">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e"></script>
 <script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -991,6 +992,9 @@ async function reloadStateFromCloud(){
 function accountIsGuest(){ return !(authUser && authUser.email); }
 
 // Register: create a permanent email account and MIGRATE the current forest into it
+/* ---- analytics (Umami, anonymous — actions only, never habit content) ---- */
+function track(name, data){ try{ if(window.umami && window.umami.track) window.umami.track(name, data); }catch(_){} }
+
 async function doRegister(email, password, name, animal){
   if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — accounts need a connection.'};
   const snapshot = { oath, logs, dayStatus, prefs, profile:{ name:(name||'').trim(), animal:(animal||'').trim() } };
@@ -1002,6 +1006,7 @@ async function doRegister(email, password, name, animal){
     stateDocId = null;                      // new account gets its own document
     oath=snapshot.oath; logs=snapshot.logs; dayStatus=snapshot.dayStatus; prefs=snapshot.prefs; profile=snapshot.profile;
     await cloudSaveState();                 // write the migrated forest + profile
+    track('registered');
     return {ok:true};
   }catch(e){ return {ok:false, msg:(e&&e.message)?e.message:String(e)}; }
 }
@@ -1039,7 +1044,7 @@ function bootMsg(m){ const el=document.getElementById('bootMsg'); if(el) el.text
 /* ---- donations ---- */
 const DONATE_KOFI     = 'https://ko-fi.com/aradnaksi';
 const DONATE_TRAKTEER = 'https://teer.id/iskandar_agung3';
-function openDonate(){ closeAllSheets();
+function openDonate(){ track('support-opened'); closeAllSheets();
   const sc=document.getElementById('scrim'); if(sc) sc.classList.remove('show');
   document.getElementById('donate').classList.add('show'); }
 function hideDonate(){ document.getElementById('donate').classList.remove('show'); }
@@ -1094,6 +1099,7 @@ async function submitFeedback(){
       : ('Couldn\u2019t send: '+r.msg);
 }
 function goDonate(which){
+  track('donate-clicked', { via: which });
   const url = which==='kofi' ? DONATE_KOFI : DONATE_TRAKTEER;
   hideDonate();
   window.open(url, '_blank', 'noopener');
@@ -1350,6 +1356,7 @@ async function submitOath(){
   });
   if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} } else { await store.set('oath', oath); }
   hideOnboard(); refresh();
+  track(first ? 'oath-planted' : 'oath-updated');
   toast(first? 'Your oath is planted. The forest is watching over it.' : 'Oath updated.');
   // first-run only: offer to add the app to the home screen
   if(first && !prefs.seenInstall){
@@ -1680,6 +1687,7 @@ async function logStick(){
   const iso=new Date().toISOString();
   logs.push(iso);
   await persistStick(iso);
+  track('logged');
   ISO.spawnPuff();
   toast(pickLine(LOG_LINES));
   refresh();
