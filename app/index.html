@@ -494,8 +494,8 @@
     <div class="stats">
       <div class="stat" id="stToday">
         <div class="k">Today</div>
-        <div class="v"><span id="tSticks">0</span> <span>/ <span id="tAllow">0</span> <span id="tUnit">times</span></span></div>
-        <div class="meter"><i id="tMeter" style="width:0%"></i></div>
+        <div class="v"><span id="tSticks">0</span> <span id="tDenom">/ <span id="tAllow">0</span> <span id="tUnit">times</span></span></div>
+        <div class="meter" id="tMeterRow"><i id="tMeter" style="width:0%"></i></div>
       </div>
       <div class="stat mstat" id="stMonth" onclick="openTracker()">
         <div class="chev">›</div>
@@ -611,7 +611,7 @@
       <div class="tag">The forest grows around this promise. You can change it later.</div>
 
       <label>What oath do you want to make?</label>
-      <input id="obWhat" type="text" placeholder="What would you like to reduce?">
+      <input id="obWhat" type="text" placeholder="What would you like to reduce?" oninput="document.getElementById('obErr').textContent=''">
 
       <label>What are you counting?</label>
       <input id="obUnit" type="text" placeholder="e.g. sticks, drinks, hours">
@@ -952,8 +952,12 @@ async function persistReset(){
 function updateSyncUI(){
   const el=document.getElementById('syncState'); if(!el) return;
   if(backend==='cloud'){
-    el.innerHTML='Cloud · synced'; el.style.color='var(--leaf)';
-    el.style.cursor='default'; el.onclick=null;
+    if(accountIsGuest()){
+      el.innerHTML='Cloud \u00b7 this browser<br><small style="font-weight:700;color:var(--muted)">make an account to keep it across devices</small>';
+      el.style.color='var(--honey)'; el.style.cursor='default'; el.onclick=null;
+    } else {
+      el.innerHTML='Cloud \u00b7 synced'; el.style.color='var(--leaf)'; el.style.cursor='default'; el.onclick=null;
+    }
   } else {
     const short=(cloudError||'not configured').replace(/</g,'&lt;');
     el.innerHTML='This device only<br><small style="font-weight:700;color:#d59">'+short+'</small>';
@@ -1662,12 +1666,21 @@ function refresh(){
 
   // today
   document.getElementById('tSticks').textContent=D.todayCount;
-  document.getElementById('tAllow').textContent=D.allowance;
-  document.getElementById('tUnit').textContent=unitLabel(D.allowance);
-  const tm=document.getElementById('tMeter');
-  const tp=D.allowance>0? Math.min(100, D.todayCount/D.allowance*100) : (D.todayCount>0?100:0);
-  tm.style.width=tp+'%'; tm.classList.toggle('over', D.todayCount>D.allowance);
-  document.getElementById('stToday').className='stat'+(D.todayCount>D.allowance?' warn':' good');
+  const lowFreq = D.allowance===0;               // e.g. a small monthly target rounds under 1/day
+  const tDenom=document.getElementById('tDenom'), tMeterRow=document.getElementById('tMeterRow');
+  if(lowFreq){
+    if(tDenom) tDenom.style.display='none';       // no daily limit to show against
+    if(tMeterRow) tMeterRow.style.display='none';
+    document.getElementById('stToday').className='stat good';
+  } else {
+    if(tDenom) tDenom.style.display='';
+    if(tMeterRow) tMeterRow.style.display='';
+    document.getElementById('tAllow').textContent=D.allowance;
+    document.getElementById('tUnit').textContent=unitLabel(D.allowance);
+    const tm=document.getElementById('tMeter');
+    tm.style.width=Math.min(100, D.todayCount/D.allowance*100)+'%'; tm.classList.toggle('over', D.todayCount>D.allowance);
+    document.getElementById('stToday').className='stat'+(D.todayCount>D.allowance?' warn':' good');
+  }
 
   // this month (always the month, whatever period the oath uses)
   const pw=periodWord();
@@ -1683,7 +1696,10 @@ function refresh(){
   if(document.getElementById('trackerSheet').classList.contains('show') &&
      document.getElementById('trkOverview').style.display!=='none') renderTracker();
 
-  document.getElementById('setAllow').textContent=D.allowance+' '+unitLabel(D.allowance);
+  const pnoun=({daily:'day',weekly:'week',monthly:'month'})[periodWord()]||'day';
+  document.getElementById('setAllow').textContent = D.allowance>0
+    ? (D.allowance+' '+unitLabel(D.allowance)+' a day')
+    : ('under 1 a day \u00b7 '+(Number(oath.target)||0)+' '+unitLabel(Number(oath.target)||0)+' a '+pnoun);
   document.getElementById('logBtnLabel').textContent='I had one '+unitLabel(1);
   const ot=document.getElementById('oathTitle'); if(ot) ot.textContent=oath.title||'Your oath';
   const od=document.getElementById('oathDetail');
