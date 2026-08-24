@@ -8,8 +8,17 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e"></script>
 
 <meta name="description" content="A quiet app for cutting down on something you can't quit cold turkey. Log honestly, and a small forest grows with every good day. No ads, no subscription, no streak to shame you.">
-<meta property="og:title" content="Still Here">
-<meta property="og:description" content="A forest that grows as you keep your oath.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://stillhere.day/">
+<meta property="og:title" content="Still Here — a forest that grows as you keep your oath">
+<meta property="og:description" content="A free, no-ads companion for cutting down on any habit. Log honestly, and a living forest grows with every good day. Slips never destroy it.">
+<meta property="og:image" content="https://stillhere.day/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Still Here — a forest that grows as you keep your oath">
+<meta name="twitter:description" content="A free, no-ads companion for cutting down on any habit. Every good day plants something new.">
+<meta name="twitter:image" content="https://stillhere.day/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -89,7 +98,7 @@
   .stagetop .wm{font-family:'Pixelify Sans'; font-size:14px; text-shadow:0 2px 0 rgba(0,0,0,.25)}
   .stagetop .wm small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.4px;
     color:var(--muted); text-transform:uppercase; display:block; margin-top:3px}
-  .pill{background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+  .pill{background:rgba(20,15,32,.9); backdrop-filter:blur(6px); border:1px solid var(--line);
     border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
   .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
   .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
@@ -101,8 +110,8 @@
     font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
   .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
   .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
-  .daybtn{position:absolute; top:52px; right:16px; pointer-events:auto; cursor:pointer;
-    background:rgba(20,15,32,.55); backdrop-filter:blur(6px); border:1px solid var(--line);
+  .daybtn{position:absolute; top:48px; right:16px; pointer-events:auto; cursor:pointer;
+    background:rgba(20,15,32,.9); backdrop-filter:blur(6px); border:1px solid var(--line);
     color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
 
   /* steps */
@@ -301,11 +310,11 @@
       <h3>Speaks your language</h3>
       <p class="psub">Choose how the forest talks to you.</p>
       <div class="toneseg" id="toneseg">
-        <button data-t="gentle" onclick="pickTone('gentle')">Gentle</button>
+        <button data-t="gentle" class="on" onclick="pickTone('gentle')">Gentle</button>
         <button data-t="plain" onclick="pickTone('plain')">Plain</button>
-        <button data-t="honest" class="on" onclick="pickTone('honest')">Honest</button>
+        <button data-t="honest" onclick="pickTone('honest')">Honest</button>
       </div>
-      <div class="quotebox" id="toneQuote">"That's your third today. You said you wanted fewer. Still your call."</div>
+      <div class="quotebox" id="toneQuote">"That’s your seven for today. No penalty here — the forest keeps everything you’ve grown."</div>
     </div>
 
     <!-- sanctuary -->
@@ -328,6 +337,12 @@
       <h3>Honest, not punishing</h3>
       <p class="psub">A blank day just stays foggy — never a red mark against you.</p>
       <div class="cal" id="calGrid"></div>
+      <div class="legend" style="margin-top:14px">
+        <span><i class="leaf"></i>at / under goal</span>
+        <span><i class="amber"></i>getting there</span>
+        <span><i class="coral"></i>near old habit</span>
+        <span><i style="background:transparent;border:1px dashed var(--line)"></i>no data yet</span>
+      </div>
     </div>
   </div>
 </div></section>
@@ -488,7 +503,7 @@ function makeForest(cv, stageEl){
     const p=P();
     // NOTE: the sky gradient is painted across the whole canvas in fitFrame(),
     // so the scene only adds what sits in front of it.
-    blob(VIS.r-120, VIS.t+110, 42, p.sun);
+    blob(VIS.r-108, VIS.t+168, 42, p.sun);
     if(dusk){ ctx.fillStyle='#fff';
       for(let i=0;i<40;i++){ const sx=VIS.l+((i*151)%Math.max(1,(VIS.r-VIS.l))), sy=VIS.t+((i*97)%Math.max(1,(originY-VIS.t)));
         if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} }
