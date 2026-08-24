@@ -426,9 +426,9 @@ onScrollSpy();
 
 /* ---- dashboard preview: interactive tone + dummy calendar ---- */
 const TONE_QUOTES={
-  gentle:'"That\u2019s your seven for today. No penalty here \u2014 the forest keeps everything you\u2019ve grown."',
-  plain:'"You\u2019re at 7 of 7. Anything past this counts as over. Your call."',
-  honest:'"That\u2019s your third today. You said you wanted fewer. Still your call."'
+  gentle:'"That’s your seven for today. No penalty here — the forest keeps everything you’ve grown."',
+  plain:'"You’re at 7 of 7. Anything past this counts as over. Your call."',
+  honest:'"That’s your third today. You said you wanted fewer. Still your call."'
 };
 function pickTone(t){
   document.querySelectorAll('#toneseg button').forEach(b=>b.classList.toggle('on', b.dataset.t===t));
@@ -1133,7 +1133,7 @@ growBtn.addEventListener('click', ()=>{
   setHeroPhase();
   grewEl.textContent = (step.label||'A new life arrives')+'.';
   if(heroLevel>=DEMO_CAP){
-    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning \u2014 <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning — <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
   }
 });
 
@@ -1183,5 +1183,6 @@ document.querySelectorAll('.vig canvas').forEach(cv=>{
   }
 })();
 </script>
+<script src="https://tryproduck.com/sdk/v1.js" data-project="pk_live_b58f9568e0226b1cfad65867e76fde7a4b73dc77770457bd" defer></script>
 </body>
 </html>
