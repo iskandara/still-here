@@ -381,6 +381,11 @@
   #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
 
   /* ---------- ten-minute hold ---------- */
+  #shareStage{position:absolute; right:14px; bottom:14px; z-index:5; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--line); background:rgba(20,15,32,.55); backdrop-filter:blur(6px); color:var(--ink);
+    font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .08s}
+  #shareStage:active{transform:scale(.92)}
+  #shareStage:disabled{opacity:.6}
   #waitPill{position:absolute; left:50%; transform:translate(-50%,10px); bottom:14px; z-index:6;
     display:none; align-items:center; gap:11px; opacity:0; transition:.35s ease;
     background:rgba(20,15,32,.72); backdrop-filter:blur(8px); border:1px solid rgba(244,184,96,.4);
@@ -467,6 +472,7 @@
       <div class="stagepill" onclick="openProgress()"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6">›</span></div>
     </div>
     <div id="toast"></div>
+    <button id="shareStage" onclick="shareForest(this)" aria-label="Share your forest" title="Share your forest">📸</button>
     <div id="waitPill">
       <span class="wt">Holding on · <b id="waitTime">10:00</b></span>
       <button onclick="logNowFromWait()">Log now</button>
@@ -801,6 +807,10 @@
       <div class="acctrow">
         <div class="lbl">Support this project<small>keeps the forest growing for everyone</small></div>
         <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
+      </div>
+      <div class="acctrow">
+        <div class="lbl">Show my goal when sharing<small>off by default — your forest is enough</small></div>
+        <button class="acctbtn" id="shareGoalBtn" onclick="toggleShareGoal()">Off</button>
       </div>
       <div class="acctrow">
         <div class="lbl">Fix a mis-tap<small>correct today's count</small></div>
@@ -1697,6 +1707,7 @@ function refresh(){
      document.getElementById('trkOverview').style.display!=='none') renderTracker();
 
   const pnoun=({daily:'day',weekly:'week',monthly:'month'})[periodWord()]||'day';
+  { const sg=document.getElementById('shareGoalBtn'); if(sg) sg.textContent=prefs.shareGoal?'On':'Off'; }
   document.getElementById('setAllow').textContent = D.allowance>0
     ? (D.allowance+' '+unitLabel(D.allowance)+' a day')
     : ('under 1 a day \u00b7 '+(Number(oath.target)||0)+' '+unitLabel(Number(oath.target)||0)+' a '+pnoun);
@@ -1804,6 +1815,123 @@ async function saveCikiName(){
   hideCikiName();
   renderSanctuary();
   if(v) toast(v+' it is — she\u2019s home now. 🤍');
+}
+
+/* ---- share your forest (a picture for Instagram) ----
+   Privacy first: the image shows only the forest and encouraging, non-identifying
+   progress — NEVER the habit, the target, the daily average, or any raw counts. */
+function coverDraw(g, img, dx, dy, dw, dh){
+  const iw=img.width, ih=img.height; if(!iw||!ih) return;
+  const s=Math.max(dw/iw, dh/ih), w=iw*s, h=ih*s;
+  g.drawImage(img, dx+(dw-w)/2, dy+(dh-h)/2, w, h);
+}
+function toggleShareGoal(){
+  prefs.shareGoal=!prefs.shareGoal; persistPrefs();
+  const b=document.getElementById('shareGoalBtn'); if(b) b.textContent=prefs.shareGoal?'On':'Off';
+}
+function roundRectPath(g,x,y,w,h,r){ g.beginPath(); g.roundRect(x,y,w,h,r); }
+// small vector sprout (renders the same everywhere — no emoji dependency)
+function drawSprout(g,x,y,s){
+  g.save(); g.translate(x,y); g.scale(s,s);
+  g.strokeStyle='#5fae3f'; g.lineWidth=2.4; g.beginPath(); g.moveTo(0,6); g.lineTo(0,-2); g.stroke();
+  g.fillStyle='#8ed36a';
+  g.beginPath(); g.ellipse(-4,-2,4.5,3,0.6,0,7); g.fill();
+  g.beginPath(); g.ellipse(4,-3,4.5,3,-0.6,0,7); g.fill();
+  g.restore();
+}
+function drawSunrise(g,cx,cy){
+  g.strokeStyle='rgba(255,255,255,.92)'; g.lineWidth=5; g.lineCap='round';
+  g.beginPath(); g.arc(cx,cy,26,Math.PI,0); g.stroke();                 // half sun
+  g.beginPath(); g.moveTo(cx-46,cy); g.lineTo(cx+46,cy); g.stroke();    // horizon
+  for(let i=-2;i<=2;i++){ const a=-Math.PI/2 + i*0.5; const r1=34,r2=46;
+    g.beginPath(); g.moveTo(cx+Math.cos(a)*r1, cy-6+Math.sin(a)*r1*0.5-8);
+    g.lineTo(cx+Math.cos(a)*r2, cy-6+Math.sin(a)*r2*0.5-14); g.stroke(); }
+}
+function buildShareCard(scene, includeGoal){
+  const W=1080, H=1350;
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const g=cv.getContext('2d');
+  // one continuous scene as the background — sky + island together, so there is no seam
+  coverDraw(g, scene, 0, 0, W, H);
+  // soft scrims that fade to transparent — they seat the text without any hard edge
+  const topScrim=g.createLinearGradient(0,0,0,470);
+  topScrim.addColorStop(0,'rgba(24,32,58,.38)'); topScrim.addColorStop(1,'rgba(24,32,58,0)');
+  g.fillStyle=topScrim; g.fillRect(0,0,W,470);
+  const botScrim=g.createLinearGradient(0,H-400,0,H);
+  botScrim.addColorStop(0,'rgba(24,32,58,0)'); botScrim.addColorStop(1,'rgba(24,32,58,.5)');
+  g.fillStyle=botScrim; g.fillRect(0,H-400,W,400);
+
+  const gd=D?D.goodDays:0, run=D?D.currentRun:0, phase=ISO.phaseOf(D?D.growthLevel:0);
+  g.textAlign='center'; g.textBaseline='alphabetic';
+  const shadow=(on)=>{ g.shadowColor=on?'rgba(40,60,80,.28)':'transparent'; g.shadowBlur=on?8:0; g.shadowOffsetY=on?2:0; };
+
+  // sunrise mark
+  drawSunrise(g, W/2, 108);
+  // headline
+  shadow(true);
+  g.fillStyle='#ffffff'; g.font='92px "Pixelify Sans", monospace';
+  g.fillText((gd+(gd===1?' GOOD DAY':' GOOD DAYS')).toUpperCase(), W/2, 220);
+  // tagline
+  g.font='800 40px Nunito, sans-serif'; g.fillStyle='#ffffff';
+  g.fillText('Not perfect.', W/2, 292);
+  g.fillText('Just better than before.', W/2, 344);
+  shadow(false);
+
+  // run · phase pill
+  let py=1080;
+  g.font='800 34px Nunito, sans-serif';
+  const pillTxt=(run>0? run+' day run  ·  ':'')+phase;
+  const pw=g.measureText(pillTxt).width + 108, px=W/2-pw/2;
+  g.fillStyle='rgba(24,20,40,.62)'; roundRectPath(g,px,py,pw,64,32); g.fill();
+  drawSprout(g, px+38, py+32, 2.1);
+  g.fillStyle='#f3ede4'; g.textAlign='left'; g.textBaseline='middle';
+  g.fillText(pillTxt, px+64, py+34);
+  g.textAlign='center'; g.textBaseline='alphabetic';
+
+  // optional goal chip (off by default) — framing only, never numbers
+  if(includeGoal && oath && oath.title){
+    const left=('Less '+String(oath.title).replace(/^reduce\s+/i,'').replace(/^cut(ting)?\s+(down\s+)?(on\s+)?/i,'')).trim();
+    const right='More living';
+    py=1156;
+    g.font='800 30px Nunito, sans-serif';
+    const lw=g.measureText(left).width, rw=g.measureText(right).width;
+    const cw=lw+rw+150, cx=W/2-cw/2;
+    g.fillStyle='rgba(24,20,40,.42)'; roundRectPath(g,cx,py,cw,56,28); g.fill();
+    g.fillStyle='#e7e0d4'; g.textAlign='left'; g.textBaseline='middle';
+    g.fillText(left, cx+34, py+29);
+    g.strokeStyle='rgba(255,255,255,.35)'; g.lineWidth=1.5;
+    g.beginPath(); g.moveTo(cx+34+lw+28, py+16); g.lineTo(cx+34+lw+28, py+40); g.stroke();
+    g.fillStyle='#ffffff'; g.fillText(right, cx+34+lw+52, py+29);
+    g.textAlign='center'; g.textBaseline='alphabetic';
+  }
+
+  // wordmark
+  g.fillStyle='#f4b860'; g.font='46px "Pixelify Sans", monospace'; g.fillText('Still Here', W/2, H-84);
+  g.fillStyle='rgba(255,255,255,.82)'; g.font='800 26px Nunito, sans-serif'; g.fillText('stillhere.day', W/2, H-46);
+  return cv;
+}
+async function shareForest(btn){
+  if(btn){ btn.disabled=true; }
+  try{
+    try{ await document.fonts.ready; }catch(_){}
+    const scene=document.getElementById('scene');
+    const cv=buildShareCard(scene, !!prefs.shareGoal);
+    const blob=await new Promise(res=>cv.toBlob(res,'image/png'));
+    const file=new File([blob],'my-still-here-forest.png',{type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'My forest on Still Here'});
+      track('shared', {via:'sheet'});
+    }else{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download='my-still-here-forest.png'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+      track('shared', {via:'download'});
+      toast('Saved — share it wherever you like. 🌱');
+    }
+  }catch(e){
+    if(!(e && e.name==='AbortError')) toast('Couldn\u2019t make the image — please try again.');
+  }
+  if(btn){ btn.disabled=false; }
 }
 
 /* ---- correct today's count (mis-tap fix, today only, with a reason) ---- */
