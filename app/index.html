@@ -42,6 +42,8 @@
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%}
+  /* a real colour (not just the gradient image) so iOS Safari tints the status-bar strip plum, not white */
+  html{background-color:#241d33}
   /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
   body{font-variant-ligatures:none}
   button{touch-action:manipulation}
@@ -99,7 +101,7 @@
   /* ambient toast (gentle messages) */
   #toast{
     position:absolute; left:50%; bottom:18px; transform:translate(-50%,14px);
-    background:rgba(20,15,32,.72); backdrop-filter:blur(8px);
+    background:rgba(20,15,32,.92);
     border:1px solid var(--line); color:var(--ink);
     padding:10px 15px; border-radius:14px; font-weight:700; font-size:13px;
     max-width:82%; text-align:center; opacity:0; transition:.45s ease; pointer-events:none;
@@ -338,7 +340,7 @@
   .homeStage{position:relative; width:100%; height:210px; border-radius:16px; overflow:hidden;
     border:1px solid var(--line); background:#1c1630; margin-top:6px}
   .homeStage canvas{display:block; width:100%; height:100%}
-  .homeTier{position:absolute; top:10px; left:12px; background:rgba(20,15,32,.55); backdrop-filter:blur(6px);
+  .homeTier{position:absolute; top:10px; left:12px; background:rgba(20,15,32,.85);
     border:1px solid var(--line); border-radius:999px; padding:5px 11px; font-family:'Pixelify Sans'; font-size:13px}
   .homeStats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
   .homeStats .hs{background:var(--plum3); border:1px solid var(--line); border-radius:13px; padding:13px 10px; text-align:center}
@@ -347,7 +349,7 @@
 
   /* ---------- crossing-point dialog ---------- */
   #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
-    padding:24px; background:rgba(10,6,20,.62); backdrop-filter:blur(3px)}
+    padding:24px; background:rgba(10,6,20,.74)}
   #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
   #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
     border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
@@ -395,13 +397,13 @@
 
   /* ---------- ten-minute hold ---------- */
   #shareStage{position:absolute; right:14px; bottom:14px; z-index:5; width:44px; height:44px; border-radius:50%;
-    border:1px solid var(--line); background:rgba(20,15,32,.55); backdrop-filter:blur(6px); color:var(--ink);
+    border:1px solid var(--line); background:rgba(20,15,32,.85); color:var(--ink);
     font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .08s}
   #shareStage:active{transform:scale(.92)}
   #shareStage:disabled{opacity:.6}
   #waitPill{position:absolute; left:50%; transform:translate(-50%,10px); bottom:14px; z-index:6;
     display:none; align-items:center; gap:11px; opacity:0; transition:.35s ease;
-    background:rgba(20,15,32,.72); backdrop-filter:blur(8px); border:1px solid rgba(244,184,96,.4);
+    background:rgba(20,15,32,.92); border:1px solid rgba(244,184,96,.4);
     border-radius:999px; padding:9px 10px 9px 15px}
   #waitPill.show{display:flex; opacity:1; transform:translate(-50%,0)}
   #waitPill .wt{font-weight:800; font-size:13px; color:var(--ink); font-variant-numeric:tabular-nums}
@@ -1677,6 +1679,11 @@ function refresh(){
   document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
   const dot=document.getElementById('stageDot');
   dot.style.background = dusk?'var(--honey)':'var(--leaf)';
+  // match the page colour to the top of the sky so the phone's status-bar strip blends in
+  // (same values as skyTop in the scene palette below)
+  const skyTop = dusk ? '#2b2450' : '#a9def0';
+  document.documentElement.style.backgroundColor = skyTop;
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', skyTop);
   ISO.setState(D.growthLevel, dusk);
   ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
