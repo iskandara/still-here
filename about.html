@@ -13,7 +13,8 @@
   :root{--plum:#241d33;--plum2:#2f2743;--plum3:#3a3152;--ink:#f3ede4;--muted:#c3b9d2;
     --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--cendol:#8ed36a;--line:rgba(255,255,255,.09)}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{scroll-behavior:smooth}
+  /* a real colour (not just the gradient image) so iOS Safari tints the status-bar strip plum, not white */
+  html{scroll-behavior:smooth;background-color:#1c1630}
   :focus-visible{outline:3px solid var(--honey);outline-offset:3px}
   @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition-duration:.01ms !important}}
   /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
