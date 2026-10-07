@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Still Here — a forest that grows as you keep your oath</title>
+<title>Still Here: a forest that grows as you keep your oath</title>
 <link rel="icon" type="image/png" href="/icon-180.png">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e"></script>
@@ -30,6 +30,13 @@
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth}
+  :focus-visible{outline:3px solid var(--honey); outline-offset:3px}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  }
+  /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
+  body{font-variant-ligatures:none}
   body{margin:0; font-family:'Nunito',system-ui,sans-serif; color:var(--ink);
     background:
       radial-gradient(120% 60% at 50% -5%, #4a3d63 0%, #2a2140 42%, #1c1630 100%);
@@ -43,14 +50,14 @@
     background:linear-gradient(180deg,rgba(28,22,48,.72),rgba(28,22,48,0));}
   nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
   .brand{font-family:'Pixelify Sans'; font-size:18px}
-  .brand small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.5px;
-    color:var(--muted); text-transform:uppercase; display:block; margin-top:2px}
+  .brand small{font-family:'Nunito'; font-weight:800; font-size:11px;
+    color:var(--muted); display:block; margin-top:2px}
   .btn{display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none;
     font-family:'Nunito'; font-weight:800; border-radius:13px; border:none; transition:transform .08s ease}
   .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     padding:12px 20px; font-size:15px; box-shadow:0 5px 0 #b06d2e}
   .btn.primary:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
-  .btn.sm{padding:9px 15px; font-size:13.5px; box-shadow:0 4px 0 #b06d2e}
+  .btn.sm{padding:9px 15px; font-size:13.5px; box-shadow:0 4px 0 #b06d2e; min-height:44px}
   .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:12px 18px; font-size:14px}
   .btn.ghost:active{background:rgba(255,255,255,.05)}
 
@@ -60,32 +67,25 @@
   .navlinks a:hover{color:var(--ink)}
   .navlinks a.active{color:var(--honey)}
   .navtog{display:inline-flex; background:transparent; border:1px solid var(--line); color:var(--ink);
-    font-size:16px; width:40px; height:40px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
+    font-size:16px; width:44px; height:44px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
   @media(min-width:860px){ .navtog{display:none} }
-  .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.92); backdrop-filter:blur(6px);
+  .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.95);
     flex-direction:column; align-items:center; justify-content:center; gap:8px}
   .mobmenu.show{display:flex}
   .mobmenu a{color:var(--ink); text-decoration:none; font-family:'Pixelify Sans'; font-size:24px; padding:14px}
-  .mobmenu .close{position:absolute; top:18px; right:20px; background:none; border:none; color:var(--muted); font-size:26px; cursor:pointer}
+  .mobmenu .close{position:absolute; top:12px; right:14px; width:48px; height:48px; background:none; border:none; color:var(--muted); font-size:26px; cursor:pointer}
   section{padding:64px 0; scroll-margin-top:72px}
   h1{font-family:'Pixelify Sans'; font-size:clamp(30px,7vw,52px); line-height:1.08; margin:0 0 16px}
   h2{font-family:'Pixelify Sans'; font-size:clamp(23px,5vw,34px); margin:0 0 10px}
   .lead{color:var(--muted); font-size:clamp(15px,2.4vw,18px); line-height:1.6; margin:0}
-  .eyebrow{font-weight:800; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--honey); margin-bottom:14px}
+  .eyebrow{font-weight:800; font-size:14px; color:var(--honey); margin-bottom:10px}
 
   /* hero */
   .hero{padding-top:26px}
   .hero .grid{display:grid; grid-template-columns:1fr; gap:30px; align-items:center}
   @media(min-width:860px){ .hero .grid{grid-template-columns:1.05fr .95fr; gap:44px} }
   .hero h1 span{color:var(--honey)}
-  .herobadge{display:inline-flex; align-items:center; gap:9px; margin-bottom:18px;
-    background:rgba(20,15,32,.5); border:1px solid var(--line); border-radius:999px;
-    padding:9px 16px; font-weight:800; font-size:13.5px; color:var(--leaf)}
-  .herobadge .hbdot{width:9px; height:9px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
   .heroCtas{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
-  .trust{display:flex; flex-wrap:wrap; gap:16px; margin-top:22px; color:var(--muted); font-size:12.5px; font-weight:700}
-  .trust span{display:inline-flex; align-items:center; gap:6px}
-  .trust b{color:var(--leaf)}
 
   /* the interactive forest frame */
   .stagecard{position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
@@ -93,45 +93,44 @@
     width:100%; height:min(74vh,560px)}
   @media(max-width:859px){ .stagecard{height:min(78vh,540px); max-width:420px; margin:0 auto} }
   .stagecard canvas{display:block; width:100%; height:100%}
-  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between;
+  /* phase pill (top right) and day/dusk toggle under it; the nav already carries the brand */
+  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:flex-end;
     align-items:flex-start; padding:14px 16px; pointer-events:none}
-  .stagetop .wm{font-family:'Pixelify Sans'; font-size:14px; text-shadow:0 2px 0 rgba(0,0,0,.25)}
-  .stagetop .wm small{font-family:'Nunito'; font-weight:800; font-size:8.5px; letter-spacing:2.4px;
-    color:var(--muted); text-transform:uppercase; display:block; margin-top:3px}
-  .pill{background:rgba(20,15,32,.9); backdrop-filter:blur(6px); border:1px solid var(--line);
+  .pill{background:rgba(20,15,32,.9); border:1px solid var(--line);
     border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
-  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf); box-shadow:0 0 8px var(--leaf)}
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf)}
   .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-    display:flex; flex-direction:column; gap:8px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
     background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
-  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s}
+  /* dark chip keeps the growth message readable over the pale sky (was 1.07:1) */
+  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s;
+    background:rgba(20,15,32,.88); border-radius:10px; padding:6px 12px; max-width:100%}
+  .grewline b{color:var(--ink)}
+  .growbtn .sprite{width:20px; height:20px; image-rendering:pixelated; vertical-align:-4px; margin-right:6px}
   .growbtn{width:100%; border:none; cursor:pointer; border-radius:14px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
   .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
   .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
-  .daybtn{position:absolute; top:48px; right:16px; pointer-events:auto; cursor:pointer;
-    background:rgba(20,15,32,.9); backdrop-filter:blur(6px); border:1px solid var(--line);
+  .daybtn{position:absolute; top:48px; right:16px; pointer-events:auto; cursor:pointer; font-family:'Nunito';
+    background:rgba(20,15,32,.9); border:1px solid var(--line);
     color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
+  /* invisible 44px hit area around the small toggle */
+  .daybtn::after{content:''; position:absolute; inset:-8px -4px}
 
-  /* steps */
-  .steps{display:grid; grid-template-columns:1fr; gap:16px; margin-top:30px}
-  @media(min-width:760px){ .steps{grid-template-columns:repeat(3,1fr)} }
-  .step{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
-    border-radius:18px; padding:22px}
-  .step .n{font-family:'Pixelify Sans'; font-size:15px; color:var(--honey);
-    width:34px; height:34px; border-radius:50%; background:rgba(244,184,96,.12);
-    border:1px solid rgba(244,184,96,.3); display:flex; align-items:center; justify-content:center; margin-bottom:14px}
-  .step h3{font-family:'Pixelify Sans'; font-size:18px; margin:0 0 8px}
-  .step p{color:var(--muted); font-size:14px; line-height:1.55; margin:0}
+  /* how it works: heading beside a plain list, a quieter recap after the scenes above */
+  .howgrid{display:grid; grid-template-columns:1fr; gap:18px}
+  @media(min-width:860px){ .howgrid{grid-template-columns:.8fr 1.2fr; gap:48px; align-items:start} }
+  .promises{list-style:none; margin:0; padding:0}
+  .promises li{padding:18px 0; border-top:1px solid var(--line)}
+  .promises li:last-child{border-bottom:1px solid var(--line)}
+  .promises h3{font-family:'Pixelify Sans'; font-size:19px; margin:0 0 6px; color:var(--ink)}
+  .promises p{color:var(--muted); font-size:15px; line-height:1.6; margin:0}
 
   /* journey */
   .journey{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:30px}
   @media(min-width:860px){ .journey{grid-template-columns:repeat(4,1fr)} }
-  .vig{background:#1c1630; border:1px solid var(--line); border-radius:18px; overflow:hidden;
-    animation:float 6s ease-in-out infinite}
-  .vig:nth-child(2){animation-delay:.8s} .vig:nth-child(3){animation-delay:1.6s} .vig:nth-child(4){animation-delay:2.4s}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .vig{background:#1c1630; border:1px solid var(--line); border-radius:18px; overflow:hidden}
   .vig .cvbox{position:relative; width:100%; padding-top:100%}
   .vig .cvbox canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
   .vig .cap{padding:13px 15px 16px}
@@ -140,21 +139,15 @@
   .mythline{text-align:center; margin-top:24px; color:var(--muted); font-size:14px}
   .mythline b{color:var(--ink)}
 
-  /* kind grid */
-  .kind{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:28px}
-  @media(min-width:760px){ .kind{grid-template-columns:repeat(4,1fr)} }
-  .kcard{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
-    border-radius:16px; padding:20px 16px; text-align:center}
-  .kcard .ic{font-size:24px; margin-bottom:10px}
-  .kcard b{display:block; font-size:14px; margin-bottom:5px}
-  .kcard span{color:var(--muted); font-size:12px; line-height:1.45}
-
   /* kind / dashboard preview */
   .dash{display:grid; grid-template-columns:1fr; gap:16px; margin-top:34px}
   @media(min-width:820px){ .dash{grid-template-columns:1fr 1fr} }
   .panel{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.4)); border:1px solid var(--line);
     border-radius:20px; padding:24px}
   .panel h3{font-family:'Pixelify Sans'; font-size:19px; margin:0 0 6px}
+  /* the chart and calendar show made-up months, so they say so */
+  .sample{display:inline-block; font-family:'Nunito'; font-size:11px; font-weight:800; color:var(--muted);
+    border:1px dashed rgba(255,255,255,.25); border-radius:8px; padding:1px 7px; margin-right:4px}
   .panel .psub{color:var(--muted); font-size:13px; margin:0 0 20px; line-height:1.5}
   .leaf{background:var(--leaf)} .amber{background:var(--honey)} .coral{background:#e8926a}
 
@@ -178,9 +171,9 @@
   .crt{aspect-ratio:1/1; border-radius:14px; background:var(--plum3); border:1px solid var(--line);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
     font-weight:800; font-size:12px; color:var(--muted)}
-  .crt span{font-size:26px; filter:grayscale(1) opacity(.5)}
+  .crt img{width:40px; height:40px; object-fit:contain; image-rendering:pixelated; filter:grayscale(1) opacity(.6)}
   .crt.filled{background:rgba(143,206,107,.12); border-color:rgba(143,206,107,.4); color:var(--leaf)}
-  .crt.filled span{filter:none}
+  .crt.filled img{filter:none}
   .soon{margin-top:16px; display:inline-block; background:rgba(244,184,96,.12); border:1px solid rgba(244,184,96,.35);
     color:var(--honey); font-weight:800; font-size:12px; padding:8px 14px; border-radius:999px}
 
@@ -217,7 +210,7 @@
   footer .wrap{display:flex; flex-direction:column; gap:18px}
   .fdon{display:flex; flex-wrap:wrap; gap:12px}
   .fdon a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:13.5px;
-    border-radius:12px; padding:11px 16px; border:1px solid var(--line)}
+    border-radius:12px; padding:11px 16px; border:1px solid var(--line); min-height:44px}
   .fdon a.kofi{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410; border:none}
   .fdon a.teer{background:linear-gradient(180deg,var(--cendol),#66ad4a); color:#173311; border:none}
   .fnote{line-height:1.6}
@@ -233,17 +226,17 @@
     <a href="#about">About</a>
   </div>
   <div style="display:flex; align-items:center; gap:10px">
-    <button class="navtog" id="navtog" aria-label="Menu">☰</button>
+    <button class="navtog" id="navtog" aria-label="Menu" aria-expanded="false" aria-controls="mobmenu">☰</button>
     <a class="btn primary sm" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="nav">Open app</a>
   </div>
 </div></nav>
 
-<div class="mobmenu" id="mobmenu">
-  <button class="close" onclick="toggleMenu(false)">✕</button>
+<div class="mobmenu" id="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="close" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
   <a href="#journey" onclick="toggleMenu(false)">The forest</a>
   <a href="#how" onclick="toggleMenu(false)">How it works</a>
   <a href="#about" onclick="toggleMenu(false)">About</a>
-  <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app →</a>
+  <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app</a>
 </div>
 
 <!-- HERO -->
@@ -254,20 +247,17 @@
     <div class="heroCtas">
       <a class="btn primary" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="hero">Try Still Here</a>
     </div>
-    <div class="trust">
-    </div>
   </div>
 
   <div id="try" class="stagecard">
     <canvas id="heroForest" width="500" height="600"></canvas>
     <div class="stagetop">
-      <div class="wm">Still Here<small>your quiet forest</small></div>
       <div class="pill"><span class="dot"></span><span id="heroPhase">Sapling</span></div>
     </div>
     <button class="daybtn" id="heroDay">☀ Day</button>
     <div class="stagebar">
-      <div class="grewline" id="heroGrew">This little island is yours to grow. Give it a good day.</div>
-      <button class="growbtn" id="heroGrow">🌱 Plant a good day</button>
+      <div class="grewline" id="heroGrew" aria-live="polite">This little island is yours to grow. Give it a good day.</div>
+      <button class="growbtn" id="heroGrow"><img class="sprite" src="assets/sprites/tree_sprout.png" alt="">Plant a good day</button>
     </div>
   </div>
 </div></div></section>
@@ -288,7 +278,7 @@
     <!-- months bar chart -->
     <div class="panel">
       <h3>Your months, at a glance</h3>
-      <p class="psub">Every bar is one month. The green line is your goal.</p>
+      <p class="psub"><span class="sample">Example</span> Every bar is one month. Green means you met your goal that month.</p>
       <div class="chart">
         <div class="bar"><span class="v">190</span><i class="coral" style="height:100%"></i><b>Mar</b></div>
         <div class="bar"><span class="v">180</span><i class="coral" style="height:95%"></i><b>Apr</b></div>
@@ -312,7 +302,7 @@
         <button data-t="plain" onclick="pickTone('plain')">Plain</button>
         <button data-t="honest" onclick="pickTone('honest')">Honest</button>
       </div>
-      <div class="quotebox" id="toneQuote">"That’s your seven for today. No penalty here — the forest keeps everything you’ve grown."</div>
+      <div class="quotebox" id="toneQuote">"That’s your seven for today. No penalty here. The forest keeps everything you’ve grown."</div>
     </div>
 
     <!-- sanctuary -->
@@ -320,12 +310,12 @@
       <h3>A living sanctuary</h3>
       <p class="psub">As your forest matures, companions come to live in it.</p>
       <div class="sanct">
-        <div class="crt filled"><span>🦋</span>Arrived</div>
-        <div class="crt filled"><span>🐓</span>Arrived</div>
-        <div class="crt"><span>🐇</span>Locked</div>
-        <div class="crt"><span>🦊</span>Locked</div>
-        <div class="crt"><span>🦄</span>Locked</div>
-        <div class="crt"><span>🐉</span>Locked</div>
+        <div class="crt filled"><img src="assets/sprites/butterfly.png" alt="Butterfly">Arrived</div>
+        <div class="crt filled"><img src="assets/sprites/rooster.png" alt="Rooster">Arrived</div>
+        <div class="crt"><img src="assets/sprites/rabbit.png" alt="Rabbit">Locked</div>
+        <div class="crt"><img src="assets/sprites/fox.png" alt="Fox">Locked</div>
+        <div class="crt"><img src="assets/sprites/unicorn.png" alt="Unicorn">Locked</div>
+        <div class="crt"><img src="assets/sprites/dragon.png" alt="Dragon">Locked</div>
       </div>
       <div class="soon">More companions arriving as you grow</div>
     </div>
@@ -333,7 +323,7 @@
     <!-- calendar -->
     <div class="panel">
       <h3>Honest, not punishing</h3>
-      <p class="psub">A blank day just stays foggy — never a red mark against you.</p>
+      <p class="psub"><span class="sample">Example</span> A blank day just stays foggy, never a red mark against you.</p>
       <div class="cal" id="calGrid"></div>
       <div class="legend" style="margin-top:14px">
         <span><i class="leaf"></i>at / under goal</span>
@@ -349,12 +339,12 @@
 <section id="journey" data-track="s4-forest"><div class="wrap">
   <div class="eyebrow">Watch it come alive</div>
   <h2>From bare soil to a living haven.</h2>
-  <p class="lead" style="max-width:640px">Every good day is one small arrival. Weeks in, your island is full of life — and at dusk the everyday animals curl up asleep while the rare visitors glow.</p>
+  <p class="lead" style="max-width:640px">Every good day is one small arrival. Weeks in, your island is full of life, and at dusk the everyday animals curl up asleep while the rare visitors glow.</p>
   <div class="journey">
     <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="1" data-dusk="0"></canvas></div><div class="cap"><b>Seed</b><span>A first sprout breaks the soil.</span></div></div>
     <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="12" data-dusk="0"></canvas></div><div class="cap"><b>Sapling</b><span>A tree, flowering bushes, a butterfly, a rooster.</span></div></div>
     <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="34" data-dusk="0"></canvas></div><div class="cap"><b>Grove</b><span>More trees, a pond, and animals moving in.</span></div></div>
-    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="54" data-dusk="1"></canvas></div><div class="cap"><b>Haven, at dusk</b><span>A waterfall, sleeping animals — and glowing visitors.</span></div></div>
+    <div class="vig"><div class="cvbox"><canvas width="300" height="300" data-lvl="54" data-dusk="1"></canvas></div><div class="cap"><b>Haven, at dusk</b><span>A waterfall, sleeping animals, and glowing visitors.</span></div></div>
   </div>
   <p class="mythline">Keep going, and the rarest of all may come: a <b>unicorn</b>, a <b>pegasus</b>, even a <b>little dragon</b>.</p>
 </div></section>
@@ -372,12 +362,16 @@
 
 <!-- HOW -->
 <section id="how" data-track="s6-how"><div class="wrap">
-  <div class="eyebrow">How it works</div>
-  <h2>Three small things.</h2>
-  <div class="steps">
-    <div class="step"><div class="n">1</div><h3>Log honestly</h3><p>One tap each time with the exact time quietly recorded, so you can later see when you're most tempted.</p></div>
-    <div class="step"><div class="n">2</div><h3>Good days grow it</h3><p>Every day you stay within your limit adds one new living thing; a flower, a butterfly, a rabbit, a rare creature.</p></div>
-    <div class="step"><div class="n">3</div><h3>Slips never destroy it</h3><p>Go over and nothing is torn down. The forest holds everything you've grown. No zero. No shame. Just tomorrow.</p></div>
+  <div class="howgrid">
+    <div>
+      <div class="eyebrow">How it works</div>
+      <h2>Three small things.</h2>
+    </div>
+    <ul class="promises">
+      <li><h3>Log honestly</h3><p>One tap each time with the exact time quietly recorded, so you can later see when you're most tempted.</p></li>
+      <li><h3>Good days grow it</h3><p>Every day you stay within your limit adds one new living thing; a flower, a butterfly, a rabbit, a rare creature.</p></li>
+      <li><h3>Slips never destroy it</h3><p>Go over and nothing is torn down. The forest holds everything you've grown. No zero. No shame. Just tomorrow.</p></li>
+    </ul>
   </div>
 </div></section>
 
@@ -420,8 +414,22 @@
 
 <script>
 /* ---- nav: mobile menu + active-section highlight ---- */
-function toggleMenu(open){ document.getElementById('mobmenu').classList.toggle('show', open); }
-document.getElementById('navtog').addEventListener('click', ()=>toggleMenu(true));
+const navtog=document.getElementById('navtog'), mobmenu=document.getElementById('mobmenu');
+function toggleMenu(open){
+  mobmenu.classList.toggle('show', open);
+  navtog.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(open) mobmenu.querySelector('.close').focus(); else navtog.focus({preventScroll:true});
+}
+navtog.addEventListener('click', ()=>toggleMenu(true));
+document.addEventListener('keydown', e=>{
+  if(!mobmenu.classList.contains('show')) return;
+  if(e.key==='Escape'){ toggleMenu(false); return; }
+  if(e.key!=='Tab') return;
+  // keep Tab inside the open menu
+  const items=[...mobmenu.querySelectorAll('button,a')], first=items[0], last=items[items.length-1];
+  if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+});
 
 const spy=[...document.querySelectorAll('.navlinks a')];
 const spyMap={}, spySecs=[];
@@ -440,7 +448,7 @@ onScrollSpy();
 
 /* ---- dashboard preview: interactive tone + dummy calendar ---- */
 const TONE_QUOTES={
-  gentle:'"That\u2019s your seven for today. No penalty here \u2014 the forest keeps everything you\u2019ve grown."',
+  gentle:'"That\u2019s your seven for today. No penalty here. The forest keeps everything you\u2019ve grown."',
   plain:'"You\u2019re at 7 of 7. Anything past this counts as over. Your call."',
   honest:'"That\u2019s your third today. You said you wanted fewer. Still your call."'
 };
@@ -852,9 +860,9 @@ function makeForest(cv, stageEl){
     {name:'Sapling', from:1, to:13,
      desc:'A young tree finds its trunk and first branches. Flowering bushes open one colour at a time, a butterfly arrives, and a rooster comes to greet the mornings.'},
     {name:'Grove', from:14, to:38,
-     desc:'More trees rise and a pond gathers. Animals settle in — a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
+     desc:'More trees rise and a pond gathers. Animals settle in: a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
     {name:'Haven', from:39, to:S.length,
-     desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come — a unicorn, a pegasus, even a little dragon.'},
+     desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come: a unicorn, a pegasus, even a little dragon.'},
   ];
   function phases(){ return PHASES.map(p=>Object.assign({},p)); }
 
@@ -964,7 +972,7 @@ function makeCabin(cv, boxEl){
   const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
   const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
   const ARRIVAL=[
-    'Morning! We heard you kept your oath — mind if we build here?',
+    'Morning! We heard you kept your oath. Mind if we build here?',
     'A good day, is it? Then let’s lay the first plank.',
     'You’re still here. So are we. Let’s build something.',
     'Room for a cabin on this island? We’ll get started.'
@@ -1134,7 +1142,7 @@ const grewEl=document.getElementById('heroGrew');
 const growBtn=document.getElementById('heroGrow');
 
 function capReached(){
-  growBtn.textContent='Open the app to keep growing →';
+  growBtn.textContent='Open the app to keep growing';
   growBtn.classList.add('done');
   growBtn.onclick=()=>window.open('/app','_blank','noopener');
 }
@@ -1147,7 +1155,7 @@ growBtn.addEventListener('click', ()=>{
   setHeroPhase();
   grewEl.textContent = (step.label||'A new life arrives')+'.';
   if(heroLevel>=DEMO_CAP){
-    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning \u2014 <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning: <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
   }
 });
 

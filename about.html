@@ -3,8 +3,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Full story of Still Here</title>
-<meta name="description" content="How a road trip to Halls Gap became Still Here — a gentle app for smoking less.">
-<meta property="og:title" content="Still Here — the full story">
+<meta name="description" content="How a road trip to Halls Gap became Still Here, a gentle app for smoking less.">
+<meta property="og:title" content="Still Here: the full story">
 <meta property="og:description" content="How a road trip to Halls Gap became a forest that grows as you keep your oath.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,10 @@
     --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--cendol:#8ed36a;--line:rgba(255,255,255,.09)}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth}
+  :focus-visible{outline:3px solid var(--honey);outline-offset:3px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition-duration:.01ms !important}}
+  /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
+  body{font-variant-ligatures:none}
   body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
     background:radial-gradient(120% 50% at 50% -5%,#4a3d63,#2a2140 44%,#1c1630);background-attachment:fixed;overflow-x:hidden}
   a{color:inherit}
@@ -24,11 +28,11 @@
     background:linear-gradient(180deg,rgba(28,22,48,.75),rgba(28,22,48,0))}
   nav .wrap{max-width:1040px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
   .brand{font-family:'Pixelify Sans';font-size:18px}
-  .brand small{font-family:'Nunito';font-weight:800;font-size:8.5px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;display:block;margin-top:2px}
+  .brand small{font-family:'Nunito';font-weight:800;font-size:11px;color:var(--muted);display:block;margin-top:2px}
   .navr{display:flex;align-items:center;gap:14px}
-  .back{text-decoration:none;color:var(--muted);font-weight:800;font-size:14px}
+  .back{text-decoration:none;color:var(--muted);font-weight:800;font-size:14px;display:inline-flex;align-items:center;min-height:44px}
   .back:hover{color:var(--ink)}
-  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;font-family:'Nunito';font-weight:800;border-radius:13px;border:none;transition:transform .08s ease}
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;font-family:'Nunito';font-weight:800;border-radius:13px;border:none;transition:transform .08s ease;min-height:44px}
   .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep));color:#3a2410;padding:11px 18px;font-size:14px;box-shadow:0 4px 0 #b06d2e}
   .btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #b06d2e}
 
@@ -38,7 +42,7 @@
   .hero .veil{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,15,32,1) 2%,rgba(20,15,32,.25) 45%,rgba(20,15,32,.5))}
   .hero .htext{position:absolute;left:0;right:0;bottom:0;padding:0 22px 34px}
   .hero .htext .in{max-width:720px;margin:0 auto}
-  .eyebrow{font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--honey);margin-bottom:12px}
+  .eyebrow{font-weight:800;font-size:14px;color:var(--honey);margin-bottom:10px}
   .hero h1{font-family:'Pixelify Sans';font-size:clamp(30px,6.5vw,46px);line-height:1.1;margin:0}
   .hero .loc{margin-top:12px;color:var(--muted);font-size:13px;font-weight:700}
 
@@ -91,7 +95,7 @@
 </div></nav>
 
 <div class="hero">
-  <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria — a creek, picnic benches, mountains and cloud">
+  <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria: a creek, picnic benches, mountains and cloud">
   <div class="veil"></div>
   <div class="htext"><div class="in">
     <div class="eyebrow">The story behind Still Here</div>
@@ -102,7 +106,7 @@
 
 <article><div class="wrap">
 
-  <p class="first">This was inspired by my last road trip in Victoria. Fresh air, a clean river, birds flocking to the benches. People just enjoying whatever was around them. And somehow my first thought was, as it always is: "Oh, that's got to be a perfect spot to smoke a cig."</i></p>
+  <p class="first">This was inspired by my last road trip in Victoria. Fresh air, a clean river, birds flocking to the benches. People just enjoying whatever was around them. And somehow my first thought was, as it always is: "Oh, that's got to be a perfect spot to smoke a cig."</p>
 
   <p>But out of everyone there, the only smoke came from the meat shop nearby. Everyone else was simply doing things: reading, licking ice cream, sipping coffee, breathing in the fresh air. <i>Why couldn't I?</i></p>
 
@@ -121,7 +125,7 @@
 
   <p class="sub">The honest numbers</p>
 
-  <p>Right now I smoke about a pack a day — twenty cigarettes, give or take — and honestly, that's concerning. I knew quitting cold turkey wasn't realistic for me, so I had a smaller idea: what if I could go from a pack a day to a pack every three days?</p>
+  <p>Right now I smoke about a pack a day (twenty cigarettes, give or take), and honestly, that's concerning. I knew quitting cold turkey wasn't realistic for me, so I had a smaller idea: what if I could go from a pack a day to a pack every three days?</p>
 
   <p>Then the harder question: <i>how do I make this journey interesting?</i></p>
 
@@ -153,7 +157,7 @@ If it helps you even a little, a coffee or cendol helps keep the little forest g
   <div class="endcard">
     <div class="nm">Still Here</div>
     <p style="color:var(--muted);font-size:15.5px;line-height:1.7;max-width:520px;margin:0 auto">If any of this sounds like you, come plant your first day. It's free, there are no ads, and it grows the moment you tap.</p>
-    <div class="sig">— made with love</div>
+    <div class="sig">Made with love</div>
     <div class="cta2">
       <a class="btn primary big" href="/app" target="_blank" rel="noopener">Open Still Here</a>
       <a class="btn ghost" href="/">← Back to home</a>
