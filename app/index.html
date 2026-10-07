@@ -1,9 +1,12 @@
+<!doctype html>
 <!--
   Still Here — a living forest that grows while you keep your oath.
   v1 self-use build: IQOS reduction, 30 → 10 packs/month.
   Data syncs to Appwrite when configured, with on-device fallback.
 -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Still Here</title>
 
 <!-- iPhone home-screen web app -->
@@ -39,6 +42,14 @@
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%}
+  /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
+  body{font-variant-ligatures:none}
+  button{touch-action:manipulation}
+  :focus-visible{outline:3px solid var(--honey); outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important; scroll-behavior:auto !important}
+  }
   body{
     background:
       radial-gradient(120% 80% at 50% -10%, #4a3d63 0%, #2a2140 45%, #1c1630 100%);
@@ -65,22 +76,25 @@
     display:flex; align-items:flex-start; justify-content:space-between;
     padding:calc(14px + env(safe-area-inset-top)) 16px 0; pointer-events:none; gap:10px;
   }
+  /* dark backing so the name stays readable over the bright daytime sky */
   .wordmark{
     font-family:'Pixelify Sans',sans-serif; font-weight:600;
     font-size:15px; letter-spacing:.5px;
-    color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.25);
-    line-height:1;
+    color:var(--ink); line-height:1;
+    background:rgba(20,15,32,.78); border-radius:12px; padding:8px 11px;
   }
   .wordmark small{display:block; font-family:'Nunito'; font-weight:700;
-    font-size:9.5px; letter-spacing:2.5px; color:var(--muted); margin-top:4px; text-transform:uppercase}
+    font-size:11px; color:var(--muted); margin-top:4px}
   .stagepill{
-    pointer-events:auto;
-    background:rgba(20,15,32,.55); backdrop-filter:blur(6px);
+    pointer-events:auto; position:relative; cursor:pointer; font-family:'Nunito';
+    background:rgba(20,15,32,.78);
     border:1px solid var(--line); border-radius:999px;
     padding:7px 12px; font-weight:800; font-size:11px; letter-spacing:.3px;
     color:var(--ink); display:flex; align-items:center; gap:7px; white-space:nowrap;
   }
-  .stagepill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 8px var(--leaf)}
+  /* invisible 44px hit area around the small pill */
+  .stagepill::after{content:''; position:absolute; inset:-8px -4px}
+  .stagepill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf)}
 
   /* ambient toast (gentle messages) */
   #toast{
@@ -109,7 +123,7 @@
     background:var(--plum3); border:1px solid var(--line);
     border-radius:14px; padding:11px 13px;
   }
-  .stat .k{font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); font-weight:800}
+  .stat .k{font-size:11.5px; color:var(--muted); font-weight:800}
   .stat .v{font-family:'Pixelify Sans',sans-serif; font-size:23px; margin-top:3px; line-height:1}
   .stat .v span{font-family:'Nunito'; font-size:12px; font-weight:800; color:var(--muted)}
   .stat.warn .v{color:var(--soft-warn)}
@@ -134,7 +148,7 @@
   .ghost{
     flex:1; background:transparent; border:1px solid var(--line);
     color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:12.5px;
-    padding:11px; border-radius:12px; cursor:pointer; letter-spacing:.2px;
+    padding:11px; border-radius:12px; cursor:pointer; letter-spacing:.2px; min-height:44px;
   }
   .ghost:active{background:rgba(255,255,255,.04)}
 
@@ -150,7 +164,7 @@
   #confirm .row{display:flex; gap:9px}
   #confirm button{
     flex:1; border-radius:11px; padding:10px; font-family:'Nunito'; font-weight:800;
-    font-size:12.5px; cursor:pointer; border:none;
+    font-size:12.5px; cursor:pointer; border:none; min-height:44px;
   }
   #confirm .clean{background:var(--leaf); color:#173311}
   #confirm .some{background:var(--plum2); color:var(--ink); border:1px solid var(--line)}
@@ -195,15 +209,15 @@
   .setrow .lbl small{display:block; color:var(--muted); font-weight:700; font-size:11px; margin-top:2px}
   .seg{display:flex; gap:6px}
   .seg button{border:1px solid var(--line); background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:11.5px; padding:7px 11px; border-radius:10px; cursor:pointer}
+    font-family:'Nunito'; font-weight:800; font-size:11.5px; padding:7px 11px; border-radius:10px; cursor:pointer; min-height:44px}
   .seg button.on{background:var(--honey); color:#3a2410; border-color:transparent}
   .seg button:disabled{opacity:.45; cursor:not-allowed}
   .reset{width:100%; margin-top:16px; background:transparent; border:1px solid rgba(232,146,106,.4);
-    color:var(--soft-warn); font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:12px; border-radius:12px; cursor:pointer}
+    color:var(--soft-warn); font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:12px; border-radius:12px; cursor:pointer; min-height:44px}
 
   .tabbar{display:flex; gap:8px; margin:6px 0 16px}
   .tabbar button{flex:1; border:none; background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:9px; border-radius:11px; cursor:pointer}
+    font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:9px; border-radius:11px; cursor:pointer; min-height:44px}
   .tabbar button.on{background:var(--plum3); color:var(--ink); box-shadow:inset 0 -2px 0 var(--honey)}
   .pane{display:none} .pane.on{display:block}
 
@@ -212,7 +226,7 @@
   .mstat .chev{position:absolute; top:9px; right:11px; color:var(--muted); font-size:15px; font-weight:800; line-height:1}
   .stat{position:relative}
   .back{background:transparent; border:none; color:var(--muted); font-family:'Nunito';
-    font-weight:800; font-size:13px; cursor:pointer; padding:2px 0 8px}
+    font-weight:800; font-size:13px; cursor:pointer; padding:2px 0 8px; min-height:44px}
   .chart{position:relative; overflow-x:auto; padding:6px 2px 0; margin-bottom:4px; -webkit-overflow-scrolling:touch}
   .chart .row{display:flex; align-items:flex-end; gap:12px; padding:0 2px}
   .bar{position:relative; flex:0 0 40px; height:172px; cursor:pointer}
@@ -254,7 +268,7 @@
   #onboard .tag{text-align:center; color:var(--muted); font-size:12.5px; margin-bottom:20px; line-height:1.5}
   #onboard label{display:block; font-weight:800; font-size:12px; color:var(--muted); margin:14px 2px 6px; letter-spacing:.3px}
   #onboard input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:13px 14px; outline:none}
+    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:16px; padding:13px 14px}
   #onboard input:focus{border-color:var(--honey)}
   .seg3{display:flex; gap:8px}
   .seg3 button{flex:1; border:1px solid var(--line); background:var(--plum3); color:var(--muted);
@@ -266,7 +280,7 @@
     font-family:'Nunito'; font-weight:800; font-size:16px; padding:15px; border-radius:14px; box-shadow:0 5px 0 #b06d2e}
   #onboard .big:active{transform:translateY(3px); box-shadow:0 2px 0 #b06d2e}
   #onboard .link{display:block;width:100%;text-align:center;background:none;border:none;color:var(--muted);
-    font-family:'Nunito';font-weight:800;font-size:13px;margin-top:14px;cursor:pointer;text-decoration:underline}
+    font-family:'Nunito';font-weight:800;font-size:13px;margin-top:4px;cursor:pointer;text-decoration:underline;min-height:44px}
   #onboard .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:12px; text-align:center; min-height:16px}
 
   /* ---------- progress panel ---------- */
@@ -347,7 +361,7 @@
   #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost, #logedit .mghost, #cikiname .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
     font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
   #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
-    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:6px; cursor:pointer; text-decoration:underline}
+    font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:0; cursor:pointer; text-decoration:underline; min-height:44px}
 
   #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311;
@@ -356,7 +370,7 @@
   #donate .msub{display:block; font-weight:700; font-size:11px; opacity:.75; margin-top:2px}
 
   #feedback input, #feedback textarea, #logedit input, #logedit textarea, #cikiname input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:12px 14px; outline:none; margin-bottom:10px}
+    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:16px; padding:12px 14px; margin-bottom:10px}
   #feedback textarea, #logedit textarea{resize:vertical; min-height:96px; line-height:1.5}
   #feedback input:focus, #feedback textarea:focus, #logedit input:focus, #logedit textarea:focus, #cikiname input:focus{border-color:var(--honey)}
 
@@ -369,8 +383,7 @@
     border:1px solid rgba(244,184,96,.4); color:var(--honey); font-weight:800; font-size:12px;
     display:flex; align-items:center; justify-content:center; margin-top:1px}
   #install .insteps b{color:var(--ink)}
-  #install .plat{display:inline-block; margin-bottom:14px; font-size:11px; font-weight:800; letter-spacing:1px;
-    text-transform:uppercase; color:var(--muted); background:var(--plum3); border:1px solid var(--line);
+  #install .plat{display:inline-block; margin-bottom:14px; font-size:12px; font-weight:800; color:var(--muted); background:var(--plum3); border:1px solid var(--line);
     padding:5px 11px; border-radius:999px}
   #cikiname .cikiport{width:132px; height:104px; margin:2px auto 8px; display:block; background:linear-gradient(180deg,#a9def0,#ffedcf); border-radius:16px; border:1px solid var(--line)}
   #logedit .leRow{display:flex; align-items:center; justify-content:space-between; background:var(--plum3);
@@ -394,7 +407,8 @@
   #waitPill .wt{font-weight:800; font-size:13px; color:var(--ink); font-variant-numeric:tabular-nums}
   #waitPill .wt b{color:var(--honey)}
   #waitPill button{background:rgba(255,255,255,.08); border:none; color:var(--muted); font-family:'Nunito';
-    font-weight:800; font-size:11.5px; padding:6px 11px; border-radius:999px; cursor:pointer}
+    font-weight:800; font-size:11.5px; padding:6px 11px; border-radius:999px; cursor:pointer; position:relative}
+  #waitPill button::after{content:''; position:absolute; inset:-9px -2px}
 
   /* ---------- boot / loading ---------- */
   #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
@@ -403,8 +417,8 @@
     transition:opacity .55s ease; }
   #boot.hide{opacity:0; pointer-events:none}
   #boot .bl{font-family:'Pixelify Sans'; font-size:24px; letter-spacing:.5px; color:var(--ink)}
-  #boot .bl small{display:block; font-family:'Nunito'; font-weight:800; font-size:9.5px;
-    letter-spacing:2.5px; color:var(--muted); text-transform:uppercase; margin-top:6px; text-align:center}
+  #boot .bl small{display:block; font-family:'Nunito'; font-weight:800; font-size:12px;
+    color:var(--muted); margin-top:6px; text-align:center}
   .sprout{position:relative; width:64px; height:56px}
   .sprout .soil{position:absolute; left:12px; bottom:0; width:40px; height:6px; border-radius:4px;
     background:#5b4128; opacity:.85}
@@ -432,7 +446,7 @@
   .authview.on{display:block}
   #auth label{display:block; font-weight:800; font-size:12px; color:var(--muted); margin:14px 2px 6px; letter-spacing:.3px}
   #auth input{width:100%; background:var(--plum3); border:1px solid var(--line); border-radius:12px;
-    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:15px; padding:13px 14px; outline:none}
+    color:var(--ink); font-family:'Nunito'; font-weight:700; font-size:16px; padding:13px 14px}
   #auth input:focus{border-color:var(--honey)}
   #auth .big{width:100%; margin-top:20px; border:none; cursor:pointer;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
@@ -443,15 +457,15 @@
   #auth .alt{width:100%; margin-top:11px; background:transparent; border:1px solid var(--line);
     color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:14px; padding:13px; border-radius:12px; cursor:pointer}
   #auth .link{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:13px; margin-top:16px; cursor:pointer; text-decoration:underline}
+    font-family:'Nunito'; font-weight:800; font-size:13px; margin-top:6px; cursor:pointer; text-decoration:underline; min-height:44px}
   #auth .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:14px; text-align:center; min-height:16px; line-height:1.4}
-  #auth .back{background:none;border:none;color:var(--muted);font-family:'Nunito';font-weight:800;font-size:13px;cursor:pointer;margin-bottom:6px;padding:2px 0}
+  #auth .back{background:none;border:none;color:var(--muted);font-family:'Nunito';font-weight:800;font-size:13px;cursor:pointer;margin-bottom:6px;padding:2px 0;min-height:44px}
 
   .acctrow{display:flex; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line)}
   .acctrow .lbl{font-weight:800;font-size:13.5px}
   .acctrow .lbl small{display:block;color:var(--muted);font-weight:700;font-size:11px;margin-top:2px}
   .acctbtn{border:1px solid var(--line);background:var(--plum3);color:var(--ink);font-family:'Nunito';
-    font-weight:800;font-size:12px;padding:9px 13px;border-radius:10px;cursor:pointer}
+    font-weight:800;font-size:12px;padding:9px 13px;border-radius:10px;cursor:pointer;min-height:44px}
   .acctbtn.primary{background:var(--honey);color:#3a2410;border-color:transparent}
 </style>
 
@@ -469,21 +483,21 @@
     <canvas id="scene"></canvas>
     <div id="stageTop">
       <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
-      <div class="stagepill" onclick="openProgress()"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6">›</span></div>
+      <button type="button" class="stagepill" onclick="openProgress()" aria-label="See your forest's progress"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
     </div>
     <div id="toast"></div>
     <button id="shareStage" onclick="shareForest(this)" aria-label="Share your forest" title="Share your forest">📸</button>
     <div id="waitPill">
       <span class="wt">Holding on · <b id="waitTime">10:00</b></span>
       <button onclick="logNowFromWait()">Log now</button>
-      <button onclick="cancelWait()">✕</button>
+      <button onclick="cancelWait()" aria-label="Stop waiting">✕</button>
     </div>
   </div>
 
   <div id="deck">
     <div id="confirm">
       <div class="q" id="cfQ">How was yesterday?</div>
-      <div class="sub" id="cfSub">A day left blank stays foggy — not a loss, just unknown. Take a second to close it honestly.</div>
+      <div class="sub" id="cfSub">A day left blank stays foggy: not a loss, just unknown. Take a second to close it honestly.</div>
       <div class="row">
         <button class="clean" onclick="resolveDay('clean')">Smoke-free</button>
         <button class="some" onclick="resolveDay('some')">I smoked some</button>
@@ -503,7 +517,8 @@
         <div class="v"><span id="tSticks">0</span> <span id="tDenom">/ <span id="tAllow">0</span> <span id="tUnit">times</span></span></div>
         <div class="meter" id="tMeterRow"><i id="tMeter" style="width:0%"></i></div>
       </div>
-      <div class="stat mstat" id="stMonth" onclick="openTracker()">
+      <div class="stat mstat" id="stMonth" onclick="openTracker()" role="button" tabindex="0" aria-label="Open your months"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTracker();}">
         <div class="chev">›</div>
         <div class="k" id="mLabel">This month</div>
         <div class="v"><span id="mPacks">0</span> <span>/ <span id="mTarget">0</span> <span id="mUnit">times</span></span></div>
@@ -534,7 +549,7 @@
   <div id="donate">
     <div class="mbox">
       <div class="mtitle">Support Still Here</div>
-      <div class="mbody">No ads, no subscription — just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
+      <div class="mbody">No ads, no subscription. Just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
       <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
       <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
       <button class="mghost" onclick="openFeedback()">💬 Got an idea? Tell me</button>
@@ -546,7 +561,7 @@
     <div class="mbox">
       <canvas class="cikiport" id="cikiPort"></canvas>
       <div class="mtitle">A new friend arrived</div>
-      <div class="mbody">A little dog wandered onto your island today — tail going the whole time — and decided this is home now. She's yours to keep. What will you call her?</div>
+      <div class="mbody">A little dog wandered onto your island today (tail going the whole time) and decided this is home now. She's yours to keep. What will you call her?</div>
       <input id="cikiNameInput" type="text" maxlength="24" autocomplete="off" placeholder="Give her a name…">
       <button class="mprimary" onclick="saveCikiName()">That's her name</button>
       <button class="mlink" onclick="hideCikiName()">Maybe later</button>
@@ -556,7 +571,7 @@
   <div id="logedit">
     <div class="mbox">
       <div class="mtitle">Correct today's count</div>
-      <div class="mbody">Mis-tapped? You can fix <b>today's</b> number here. This is for genuine mistakes — the forest grows truest on honest days, so tell yourself why in a word or two.</div>
+      <div class="mbody">Mis-tapped? You can fix <b>today's</b> number here. This is for genuine mistakes. The forest grows truest on honest days, so tell yourself why in a word or two.</div>
       <div class="leRow"><span>Today is logged as</span><b id="leCurrent">0</b></div>
       <label class="leLbl">The correct number should be</label>
       <input id="leCount" type="number" inputmode="numeric" min="0" placeholder="e.g. 3">
@@ -572,7 +587,7 @@
     <div class="mbox">
       <img class="icon" src="/icon-180.png" alt="Still Here">
       <div class="mtitle" style="text-align:center">Keep it one tap away</div>
-      <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app — full-screen, and always right there when you need it.</div>
+      <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app: full-screen, and always right there when you need it.</div>
       <div style="text-align:center"><span class="plat" id="inPlat">Your device</span></div>
       <ol class="insteps" id="inSteps"></ol>
       <button class="mprimary" id="inNow" onclick="installNow()" style="display:none; margin-top:16px">➕ Add to Home Screen</button>
@@ -583,17 +598,17 @@
   <div id="reset">
     <div class="mbox">
       <div class="mtitle">Start the forest over?</div>
-      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil — the homestead resets too. Your account, name, and voice stay. This can't be undone.</div>
-      <button class="mprimary" onclick="doReset('same')">Start over — keep my oath</button>
+      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil. The homestead resets too. Your account, name, and voice stay. This can't be undone.</div>
+      <button class="mprimary" onclick="doReset('same')">Start over, keep my oath</button>
       <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
-      <button class="mlink" onclick="hideReset()">Cancel — keep my forest</button>
+      <button class="mlink" onclick="hideReset()">Cancel, keep my forest</button>
     </div>
   </div>
 
   <div id="enjoy">
     <div class="mbox">
       <div class="mtitle">Seven days strong 🌱</div>
-      <div class="mbody">You've kept your oath a whole week — the builders noticed. If you've a moment, I'd love to hear what's working, or what you'd change. It's just me building this, and your words steer it.</div>
+      <div class="mbody">You've kept your oath a whole week, and the builders noticed. If you've a moment, I'd love to hear what's working, or what you'd change. It's just me building this, and your words steer it.</div>
       <button class="mprimary" onclick="enjoyToFeedback()">Share a thought</button>
       <button class="mlink" onclick="hideEnjoy()">Maybe another time</button>
     </div>
@@ -602,8 +617,8 @@
   <div id="feedback">
     <div class="mbox">
       <div class="mtitle">Got any words or ideas?</div>
-      <div class="mbody">I read every single one — it's how Still Here gets better. A feature, a bug, or just a hello.</div>
-      <input id="fbEmail" type="email" autocomplete="email" placeholder="your email (so I can reply — optional)">
+      <div class="mbody">I read every single one; it's how Still Here gets better. A feature, a bug, or just a hello.</div>
+      <input id="fbEmail" type="email" autocomplete="email" placeholder="your email (optional, so I can reply)">
       <textarea id="fbMsg" rows="4" placeholder="Tell me anything…"></textarea>
       <button class="mprimary" id="fbSend" onclick="submitFeedback()">Send it my way</button>
       <button class="mlink" onclick="hideFeedback()">Maybe later</button>
@@ -635,7 +650,7 @@
         <button type="button" data-p="monthly" class="on" onclick="pickPeriod('monthly')">Monthly</button>
       </div>
 
-      <div class="obhint" id="obHint">That works out to about — a day.</div>
+      <div class="obhint" id="obHint">That works out to about … a day.</div>
       <button class="big" onclick="submitOath()">Plant my forest</button>
       <button class="link" id="obLogin" onclick="onboardToLogin()">Already have a forest? Log in</button>
       <button class="link" id="obCancel" style="display:none" onclick="hideOnboard()">Cancel</button>
@@ -701,7 +716,7 @@
   <div class="sheet" id="homeSheet">
     <div class="grab"></div>
     <h3>Your homestead</h3>
-    <p class="lead">Every good day, the builders add a little more. It's never torn down — on an off day they simply rest by the fire, and pick the hammer back up when you're on track again.</p>
+    <p class="lead">Every good day, the builders add a little more. It's never torn down. On an off day they simply rest by the fire, and pick the hammer back up when you're on track again.</p>
     <div class="homeStage" id="homeStage"><canvas id="cabinCv"></canvas>
       <div class="homeTier" id="homeTierPill">Bedroll</div>
     </div>
@@ -768,7 +783,7 @@
 
     <div class="pane on" id="paneSanctuary">
       <h3>The Sanctuary</h3>
-      <p class="lead">As your forest matures, companions come to live in it. The first few arrive on their own. The rare ones — the spirits — are for a later chapter.</p>
+      <p class="lead">As your forest matures, companions come to live in it. The first few arrive on their own. The rare ones, the spirits, are for a later chapter.</p>
       <div class="sanct" id="sanctGrid"></div>
       <span class="soonpill">More companions arriving in a future update</span>
     </div>
@@ -778,7 +793,7 @@
       <p class="lead" id="oathLead">Your promise, and how the forest speaks to you.</p>
       <div class="setrow">
         <div class="lbl" id="oathTitle">Your oath</div>
-        <div class="lbl" style="text-align:right;color:var(--honey)"><span id="oathDetail">—</span><small style="color:var(--muted)" id="oathUnitPeriod">&nbsp;</small></div>
+        <div class="lbl" style="text-align:right;color:var(--honey)"><span id="oathDetail">…</span><small style="color:var(--muted)" id="oathUnitPeriod">&nbsp;</small></div>
       </div>
       <div class="setrow">
         <div class="lbl">Edit oath<small>change the promise or its numbers</small></div>
@@ -794,7 +809,7 @@
       </div>
       <div class="setrow">
         <div class="lbl">Daily allowance<small>keeps the weather kind</small></div>
-        <div class="lbl" style="color:var(--leaf)"><span id="setAllow">—</span></div>
+        <div class="lbl" style="color:var(--leaf)"><span id="setAllow">…</span></div>
       </div>
       <div class="setrow">
         <div class="lbl">Sync<small>where your forest lives</small></div>
@@ -809,7 +824,7 @@
         <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
       </div>
       <div class="acctrow">
-        <div class="lbl">Show my goal when sharing<small>off by default — your forest is enough</small></div>
+        <div class="lbl">Show my goal when sharing<small>off by default, your forest is enough</small></div>
         <button class="acctbtn" id="shareGoalBtn" onclick="toggleShareGoal()">Off</button>
       </div>
       <div class="acctrow">
@@ -912,7 +927,7 @@ function ownerPerms(){
 async function initBackend(){
   cloudError='';
   const hasKeys = APPWRITE_PROJECT && !APPWRITE_PROJECT.includes('PASTE') && !APPWRITE_ENDPOINT.includes('<REGION>');
-  if(!hasKeys){ cloudError='Config missing in this file — an old version may be deployed.'; return 'local'; }
+  if(!hasKeys){ cloudError='Config missing in this file. An old version may be deployed.'; return 'local'; }
   if(typeof Appwrite==='undefined'){ cloudError='Appwrite SDK did not load (network/CDN blocked).'; return 'local'; }
   try{
     const client = new Appwrite.Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
@@ -1030,7 +1045,7 @@ function accountIsGuest(){ return !(authUser && authUser.email); }
 function track(name, data){ try{ if(window.umami && window.umami.track) window.umami.track(name, data); }catch(_){} }
 
 async function doRegister(email, password, name, animal){
-  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — accounts need a connection.'};
+  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off. Accounts need a connection.'};
   const snapshot = { oath, logs, dayStatus, prefs, profile:{ name:(name||'').trim(), animal:(animal||'').trim() } };
   try{
     await aw.account.create(Appwrite.ID.unique(), email.trim(), password, (name||'').trim());
@@ -1047,7 +1062,7 @@ async function doRegister(email, password, name, animal){
 
 // Login to an existing account and load its forest
 async function doLogin(email, password){
-  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off — log in needs a connection.'};
+  if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off. Logging in needs a connection.'};
   try{
     try{ await aw.account.deleteSession('current'); }catch(_){}
     await aw.account.createEmailPasswordSession(email.trim(), password);
@@ -1110,7 +1125,7 @@ function maybeAskFeedback(){
 }
 function hideFeedback(){ dismissOverlay(document.getElementById('feedback')); }
 async function sendFeedback(email, message){
-  if(backend!=='cloud') return {ok:false, msg:'Feedback needs a connection — please try again online.'};
+  if(backend!=='cloud') return {ok:false, msg:'Feedback needs a connection. Please try again online.'};
   try{
     await aw.databases.createDocument(AW_DB, AW_FEEDBACK, Appwrite.ID.unique(), {
       email:(email||'').slice(0,320),
@@ -1127,7 +1142,7 @@ async function submitFeedback(){
   const btn=document.getElementById('fbSend'); btn.disabled=true; btn.textContent='Sending…';
   const r=await sendFeedback(email, msg);
   btn.disabled=false; btn.textContent='Send it my way';
-  if(r.ok){ hideFeedback(); toast('Thank you — I read every word. It means a lot.'); }
+  if(r.ok){ hideFeedback(); toast('Thank you. I read every word, and it means a lot.'); }
   else err.textContent = r.msg.toLowerCase().includes('not found')
       ? 'Feedback isn\u2019t set up yet (missing collection).'
       : ('Couldn\u2019t send: '+r.msg);
@@ -1137,7 +1152,7 @@ function goDonate(which){
   const url = which==='kofi' ? DONATE_KOFI : DONATE_TRAKTEER;
   hideDonate();
   window.open(url, '_blank', 'noopener');
-  toast('Thank you — truly. It keeps the forest growing.');
+  toast('Thank you, truly. It keeps the forest growing.');
 }
 
 /* ============================================================
@@ -1150,7 +1165,7 @@ async function persistPrefs(){
 }
 function setTone(t){
   prefs.tone=t; persistPrefs(); renderTone();
-  const line={gentle:'The forest will speak gently.',plain:'Plain and factual it is.',honest:'Honest it is — no softening.'}[t];
+  const line={gentle:'The forest will speak gently.',plain:'Plain and factual it is.',honest:'Honest it is. No softening.'}[t];
   toast(line);
 }
 function renderTone(){
@@ -1161,7 +1176,7 @@ function renderTone(){
 const TONE_COPY={
   gentle:{
     title: a=>`That’s your ${a} for today`,
-    body:  ()=>'No penalty here — the forest keeps everything you’ve grown. Want to give it ten minutes first?',
+    body:  ()=>'No penalty here. The forest keeps everything you’ve grown. Want to give it ten minutes first?',
     wait:'Wait 10 minutes', go:'Log it anyway',
     held:'Ten minutes, and you’re still here. That craving passed on its own.',
     ended:'The ten minutes are up. Whatever you choose next, the forest is still yours.'
@@ -1175,7 +1190,7 @@ const TONE_COPY={
   },
   honest:{
     title: ()=>'This one puts you over',
-    body:  (a,n)=>`You said ${a}. This is ${n+1}. Nothing bad happens to your forest — you just asked me to say it plainly.`,
+    body:  (a,n)=>`You said ${a}. This is ${n+1}. Nothing bad happens to your forest; you just asked me to say it plainly.`,
     wait:'Hold off', go:'Log it',
     held:'You waited it out. That’s the whole skill, right there.',
     ended:'Ten minutes are up. Your call now.'
@@ -1225,11 +1240,11 @@ function renderHomestead(){
     nx.textContent=`${left} more good ${left===1?'day':'days'} and the builders raise your ${next.name.toLowerCase()}.`;
   } else {
     bar.style.width='100%';
-    nx.textContent='The Homestead is complete — fireplace lit, windows warm. The builders have made themselves at home.';
+    nx.textContent='The Homestead is complete: fireplace lit, windows warm. The builders have made themselves at home.';
   }
   nx.innerHTML += D.building
     ? ' <span style="color:var(--leaf);font-weight:800">The builders are hard at work.</span>'
-    : ' <span style="color:var(--muted)">The builders are resting by the fire — log a good day to get them going again.</span>';
+    : ' <span style="color:var(--muted)">The builders are resting by the fire. Log a good day to get them going again.</span>';
 }
 
 /* ---- the crossing point ---- */
@@ -1258,7 +1273,7 @@ function showCross(){
 function hideCross(){ document.getElementById('cross').classList.remove('show'); }
 function crossProceed(){ hideCross(); logStick(); }
 function muteToday(){ prefs.muteDay=todayKey(); persistPrefs(); hideCross();
-  toast('Understood — no more nudges today.'); }
+  toast('Understood. No more nudges today.'); }
 
 /* ---- the ten-minute hold ---- */
 let waitTimer=null, waitUntil=0;
@@ -1433,7 +1448,7 @@ function renderProgress(){
   const steps=ISO.steps(), nxt=steps[lvl];
   document.getElementById('progNext').textContent = nxt
     ? 'Your next good day brings: '+nxt.label.toLowerCase()+'.'
-    : 'Your sanctuary is complete — every creature has come home.';
+    : 'Your sanctuary is complete. Every creature has come home.';
 }
 
 function updateHeader(){
@@ -1463,7 +1478,7 @@ async function submitRecover(){
   const email=(document.getElementById('rcEmail').value||'').trim();
   const err=document.getElementById('rcErr'); err.textContent=''; err.style.color='';
   if(!email || !email.includes('@')){ err.textContent='Enter the email you signed up with.'; return; }
-  if(backend!=='cloud'){ err.textContent='This needs a connection — please try again online.'; return; }
+  if(backend!=='cloud'){ err.textContent='This needs a connection. Please try again online.'; return; }
   const btn=document.getElementById('rcBtn'); btn.disabled=true; btn.textContent='Sending…';
   try{
     const url = location.origin + location.pathname;      // Appwrite adds the token and redirects back here
@@ -1471,7 +1486,7 @@ async function submitRecover(){
     err.style.color='var(--leaf)';
     err.textContent='Sent. Check your inbox for the reset link (and your spam folder, just in case).';
     track('recover-requested');
-  }catch(e){ err.textContent=(e&&e.message)?e.message:'Could not send — please try again.'; }
+  }catch(e){ err.textContent=(e&&e.message)?e.message:'Could not send. Please try again.'; }
   btn.disabled=false; btn.textContent='Send reset link';
 }
 function showResetForm(userId, secret){ recoverCtx={userId, secret}; showAuth('reset'); }
@@ -1488,17 +1503,17 @@ async function submitReset(){
     recoverCtx=null; track('recover-completed');
     showAuthView('login');
     const le=document.getElementById('lgEmail'); if(le) le.focus();
-    toast('Password updated — log in with your new one. 🌱');
-  }catch(e){ err.textContent=(e&&e.message)?e.message:'Could not reset — the link may have expired. Request a new one.'; btn.disabled=false; btn.textContent='Set new password'; return; }
+    toast('Password updated. Log in with your new one. 🌱');
+  }catch(e){ err.textContent=(e&&e.message)?e.message:'Could not reset. The link may have expired. Request a new one.'; btn.disabled=false; btn.textContent='Set new password'; return; }
   btn.disabled=false; btn.textContent='Set new password';
 }
 function val(id){ return (document.getElementById(id).value||'').trim(); }
 function friendlyAuthError(m){
   m=(m||'').toLowerCase();
-  if(m.includes('already')) return 'That email is already registered — try logging in instead.';
+  if(m.includes('already')) return 'That email is already registered. Try logging in instead.';
   if(m.includes('invalid credentials')||m.includes('invalid email or password')) return 'Email or password is incorrect.';
   if(m.includes('password')) return 'Please use a stronger password (at least 8 characters).';
-  if(m.includes('rate')||m.includes('too many')) return 'Too many attempts — please wait a moment and try again.';
+  if(m.includes('rate')||m.includes('too many')) return 'Too many attempts. Please wait a moment and try again.';
   return m ? ('Couldn’t do that: '+m) : 'Something went wrong. Please try again.';
 }
 async function submitRegister(){
@@ -1512,7 +1527,7 @@ async function submitRegister(){
   btn.disabled=false; btn.textContent='Create account';
   if(r.ok){ hideAuth(); updateHeader(); renderAccount(); updateSyncUI(); refresh();
     if(!(oath && oath.configured)) showOnboard(false);
-    else toast('Welcome'+(name?', '+name:'')+' — your forest is saved to your account now.'); }
+    else toast('Welcome'+(name?', '+name:'')+'. Your forest is saved to your account now.'); }
   else err.textContent=friendlyAuthError(r.msg);
 }
 async function submitLogin(){
@@ -1533,9 +1548,9 @@ async function logoutAccount(){
 function renderAccount(){
   const status=document.getElementById('acctStatus'), btns=document.getElementById('acctBtns');
   if(!status||!btns) return;
-  if(backend!=='cloud'){ status.textContent='Offline — accounts need a connection'; btns.innerHTML=''; return; }
+  if(backend!=='cloud'){ status.textContent='Offline: accounts need a connection'; btns.innerHTML=''; return; }
   if(accountIsGuest()){
-    status.textContent='Guest — not saved across devices';
+    status.textContent='Guest: not saved across devices';
     btns.innerHTML='<button class="acctbtn primary" onclick="showAuth(\'register\')">Create account</button>';
   } else {
     status.textContent=authUser.email;
@@ -1662,7 +1677,6 @@ function refresh(){
   document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
   const dot=document.getElementById('stageDot');
   dot.style.background = dusk?'var(--honey)':'var(--leaf)';
-  dot.style.boxShadow = `0 0 8px ${dusk?'var(--honey)':'var(--leaf)'}`;
   ISO.setState(D.growthLevel, dusk);
   ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
@@ -1736,21 +1750,21 @@ function refresh(){
 /* ---------- gentle voice ---------- */
 const LOG_LINES={
   gentle:[
-    "Logged. One breath at a time — you’re still here.",
+    "Logged. One breath at a time. You’re still here.",
     "Noted, gently. The forest holds steady.",
     "That’s honesty, and honesty is the whole practice.",
-    "Counted. No judgement — just clear eyes.",
+    "Counted. No judgement, just clear eyes.",
     "Okay. Tomorrow’s soil is already softening.",
   ],
   plain:[ "Logged.", "Counted.", "Noted.", "Added to today." ],
   honest:[
     "Logged. That’s one more than a moment ago.",
-    "Counted — the number is the number.",
+    "Counted. The number is the number.",
     "Noted. No spin on it.",
   ]
 };
 const CLEAN_LINES={
-  gentle:[ "A clean day. The roots drink it in.", "Nothing logged — the birds noticed.", "That day closes bright. Well held." ],
+  gentle:[ "A clean day. The roots drink it in.", "Nothing logged, and the birds noticed.", "That day closes bright. Well held." ],
   plain:[ "Marked as a zero day.", "Day closed at zero." ],
   honest:[ "Zero. That one you earned.", "A clear day, plainly." ]
 };
@@ -1814,7 +1828,7 @@ async function saveCikiName(){
   try{ await persistPrefs(); }catch(_){}
   hideCikiName();
   renderSanctuary();
-  if(v) toast(v+' it is — she\u2019s home now. 🤍');
+  if(v) toast(v+' it is. She\u2019s home now. 🤍');
 }
 
 /* ---- share your forest (a picture for Instagram) ----
@@ -1926,10 +1940,10 @@ async function shareForest(btn){
       const a=document.createElement('a'); a.href=url; a.download='my-still-here-forest.png'; a.click();
       setTimeout(()=>URL.revokeObjectURL(url), 5000);
       track('shared', {via:'download'});
-      toast('Saved — share it wherever you like. 🌱');
+      toast('Saved. Share it wherever you like. 🌱');
     }
   }catch(e){
-    if(!(e && e.name==='AbortError')) toast('Couldn\u2019t make the image — please try again.');
+    if(!(e && e.name==='AbortError')) toast('Couldn\u2019t make the image. Please try again.');
   }
   if(btn){ btn.disabled=false; }
 }
@@ -1952,8 +1966,8 @@ async function submitLogEdit(){
   const reason=(document.getElementById('leReason').value||'').trim();
   const target=Math.max(0, Math.floor(Number(raw)));
   if(raw===''||isNaN(target)){ err.textContent='Enter the correct number.'; return; }
-  if(target>200){ err.textContent='That seems too high — please check.'; return; }
-  if(reason.length<3){ err.textContent='A short reason keeps it honest — even a couple of words.'; return; }
+  if(target>200){ err.textContent='That seems too high. Please check.'; return; }
+  if(reason.length<3){ err.textContent='A short reason keeps it honest, even a couple of words.'; return; }
 
   const tk=todayKey();
   // indices of today's individual logs, newest first
@@ -1984,7 +1998,7 @@ async function submitLogEdit(){
   btn.disabled=false; btn.textContent='Save the correction';
 
   hideLogEdit(); refresh();
-  toast('Fixed — today now reads '+target+'. Thanks for keeping it honest.');
+  toast('Fixed. Today now reads '+target+'. Thanks for keeping it honest.');
 }
 
 /* ---- add to home screen tutorial ---- */
@@ -2050,7 +2064,7 @@ async function doReset(mode){
     oath.start = todayKey();
     await persistReset();
     updateHomeChip(); refresh();
-    toast('A fresh start — your forest begins again from bare soil.');
+    toast('A fresh start. Your forest begins again from bare soil.');
   }
 }
 
@@ -2064,6 +2078,19 @@ function closeSheet(){
   document.getElementById('scrim').classList.remove('show');
   closeAllSheets();
 }
+// Escape closes whichever dismissable dialog is open, otherwise any open sheet
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Escape') return;
+  const open=id=>document.getElementById(id).classList.contains('show');
+  if(open('cikiname')) return hideCikiName();
+  if(open('logedit')) return hideLogEdit();
+  if(open('feedback')) return hideFeedback();
+  if(open('donate')) return hideDonate();
+  if(open('enjoy')) return hideEnjoy();
+  if(open('install')) return hideInstall();
+  if(open('reset')) return hideReset();
+  if(open('scrim')) closeSheet();
+});
 function showPane(which){
   document.getElementById('paneSanctuary').classList.toggle('on', which==='sanctuary');
   document.getElementById('paneSettings').classList.toggle('on', which==='settings');
@@ -2186,7 +2213,7 @@ function renderHours(elId, h){
     const pct=Math.round(v/max*100);
     const cls = v===0? 'none' : (v===max? 'peak':'');
     const lbl = (i%6===0)? (i===0?'12a':(i===12?'12p':(i<12? i+'a' : (i-12)+'p'))) : '';
-    return `<div class="hr" title="${i}:00 — ${v}"><span>${v>0?v:''}</span>`+
+    return `<div class="hr" title="${i}:00: ${v}"><span>${v>0?v:''}</span>`+
            `<i class="${cls}" style="height:${Math.max(2,pct)}%"></i><b>${lbl}</b></div>`;
   }).join('');
 }
@@ -2229,7 +2256,7 @@ function openDayDetail(key){
   } else if(st && st.state==='estimate'){
     tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">Logged later from memory ('+st.sticks+'), so there are no times for this day.</span>';
   } else if(st && st.state==='clean'){
-    tl.innerHTML='<span style="color:var(--leaf);font-size:12.5px;font-weight:800">A clear day — nothing logged.</span>';
+    tl.innerHTML='<span style="color:var(--leaf);font-size:12.5px;font-weight:800">A clear day. Nothing logged.</span>';
   } else {
     tl.innerHTML='<span style="color:var(--muted);font-size:12.5px">This day was never closed, so it stays foggy.</span>';
   }
@@ -2331,7 +2358,7 @@ function makeCabin(cv, boxEl){
   const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
   const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
   const ARRIVAL=[
-    'Morning! We heard you kept your oath — mind if we build here?',
+    'Morning! We heard you kept your oath. Mind if we build here?',
     'A good day, is it? Then let\u2019s lay the first plank.',
     'You\u2019re still here. So are we. Let\u2019s build something.',
     'Room for a cabin on this island? We\u2019ll get started.'
@@ -2941,9 +2968,9 @@ const ISO = (function(){
     {name:'Sapling', from:1, to:13,
      desc:'A young tree finds its trunk and first branches. Flowering bushes open one colour at a time, a butterfly arrives, and a rooster comes to greet the mornings.'},
     {name:'Grove', from:14, to:38,
-     desc:'More trees rise and a pond gathers. Animals settle in — a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
+     desc:'More trees rise and a pond gathers. Animals settle in: a rabbit, a frog, a robin in its birdhouse, a sheep, a cow, a kangaroo, a cockatoo in the branches, and a fox at the edge.'},
     {name:'Haven', from:39, to:S.length,
-     desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come — a unicorn, a pegasus, even a little dragon.'},
+     desc:'A spring becomes a river and spills into a waterfall. Fish leap, dragonflies skim the water, deer step out of the trees and lanterns are lit. Keep going and mythical visitors may come: a unicorn, a pegasus, even a little dragon.'},
   ];
   function phases(){ return PHASES.map(p=>Object.assign({},p)); }
 
@@ -3127,6 +3154,6 @@ const ISO = (function(){
   requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(hideBoot,220)));
   setTimeout(hideBoot, 6000);   // safety net: never trap the user on the loader
   setInterval(()=>{ try{ refresh(); }catch(_){} }, 60000);
-  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil — every good day is what grows it.'); }catch(_){} }, 900);
+  setTimeout(()=>{ try{ if(logs && logs.length===0) toast('Welcome. Your forest starts as bare soil, and every good day is what grows it.'); }catch(_){} }, 900);
 })();
 </script>
