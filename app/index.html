@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
-  Still Here — a living forest that grows while you keep your oath.
-  v1 self-use build: IQOS reduction, 30 → 10 packs/month.
+  Still Here: a living forest that grows while you keep your oath.
+  Works for any habit you count, with a daily, weekly or monthly target.
   Data syncs to Appwrite when configured, with on-device fallback.
 -->
 <html lang="en">
@@ -66,7 +66,7 @@
     position:relative;
   }
 
-  /* ---------- diorama ---------- */
+  /* Diorama */
   #stage{position:relative; flex:1 1 auto; min-height:0; overflow:hidden}
   #scene{
     position:absolute; inset:0; width:100%; height:100%;
@@ -109,7 +109,7 @@
   }
   #toast.show{opacity:1; transform:translate(-50%,0)}
 
-  /* ---------- control deck ---------- */
+  /* Control deck */
   #deck{
     flex:0 0 auto;
     background:linear-gradient(180deg,var(--plum2),var(--plum));
@@ -154,7 +154,7 @@
   }
   .ghost:active{background:rgba(255,255,255,.04)}
 
-  /* ---------- day-confirm prompt ---------- */
+  /* Day-confirm prompt */
   #confirm{
     margin-bottom:14px; background:var(--plum3);
     border:1px solid rgba(244,184,96,.35); border-radius:14px; padding:13px 14px;
@@ -171,7 +171,7 @@
   #confirm .clean{background:var(--leaf); color:#173311}
   #confirm .some{background:var(--plum2); color:var(--ink); border:1px solid var(--line)}
 
-  /* ---------- sheet (sanctuary / settings) ---------- */
+  /* Sheet (sanctuary / settings) */
   #scrim{position:absolute; inset:0; background:rgba(8,4,16,.55); opacity:0; pointer-events:none; transition:.3s; z-index:9}
   #scrim.show{opacity:1; pointer-events:auto}
   .sheet{
@@ -223,7 +223,7 @@
   .tabbar button.on{background:var(--plum3); color:var(--ink); box-shadow:inset 0 -2px 0 var(--honey)}
   .pane{display:none} .pane.on{display:block}
 
-  /* ---------- tracker ---------- */
+  /* Tracker */
   .mstat{cursor:pointer}
   .mstat .chev{position:absolute; top:9px; right:11px; color:var(--muted); font-size:15px; font-weight:800; line-height:1}
   .stat{position:relative}
@@ -260,7 +260,7 @@
   .cell.hi{background:var(--soft-warn); color:#3a1410}
   .cell.foggy{background:transparent; border:1px dashed var(--locked); color:var(--muted)}
   .cell.today{outline:2px solid var(--honey); outline-offset:1px}
-  /* ---------- onboarding (oath setup) ---------- */
+  /* Onboarding (oath setup) */
   #onboard{position:fixed; inset:0; z-index:55; display:none; overflow:auto;
     background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
     padding:30px 22px calc(30px + env(safe-area-inset-bottom))}
@@ -285,7 +285,7 @@
     font-family:'Nunito';font-weight:800;font-size:13px;margin-top:4px;cursor:pointer;text-decoration:underline;min-height:44px}
   #onboard .err{color:var(--soft-warn); font-size:12.5px; font-weight:700; margin-top:12px; text-align:center; min-height:16px}
 
-  /* ---------- progress panel ---------- */
+  /* Progress panel */
   .stagepill{cursor:pointer}
   .prog{background:var(--plum3); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px}
   .prog .big{font-family:'Pixelify Sans'; font-size:20px; margin-bottom:2px}
@@ -309,7 +309,7 @@
   .pdesc{color:var(--muted); font-size:12.5px; line-height:1.5}
   .phase.active .pdesc{color:var(--ink)}
 
-  /* ---------- hourly rhythm + day detail ---------- */
+  /* Hourly rhythm + day detail */
   .hours{display:flex; align-items:flex-end; gap:3px; height:110px; padding:6px 2px 0}
   .hr{flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%}
   .hr i{display:block; width:100%; border-radius:3px 3px 1px 1px; background:var(--honey); min-height:2px;
@@ -328,7 +328,7 @@
 
   body.locked{position:fixed; left:0; right:0; width:100%; overflow:hidden}
 
-  /* ---------- homestead chip + panel ---------- */
+  /* Homestead chip + panel */
   .homechip{display:flex; align-items:center; gap:9px; width:100%; margin-bottom:12px; cursor:pointer;
     background:linear-gradient(180deg,rgba(244,184,96,.12),rgba(47,39,67,.35)); border:1px solid rgba(244,184,96,.28);
     color:var(--ink); font-family:'Nunito'; font-weight:800; font-size:13px; padding:11px 14px; border-radius:13px}
@@ -347,7 +347,7 @@
   .homeStats .hs .n{font-family:'Pixelify Sans'; font-size:22px; color:var(--honey)}
   .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
 
-  /* ---------- crossing-point dialog ---------- */
+  /* Crossing-point dialog */
   #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.74)}
   #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
@@ -395,7 +395,7 @@
   #reset .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
   #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
 
-  /* ---------- ten-minute hold ---------- */
+  /* Ten-minute hold */
   #shareStage{position:absolute; right:14px; bottom:14px; z-index:5; width:44px; height:44px; border-radius:50%;
     border:1px solid var(--line); background:rgba(20,15,32,.85); color:var(--ink);
     font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .08s}
@@ -412,7 +412,7 @@
     font-weight:800; font-size:11.5px; padding:6px 11px; border-radius:999px; cursor:pointer; position:relative}
   #waitPill button::after{content:''; position:absolute; inset:-9px -2px}
 
-  /* ---------- boot / loading ---------- */
+  /* Boot / loading */
   #boot{position:fixed; inset:0; z-index:60; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:26px;
     background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
@@ -436,7 +436,7 @@
 
   .cell.blank{background:transparent; border:none}
 
-  /* ---------- auth ---------- */
+  /* Auth */
   #auth{position:fixed; inset:0; z-index:50; display:none; flex-direction:column; justify-content:center;
     padding:26px 22px calc(26px + env(safe-area-inset-bottom));
     background:radial-gradient(120% 80% at 50% -10%,#4a3d63,#2a2140 45%,#1c1630);
@@ -843,23 +843,18 @@
 </div>
 
 <script>
-/* ============================================================
-   APPWRITE CONFIG  —  paste your project values here.
-   These are meant to live in the browser; per-document
-   permissions keep your data private. Leave as-is to run
-   on-device only.   Appwrite Console → Settings.
-============================================================ */
+/* Appwrite config: paste your project values here (Appwrite Console → Settings).
+   These are meant to live in the browser; per-document permissions keep your data private.
+   Leave as-is to run on-device only. */
 const APPWRITE_ENDPOINT = 'https://sgp.cloud.appwrite.io/v1'; // copy the exact endpoint shown in Settings
 const APPWRITE_PROJECT  = '6a5dbcef0011289fb163';            // Project ID from Settings
 
-// database + table IDs (see APPWRITE_SETUP.md)
+// database + table IDs
 const AW_DB    = '6a5dc0440033a02989ef';   // your Appwrite database ID
 const AW_STATE = 'state';   // one table holding your whole forest as a single JSON document
 const AW_FEEDBACK = 'feedback';   // collection for user ideas/feedback
 
-/* ============================================================
-   STORAGE  (window.storage if present, else in-memory)
-============================================================ */
+/* Storage: window.storage if present, else in-memory */
 const mem = {};
 const store = {
   async get(k){
@@ -873,16 +868,12 @@ const store = {
   }
 };
 
-/* ============================================================
-   STATE
-============================================================ */
+/* State */
 let oath, logs, dayStatus, prefs, profile;
 const PACK = 20;
 
-/* ============================================================
-   OATH MODEL  (generic: any habit, any unit, any period)
-   oath = { title, unit, baseline, target, period:'daily'|'weekly'|'monthly', start }
-============================================================ */
+/* Oath model (any habit, any unit, any period):
+   oath = { title, unit, baseline, target, period:'daily'|'weekly'|'monthly', start } */
 const PERIOD_DAYS = { daily:1, weekly:7, monthly:30 };
 function periodDays(){ return PERIOD_DAYS[(oath&&oath.period)||'monthly'] || 30; }
 function periodWord(){ return (oath&&oath.period)||'monthly'; }
@@ -915,9 +906,7 @@ function dailyAllowance(){
 // scale a per-period figure into a 30-day equivalent (the tracker shows months)
 function monthlyEquivalent(v){ return (Number(v)||0) * (30/periodDays()); }
 
-/* ============================================================
-   BACKEND  (Appwrite cloud if configured, else on-device)
-============================================================ */
+/* Backend: Appwrite cloud if configured, else on-device */
 let aw=null, backend='local', authUser=null, stateDocId=null, cloudError='';
 
 function ownerPerms(){
@@ -964,7 +953,7 @@ async function cloudSaveState(){
   }
 }
 
-/* persist helpers — one cloud write saves the whole state; on-device saves per-key */
+/* persist helpers: one cloud write saves the whole state; on-device saves per key */
 async function persistStick(){      if(backend==='cloud') await cloudSaveState(); else await store.set('logs', logs); }
 async function persistDayStatus(){  if(backend==='cloud') await cloudSaveState(); else await store.set('dayStatus', dayStatus); }
 async function persistGrowthMax(){  if(backend==='cloud') await cloudSaveState(); else await store.set('prefs', prefs); }
@@ -1012,7 +1001,7 @@ async function load(){
     }
   }
 
-  // ---- on-device (default, and fallback if cloud failed) ----
+  // On-device (default, and fallback if cloud failed)
   oath = migrateOath(await store.get('oath'));
   await store.set('oath', oath);
   logs = (await store.get('logs')) || [];
@@ -1037,13 +1026,11 @@ async function reloadStateFromCloud(){
   }
 }
 
-/* ============================================================
-   ACCOUNTS  (email register / login, anonymous by default)
-============================================================ */
+/* Accounts: email register / login, anonymous by default */
 function accountIsGuest(){ return !(authUser && authUser.email); }
 
-// Register: create a permanent email account and MIGRATE the current forest into it
-/* ---- analytics (Umami, anonymous — actions only, never habit content) ---- */
+// Register: create a permanent email account and move the current forest into it
+/* Analytics (Umami, anonymous): actions only, never habit content */
 function track(name, data){ try{ if(window.umami && window.umami.track) window.umami.track(name, data); }catch(_){} }
 
 async function doRegister(email, password, name, animal){
@@ -1092,7 +1079,7 @@ function hideBoot(){
 }
 function bootMsg(m){ const el=document.getElementById('bootMsg'); if(el) el.textContent=m; }
 
-/* ---- donations ---- */
+/* Donations */
 const DONATE_KOFI     = 'https://ko-fi.com/aradnaksi';
 const DONATE_TRAKTEER = 'https://teer.id/iskandar_agung3';
 function openDonate(){ track('support-opened'); closeAllSheets();
@@ -1157,9 +1144,7 @@ function goDonate(which){
   toast('Thank you, truly. It keeps the forest growing.');
 }
 
-/* ============================================================
-   TONE, THE CROSSING POINT, AND THE TEN-MINUTE HOLD
-============================================================ */
+/* Tone, the crossing point, and the ten-minute hold */
 function tone(){ return (prefs && prefs.tone) || 'gentle'; }
 async function persistPrefs(){
   if(backend==='cloud'){ try{ await cloudSaveState(); }catch(_){} }
@@ -1199,7 +1184,7 @@ const TONE_COPY={
   }
 };
 
-/* ---- the homestead (cabin reward track) ---- */
+/* The homestead (cabin reward track) */
 let cabinView=null;
 function updateHomeChip(){
   if(!D) return;
@@ -1249,7 +1234,7 @@ function renderHomestead(){
     : ' <span style="color:var(--muted)">The builders are resting by the fire. Log a good day to get them going again.</span>';
 }
 
-/* ---- the crossing point ---- */
+/* The crossing point */
 function shouldPrompt(){
   if(!D || !oath || !oath.configured) return false;
   const a=D.allowance;
@@ -1277,7 +1262,7 @@ function crossProceed(){ hideCross(); logStick(); }
 function muteToday(){ prefs.muteDay=todayKey(); persistPrefs(); hideCross();
   toast('Understood. No more nudges today.'); }
 
-/* ---- the ten-minute hold ---- */
+/* The ten-minute hold */
 let waitTimer=null, waitUntil=0;
 function startWait(){
   hideCross();
@@ -1317,7 +1302,7 @@ async function restoreWait(){
   }catch(_){}
 }
 
-/* ---- full-screen overlay helpers (iOS keyboard-safe) ---- */
+/* Full-screen overlay helpers (iOS keyboard-safe) */
 let lockedScrollY=0;
 function lockScroll(){
   if(document.body.classList.contains('locked')) return;
@@ -1345,11 +1330,11 @@ function dismissOverlay(el){
 function overlayOpen(){
   return ['onboard','auth','feedback','reset','enjoy','install','logedit','cikiname'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
 }
-// iOS can leave the page scrolled after the keyboard closes — put it back
+// iOS can leave the page scrolled after the keyboard closes, so put it back
 window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
 window.addEventListener('orientationchange', ()=>setTimeout(()=>window.scrollTo(0,0),120));
 
-/* ---- oath onboarding ---- */
+/* Oath onboarding */
 let obPeriod='monthly';
 function pickPeriod(p){ obPeriod=p;
   document.querySelectorAll('.seg3 button').forEach(b=>b.classList.toggle('on', b.dataset.p===p));
@@ -1416,7 +1401,7 @@ async function submitOath(){
   }
 }
 
-/* ---- ecosystem progress panel ---- */
+/* Ecosystem progress panel */
 function closeAllSheets(){
   ['sheet','trackerSheet','progSheet','homeSheet'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.classList.remove('show');
@@ -1459,7 +1444,7 @@ function updateHeader(){
   w.innerHTML = 'Still Here'+nm+'<small>your quiet forest</small>';
 }
 
-/* ---- auth screen control ---- */
+/* Auth screen control */
 function showAuth(view){
   showAuthView(view||'welcome');
   const el=document.getElementById('auth'); el.scrollTop=0; el.classList.add('show');
@@ -1474,7 +1459,7 @@ function showAuthView(v){
   const errMap={register:'rgErr',login:'lgErr',recover:'rcErr',reset:'rsErr'};
   const eid=errMap[v]; if(eid){ const e=document.getElementById(eid); if(e){ e.textContent=''; e.style.color=''; } }
 }
-/* ---- password recovery ---- */
+/* Password recovery */
 let recoverCtx=null;
 async function submitRecover(){
   const email=(document.getElementById('rcEmail').value||'').trim();
@@ -1576,9 +1561,7 @@ function dayValue(k, byDay){
   return null;                                        // foggy
 }
 
-/* ============================================================
-   DERIVATION
-============================================================ */
+/* Derivation */
 function derive(){
   const byDay = sticksByDay();
   const tk = todayKey();
@@ -1587,7 +1570,7 @@ function derive(){
 
   const todayCount = byDay[tk]||0;
 
-  // --- trailing window (up to 30 days) of KNOWN days ---
+  // trailing window (up to 30 days) of known days
   const elapsed = Math.min(30, Math.max(1, daysBetween(oath.start, tk)+1));
   let knownSum=0, knownDays=0, recent3=[];
   for(let i=0;i<elapsed;i++){
@@ -1598,7 +1581,7 @@ function derive(){
   const paceDaily = knownDays? knownSum/knownDays : 0;
   const recent3avg = recent3.length? recent3.reduce((a,b)=>a+b,0)/recent3.length : 0;
 
-  // --- calendar-month total (the second stat card is always the month) ---
+  // Calendar-month total (the second stat card is always the month)
   const monthPrefix=tk.slice(0,7);
   let monthCount=0;
   for(const k in byDay){ if(k.startsWith(monthPrefix)) monthCount+=byDay[k]; }
@@ -1606,7 +1589,7 @@ function derive(){
     if(k.startsWith(monthPrefix) && byDay[k]==null && dayStatus[k].state==='estimate') monthCount+=dayStatus[k].sticks;
   }
 
-  // --- current period total (kept for the oath's own framing) ---
+  // Current period total (kept for the oath's own framing)
   const pStart=new Date(); 
   if(periodWord()==='monthly'){ pStart.setDate(1); }
   else if(periodWord()==='weekly'){ pStart.setDate(pStart.getDate()-pStart.getDay()); }
@@ -1617,7 +1600,7 @@ function derive(){
     const v=dayValue(todayKey(d),byDay); if(v!=null) periodCount+=v;
   }
 
-  // --- seamless growth: each good day (at/under allowance) adds one element ---
+  // Seamless growth: each good day (at/under allowance) adds one element
   // For low-frequency oaths (e.g. 12 a month) a daily allowance rounds to 0, so a day
   // also counts as good whenever the overall pace is on track.
   const targetMonthly = monthlyEquivalent(oath.target);
@@ -1644,18 +1627,18 @@ function derive(){
   if(growthLevel > (prefs.max||0)){ prefs.max=growthLevel; persistGrowthMax(prefs.max); }   // ratchet: forest never loses elements
   growthLevel = Math.max(growthLevel, Math.min(cap, prefs.max||0));
 
-  // --- the homestead: cumulative good days, ratcheted (never torn down) ---
+  // The homestead: cumulative good days, ratcheted (never torn down)
   const homesteadDays = Math.max(goodDays, prefs.homestead||0);
   if(goodDays > (prefs.homestead||0)){ prefs.homestead=goodDays; persistGrowthMax(prefs.homestead); }
   let cabinTier=0; for(const T of CABIN_TIERS){ if(homesteadDays>=T.days) cabinTier=T.t; }
   const building = currentRun>0;
 
-  // --- weather (fast axis) ---
+  // Weather (fast axis)
   let weather='clear';
   if(todayCount>=allowance*2 || recent3avg>=allowance*1.5) weather='storm';
   else if(todayCount>allowance || recent3avg>allowance) weather='cloudy';
 
-  // --- unconfirmed past days (foggy) ---
+  // Unconfirmed past days (foggy)
   const pending=[];
   for(let i=1;i<elapsed;i++){
     const d=new Date(); d.setDate(d.getDate()-i);
@@ -1668,9 +1651,7 @@ function derive(){
 }
 
 
-/* ============================================================
-   UI  RENDER
-============================================================ */
+/* UI render */
 let D;
 function refresh(){
   D=derive();
@@ -1687,7 +1668,7 @@ function refresh(){
   ISO.setState(D.growthLevel, dusk);
   ISO.setCabin(D.cabinTier, D.building);
   updateHomeChip();
-  // Ciki arrives once the farm is alive enough — meet her, and give her a name
+  // Ciki arrives once the farm is alive enough; meet her and give her a name
   if(D.growthLevel>=ISO.CIKI_LEVEL && !prefs.cikiArrived){
     prefs.cikiArrived=true; persistPrefs();
     setTimeout(()=>{ if(!anyModalOpen()) openCikiName(); }, 900);
@@ -1754,7 +1735,7 @@ function refresh(){
   renderSanctuary();
 }
 
-/* ---------- gentle voice ---------- */
+/* Gentle voice */
 const LOG_LINES={
   gentle:[
     "Logged. One breath at a time. You’re still here.",
@@ -1782,9 +1763,7 @@ function toast(msg){
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-/* ============================================================
-   ACTIONS
-============================================================ */
+/* Actions */
 let pendingKey=null;
 async function logStick(){
   const iso=new Date().toISOString();
@@ -1813,7 +1792,7 @@ async function resolveDay(kind){
     refresh();
   }
 }
-/* ---- Ciki's name (she arrives; you name her) ---- */
+/* Ciki's name (she arrives; you name her) */
 let cikiPortRAF=null;
 function openCikiName(){
   closeAllSheets();
@@ -1838,9 +1817,9 @@ async function saveCikiName(){
   if(v) toast(v+' it is. She\u2019s home now. 🤍');
 }
 
-/* ---- share your forest (a picture for Instagram) ----
+/* Share your forest (a picture for Instagram).
    Privacy first: the image shows only the forest and encouraging, non-identifying
-   progress — NEVER the habit, the target, the daily average, or any raw counts. */
+   progress, never the habit, the target, the daily average, or any raw counts. */
 function coverDraw(g, img, dx, dy, dw, dh){
   const iw=img.width, ih=img.height; if(!iw||!ih) return;
   const s=Math.max(dw/iw, dh/ih), w=iw*s, h=ih*s;
@@ -1851,7 +1830,7 @@ function toggleShareGoal(){
   const b=document.getElementById('shareGoalBtn'); if(b) b.textContent=prefs.shareGoal?'On':'Off';
 }
 function roundRectPath(g,x,y,w,h,r){ g.beginPath(); g.roundRect(x,y,w,h,r); }
-// small vector sprout (renders the same everywhere — no emoji dependency)
+// small vector sprout (renders the same everywhere, no emoji dependency)
 function drawSprout(g,x,y,s){
   g.save(); g.translate(x,y); g.scale(s,s);
   g.strokeStyle='#5fae3f'; g.lineWidth=2.4; g.beginPath(); g.moveTo(0,6); g.lineTo(0,-2); g.stroke();
@@ -1872,9 +1851,9 @@ function buildShareCard(scene, includeGoal){
   const W=1080, H=1350;
   const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
   const g=cv.getContext('2d');
-  // one continuous scene as the background — sky + island together, so there is no seam
+  // one continuous scene as the background (sky + island together), so there is no seam
   coverDraw(g, scene, 0, 0, W, H);
-  // soft scrims that fade to transparent — they seat the text without any hard edge
+  // soft scrims that fade to transparent seat the text without a hard edge
   const topScrim=g.createLinearGradient(0,0,0,470);
   topScrim.addColorStop(0,'rgba(24,32,58,.38)'); topScrim.addColorStop(1,'rgba(24,32,58,0)');
   g.fillStyle=topScrim; g.fillRect(0,0,W,470);
@@ -1909,7 +1888,7 @@ function buildShareCard(scene, includeGoal){
   g.fillText(pillTxt, px+64, py+34);
   g.textAlign='center'; g.textBaseline='alphabetic';
 
-  // optional goal chip (off by default) — framing only, never numbers
+  // optional goal chip (off by default): framing only, never numbers
   if(includeGoal && oath && oath.title){
     const left=('Less '+String(oath.title).replace(/^reduce\s+/i,'').replace(/^cut(ting)?\s+(down\s+)?(on\s+)?/i,'')).trim();
     const right='More living';
@@ -1955,7 +1934,7 @@ async function shareForest(btn){
   if(btn){ btn.disabled=false; }
 }
 
-/* ---- correct today's count (mis-tap fix, today only, with a reason) ---- */
+/* Correct today's count (mis-tap fix, today only, with a reason) */
 function openLogEdit(){
   closeAllSheets();
   document.getElementById('scrim').classList.remove('show');
@@ -1992,7 +1971,7 @@ async function submitLogEdit(){
   // if they set today to 0 and there was a dayStatus estimate, clear it so today reads 0
   if(target===0 && dayStatus[tk]){ delete dayStatus[tk]; }
 
-  // audit trail — kept with your data
+  // audit trail, kept with your data
   if(!Array.isArray(prefs.edits)) prefs.edits=[];
   prefs.edits.push({ day:tk, from:current, to:target, reason:reason.slice(0,300), at:new Date().toISOString() });
   if(prefs.edits.length>200) prefs.edits=prefs.edits.slice(-200);
@@ -2008,7 +1987,7 @@ async function submitLogEdit(){
   toast('Fixed. Today now reads '+target+'. Thanks for keeping it honest.');
 }
 
-/* ---- add to home screen tutorial ---- */
+/* Add to home screen tutorial */
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredInstall=e; });
 function isStandalone(){ return window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }
@@ -2075,7 +2054,6 @@ async function doReset(mode){
   }
 }
 
-/* ---------- sheet ---------- */
 function openSheet(which){
   closeAllSheets(); showPane(which);
   document.getElementById('scrim').classList.add('show');
@@ -2141,9 +2119,7 @@ function renderSanctuary(){
   }
 }
 
-/* ============================================================
-   TRACKER  (monthly stats + per-month calendar)
-============================================================ */
+/* Tracker: monthly stats + per-month calendar */
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthLabel(key){ const [y,m]=key.split('-').map(Number); return `${MON[m-1]} '${String(y).slice(2)}`; }
 
@@ -2201,7 +2177,7 @@ function renderTracker(){
 }
 
 
-/* ---- hourly rhythm (uses the timestamp already stored with every log) ---- */
+/* Hourly rhythm (uses the timestamp already stored with every log) */
 function logsByDay(){
   const m={};
   for(const iso of logs){ const d=new Date(iso); const k=todayKey(d); (m[k]=m[k]||[]).push(d); }
@@ -2234,7 +2210,7 @@ function peakHourText(h){
   return msg;
 }
 
-/* ---- single-day detail ---- */
+/* Single-day detail */
 let dayFrom=null;
 function openDayDetail(key){
   dayFrom=selMonth;
@@ -2327,12 +2303,10 @@ function openTracker(){
 
 const CABIN_TIERS=[{t:0,days:0,name:'Bedroll'},{t:1,days:3,name:'Tent'},{t:2,days:7,name:'Lean-to'},{t:3,days:14,name:'Cabin frame'},{t:4,days:25,name:'Snug cabin'},{t:5,days:40,name:'Cabin with porch'},{t:6,days:60,name:'The Homestead'}];
 
-/* ============================================================
-   THE HOMESTEAD — a cabin that builds itself as good days add up.
+/* The homestead: a cabin that builds itself as good days add up.
    Ratcheted (never torn down). Builders work on a run, rest otherwise.
    makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
-                             setState(tier,building,dusk), TIERS }
-============================================================ */
+                             setState(tier,building,dusk), TIERS } */
 function makeCabin(cv, boxEl){
   const ctx=cv.getContext('2d');
   const VW=440, VH=300, GY=214;             // virtual size + ground line
@@ -2360,7 +2334,7 @@ function makeCabin(cv, boxEl){
     ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
   }
 
-  // ---- little builders ----
+  // Little builders
   // rare ambient lines while working, and a warm one-time arrival greeting
   const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
   const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
@@ -2432,7 +2406,7 @@ function makeCabin(cv, boxEl){
   function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
     if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
 
-  // ---- the cabin, per tier, centered on cx ----
+  // The cabin, per tier, centered on cx
   function cabin(t){
     const cx=248, base=GY;
     if(tier===0){ // bedroll
@@ -2522,9 +2496,7 @@ function makeCabin(cv, boxEl){
 }
 
 
-/* ============================================================
-   THE FOREST  (isometric, grows with your good days)
-============================================================ */
+/* The forest (isometric, grows with your good days) */
 const ISO = (function(){
   const cv=document.getElementById('scene'), ctx=cv.getContext('2d');
   const stageEl=document.getElementById('stage');
@@ -2553,12 +2525,12 @@ const ISO = (function(){
     for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); ctx.globalAlpha=(1-o)*0.85; ctx.fillText('z', x+o*10, y-o*22-k*3); } ctx.globalAlpha=1; }
   function closedEye(x,y){ ctx.strokeStyle='#2b2438'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(x-2,y); ctx.lineTo(x+3,y); ctx.stroke(); }
 
-  // ---------- ground ----------
+  // Ground
   let pondTiles=new Set();
   let clouds=[{x:170,y:85,s:.12,w:120},{x:520,y:62,s:.08,w:90},{x:330,y:140,s:.05,w:70}];
   function drawGround(){
     const p=P();
-    // NOTE: the sky gradient is painted across the whole canvas in fitFrame(),
+    // The sky gradient is painted across the whole canvas in fitFrame(),
     // so the scene only adds what sits in front of it.
     blob(VIS.r-120, VIS.t+110, 42, p.sun);
     if(dusk){ ctx.fillStyle='#fff';
@@ -2581,7 +2553,7 @@ const ISO = (function(){
   function drawWater(cx,cy){ const p=P(); diamond(cx,cy,p.water); const t=performance.now()/500; ctx.fillStyle=p.waterHi;
     for(let k=0;k<3;k++){ const off=Math.sin(t+k*2)*10; ctx.fillRect(cx-16+off+k*6,cy-4+k*5,10,2); } }
 
-  // ---------- the growing tree ----------
+  // The growing tree
   const FRUITPOS=[[-0.5,0.45],[0.45,0.5],[0,0.7],[-0.72,0.12],[0.72,0.18],[-0.28,0.85],[0.32,0.85],[0,0.28],[-0.45,-0.12],[0.5,-0.05],[-0.65,0.55],[0.62,0.55]];
   function drawFruits(cx,cy,cr,n){ for(let k=0;k<n&&k<FRUITPOS.length;k++){ const px=cx+FRUITPOS[k][0]*cr, py=cy+FRUITPOS[k][1]*cr;
     ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
@@ -2612,7 +2584,7 @@ const ISO = (function(){
     drawFruits(ccx,ccy,cr,fruit);
   }
 
-  // ---------- flora ----------
+  // Flora
   function drawBush(c,color){ shadow(c.x,c.y+2,26,10);
     blob(c.x,c.y-8,22,'#3f7f2c'); blob(c.x-14,c.y-4,15,'#4f9e38'); blob(c.x+14,c.y-4,15,'#4f9e38'); blob(c.x,c.y-16,17,'#5cb043');
     const spots=[[-10,-14],[8,-16],[0,-22],[-16,-6],[14,-8]];
@@ -2622,7 +2594,7 @@ const ISO = (function(){
     ctx.fillStyle='#e05a4a'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,9,6,0,Math.PI,0); ctx.fill();
     ctx.fillStyle='#fff'; ctx.fillRect(c.x-4,c.y-11,2,2); ctx.fillRect(c.x+3,c.y-10,2,2); }
 
-  // ---------- furniture ----------
+  // Furniture
   function drawBirdhouse(c,t){ shadow(c.x,c.y+2,16,8); ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-3,c.y-40,6,40);
     ctx.fillStyle='#d59b5c'; ctx.fillRect(c.x-15,c.y-64,30,24);
     ctx.fillStyle='#8a5030'; ctx.beginPath(); ctx.moveTo(c.x-20,c.y-64); ctx.lineTo(c.x,c.y-78); ctx.lineTo(c.x+20,c.y-64); ctx.closePath(); ctx.fill();
@@ -2637,7 +2609,7 @@ const ISO = (function(){
     const on=dusk?(0.6+0.4*Math.sin(t*3)):0; if(on){ glow(c.x,c.y-40,22,'#ffd98a',on*0.6); }
     ctx.fillStyle= dusk?'#ffdf9a':'#c9a86a'; ctx.fillRect(c.x-6,c.y-46,12,12); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-7,c.y-48,14,3); }
 
-  // ---------- everyday animals (sleep at dusk) ----------
+  // Everyday animals (sleep at dusk)
   function drawRabbit(c,t){ shadow(c.x,c.y+2,15,7);
     if(dusk){ ctx.fillStyle='#e2dccf'; ctx.beginPath(); ctx.ellipse(c.x,c.y-5,15,8,0,0,7); ctx.fill();
       ctx.beginPath(); ctx.ellipse(c.x+11,c.y-7,6,5,0,0,7); ctx.fill();
@@ -2674,7 +2646,7 @@ const ISO = (function(){
     ctx.fillStyle='#f4c04a'; ctx.beginPath(); ctx.moveTo(c.x+7,y-10); ctx.lineTo(c.x+13,y-9); ctx.lineTo(c.x+7,y-7); ctx.fill();
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+4,y-11,2,2); }
 
-  // ---------- farm animals ----------
+  // Farm animals
   function drawRooster(c,t){ shadow(c.x,c.y+1,12,5);
     if(dusk){ ctx.fillStyle='#c9803f'; ctx.beginPath(); ctx.ellipse(c.x,c.y-7,12,8,0,0,7); ctx.fill();
       ctx.fillStyle='#b06a30'; ctx.beginPath(); ctx.ellipse(c.x+3,c.y-10,6,5,0,0,7); ctx.fill();
@@ -2751,7 +2723,7 @@ const ISO = (function(){
     if(dusk){ closedEye(c.x+10,y-30); zzz(c.x+20,y-40,t); }
     else { ctx.fillStyle='#2b2438'; ctx.beginPath(); ctx.ellipse(c.x+10,y-30,1.6,1.6,0,0,7); ctx.fill(); } }
 
-  // ---------- waterfall, river & river critters ----------
+  // Waterfall, river & river critters
   function drawWaterfall(c,t){
     // falls off the outer (down-right) edge of tile (i,j)
     const ex=c.x+TW/4, ey=c.y+TH/4, w=30, fall=THICK+58;
@@ -2769,7 +2741,7 @@ const ISO = (function(){
     // lip highlight
     ctx.fillStyle= dusk? '#8fc4dc':'#cfeeff';
     ctx.fillRect(ex-w/2, ey-2, w, 3);
-    // mist at the bottom (it falls into open sky — the island floats)
+    // mist at the bottom (it falls into open sky; the island floats)
     for(let k=0;k<7;k++){
       const a=0.28+0.22*Math.sin(t*2+k);
       ctx.globalAlpha=a;
@@ -2810,7 +2782,7 @@ const ISO = (function(){
     if(dusk) glow(bx,by,10,'#7ff0d0',0.35);
   }
 
-  // ---------- butterflies / fireflies ----------
+  // Butterflies / fireflies
   function drawButterfly(c,t,seed){ const bx=c.x+Math.sin(t*1.2+seed)*24, by=c.y-46+Math.cos(t*1.7+seed)*16; const f=Math.sin(t*11+seed);
     const cols=['#ff8fb0','#ffd36a','#a98fff','#ff9d6a']; const col=cols[Math.floor(seed)%4];
     ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(bx-4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(bx+4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill();
@@ -2819,7 +2791,7 @@ const ISO = (function(){
     const on=0.25+0.75*Math.max(0,Math.sin(t*3+seed)); glow(bx,by,16,'#fff2a0',on*0.8);
     ctx.globalAlpha=on; ctx.fillStyle='#fff7c0'; ctx.beginPath(); ctx.ellipse(bx,by,2.5,2.5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
 
-  // ---------- mythical (active + glowing at dusk) ----------
+  // Mythical (active + glowing at dusk)
   function sparkle(x,y,t,seed){ for(let k=0;k<3;k++){ const a=(0.6+0.4*Math.sin(t*3+seed+k*2)); ctx.globalAlpha=a; ctx.fillStyle='#fff6c8';
     const sx=x+Math.cos(seed+k*2.1)*18, sy=y+Math.sin(seed+k*1.7)*16; ctx.fillRect(sx-1,sy-4,2,8); ctx.fillRect(sx-4,sy-1,8,2); } ctx.globalAlpha=1; }
   function horseBase(c,t,color){ const b=Math.sin(t*2+c.x)*1.4, y=c.y+b; shadow(c.x,c.y+2,24,9);
@@ -2847,7 +2819,7 @@ const ISO = (function(){
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
 
 
-  // ---------- the homestead on the island (compact; grows with good-day runs) ----------
+  // The homestead on the island (compact; grows with good-day runs)
   let cabinTier=-1, cabinBuilding=false, showCabin=false;
   const ISLE_WORK=['tok','phew','hey!','nice','*taps*'];
   const ISLE_REST=['zzz','brr','...'];
@@ -2911,7 +2883,7 @@ const ISO = (function(){
     }
   }
 
-  // ---------- growth script (each step ≈ one good day) ----------
+  // Growth script (each step ≈ one good day)
   const S=[
     {t:'tree',id:'A',i:2,j:2,lvl:1,label:'A tender sprout breaks the soil'},
     {t:'tree',id:'A',lvl:2,label:'The sprout finds its stem'},
@@ -2993,7 +2965,7 @@ const ISO = (function(){
   }
   let STATE=apply(0);
 
-  // ---------- Ciki 🤍 — a beloved companion who joins once the farm is alive ----------
+  // Ciki, the dog who joins once the farm is alive
   const CIKI_LEVEL=23;                        // arrives as the 3rd new animal after the rooster
   let ciki=null;
   function cikiInit(){ ciki={i:2.6,j:2.6,ti:2.6,tj:2.6,mode:'walk',t0:0,last:performance.now()/1000,face:1}; }
@@ -3103,7 +3075,7 @@ const ISO = (function(){
     if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
     ctx.setTransform(1,0,0,1,0,0);
     const p=P();
-    // one continuous sky across the entire canvas — no seams
+    // one continuous sky across the entire canvas, so there are no seams
     const g=ctx.createLinearGradient(0,0,0,cv.height);
     g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
     ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
@@ -3125,9 +3097,7 @@ const ISO = (function(){
   return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, CIKI_LEVEL, cikiPortrait, LEN:S.length };
 })();
 
-/* ============================================================
-   BOOT
-============================================================ */
+/* Boot */
 (async function(){
   bootMsg('Waking the forest…');
   try{ await load(); }

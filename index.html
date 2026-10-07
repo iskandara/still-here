@@ -103,7 +103,7 @@
   .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
     display:flex; flex-direction:column; align-items:center; gap:8px;
     background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
-  /* dark chip keeps the growth message readable over the pale sky (was 1.07:1) */
+  /* dark chip keeps the growth message readable over the pale sky */
   .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s;
     background:rgba(20,15,32,.88); border-radius:10px; padding:6px 12px; max-width:100%}
   .grewline b{color:var(--ink)}
@@ -240,7 +240,6 @@
   <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app</a>
 </div>
 
-<!-- HERO -->
 <section class="hero" data-track="s1-hero"><div class="wrap"><div class="grid">
   <div>
     <h1>A forest that grows as you <span>keep your oath</span>.</h1>
@@ -263,20 +262,17 @@
   </div>
 </div></div></section>
 
-<!-- PROBLEM -->
 <section data-track="s2-problem"><div class="wrap" style="max-width:720px; text-align:center">
   <h2>Cold turkey doesn't work for everyone.</h2>
   <p class="lead">Most apps count perfect streaks and reset you to zero the moment you slip which, for a habit you're <i>reducing</i>, means failing constantly. Still Here is built the <span style="color:var(--honey);font-weight:800">opposite way</span>. You're not chasing perfection. You're tending something that remembers every step you've taken, and forgives the ones you stumble on.</p>
 </div></section>
 
-<!-- KIND / DASHBOARD PREVIEW -->
 <section id="kind" data-track="s3-dashboard"><div class="wrap" style="max-width:1040px">
   <div class="eyebrow" style="text-align:center">Kind by design</div>
   <h2 style="text-align:center">Everything you need to see progress.</h2>
   <p class="lead" style="text-align:center; max-width:560px; margin:0 auto">No streak-shaming, no ads. Just an honest picture of your habit over time.</p>
 
   <div class="dash">
-    <!-- months bar chart -->
     <div class="panel">
       <h3>Your months, at a glance</h3>
       <p class="psub"><span class="sample">Example</span> Every bar is one month. Green means you met your goal that month.</p>
@@ -294,7 +290,6 @@
       </div>
     </div>
 
-    <!-- tone -->
     <div class="panel">
       <h3>Speaks your language</h3>
       <p class="psub">Choose how the forest talks to you.</p>
@@ -306,7 +301,6 @@
       <div class="quotebox" id="toneQuote">"That’s your seven for today. No penalty here. The forest keeps everything you’ve grown."</div>
     </div>
 
-    <!-- sanctuary -->
     <div class="panel">
       <h3>A living sanctuary</h3>
       <p class="psub">As your forest matures, companions come to live in it.</p>
@@ -321,7 +315,6 @@
       <div class="soon">More companions arriving as you grow</div>
     </div>
 
-    <!-- calendar -->
     <div class="panel">
       <h3>Honest, not punishing</h3>
       <p class="psub"><span class="sample">Example</span> A blank day just stays foggy, never a red mark against you.</p>
@@ -336,7 +329,6 @@
   </div>
 </div></section>
 
-<!-- JOURNEY -->
 <section id="journey" data-track="s4-forest"><div class="wrap">
   <div class="eyebrow">Watch it come alive</div>
   <h2>From bare soil to a living haven.</h2>
@@ -350,7 +342,6 @@
   <p class="mythline">Keep going, and the rarest of all may come: a <b>unicorn</b>, a <b>pegasus</b>, even a <b>little dragon</b>.</p>
 </div></section>
 
-<!-- HOMESTEAD -->
 <section id="homestead" data-track="s5-homestead"><div class="wrap">
   <div class="eyebrow">A second thing grows too</div>
   <h2>Keep a run going, and a home takes shape.</h2>
@@ -361,7 +352,6 @@
   <p class="mythline">On an off day the builders <b>rest, never scold</b> because progress you've earned should stay earned.</p>
 </div></section>
 
-<!-- HOW -->
 <section id="how" data-track="s6-how"><div class="wrap">
   <div class="howgrid">
     <div>
@@ -376,7 +366,6 @@
   </div>
 </div></section>
 
-<!-- ABOUT -->
 <section id="about" data-track="s7-about"><div class="wrap"><div class="about">
   <div class="eyebrow">Why I made this</div>
   <h2>It started on a road trip to Halls Gap.</h2>
@@ -393,7 +382,6 @@
   </div>
 </div></div></section>
 
-<!-- FINAL -->
 <section data-track="s8-final"><div class="wrap"><div class="final">
   <h2>Grow something instead of counting failures.</h2>
   <p class="lead">Open it, make your oath, and plant your first day. It's free, and it starts the moment you tap.</p>
@@ -414,7 +402,7 @@
 </div></footer>
 
 <script>
-/* ---- nav: mobile menu + active-section highlight ---- */
+/* Nav: mobile menu + active-section highlight */
 const navtog=document.getElementById('navtog'), mobmenu=document.getElementById('mobmenu');
 function toggleMenu(open){
   mobmenu.classList.toggle('show', open);
@@ -447,7 +435,7 @@ window.addEventListener('scroll', onScrollSpy, {passive:true});
 window.addEventListener('resize', onScrollSpy);
 onScrollSpy();
 
-/* ---- dashboard preview: interactive tone + dummy calendar ---- */
+/* Dashboard preview: interactive tone + dummy calendar */
 const TONE_QUOTES={
   gentle:'"That\u2019s your seven for today. No penalty here. The forest keeps everything you\u2019ve grown."',
   plain:'"You\u2019re at 7 of 7. Anything past this counts as over. Your call."',
@@ -472,10 +460,6 @@ function pickTone(t){
 })();
 document.getElementById('toneQuote').style.transition='opacity .18s ease';
 
-/* ---- tiny persistence (localStorage on the real site, memory in preview) ---- */
-const mem={};
-const save=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){ mem[k]=v; } };
-const load=(k,d)=>{ try{ const r=localStorage.getItem(k); return r==null?d:JSON.parse(r); }catch(_){ return (k in mem)?mem[k]:d; } };
 
 function makeForest(cv, stageEl){
   const ctx=cv.getContext('2d');
@@ -504,12 +488,12 @@ function makeForest(cv, stageEl){
     for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); ctx.globalAlpha=(1-o)*0.85; ctx.fillText('z', x+o*10, y-o*22-k*3); } ctx.globalAlpha=1; }
   function closedEye(x,y){ ctx.strokeStyle='#2b2438'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.moveTo(x-2,y); ctx.lineTo(x+3,y); ctx.stroke(); }
 
-  // ---------- ground ----------
+  // Ground
   let pondTiles=new Set();
   let clouds=[{x:170,y:85,s:.12,w:120},{x:520,y:62,s:.08,w:90},{x:330,y:140,s:.05,w:70}];
   function drawGround(){
     const p=P();
-    // NOTE: the sky gradient is painted across the whole canvas in fitFrame(),
+    // The sky gradient is painted across the whole canvas in fitFrame(),
     // so the scene only adds what sits in front of it.
     blob(VIS.r-108, VIS.t+168, 42, p.sun);
     if(dusk){ ctx.fillStyle='#fff';
@@ -532,7 +516,7 @@ function makeForest(cv, stageEl){
   function drawWater(cx,cy){ const p=P(); diamond(cx,cy,p.water); const t=performance.now()/500; ctx.fillStyle=p.waterHi;
     for(let k=0;k<3;k++){ const off=Math.sin(t+k*2)*10; ctx.fillRect(cx-16+off+k*6,cy-4+k*5,10,2); } }
 
-  // ---------- the growing tree ----------
+  // The growing tree
   const FRUITPOS=[[-0.5,0.45],[0.45,0.5],[0,0.7],[-0.72,0.12],[0.72,0.18],[-0.28,0.85],[0.32,0.85],[0,0.28],[-0.45,-0.12],[0.5,-0.05],[-0.65,0.55],[0.62,0.55]];
   function drawFruits(cx,cy,cr,n){ for(let k=0;k<n&&k<FRUITPOS.length;k++){ const px=cx+FRUITPOS[k][0]*cr, py=cy+FRUITPOS[k][1]*cr;
     ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
@@ -563,7 +547,7 @@ function makeForest(cv, stageEl){
     drawFruits(ccx,ccy,cr,fruit);
   }
 
-  // ---------- flora ----------
+  // Flora
   function drawBush(c,color){ shadow(c.x,c.y+2,26,10);
     blob(c.x,c.y-8,22,'#3f7f2c'); blob(c.x-14,c.y-4,15,'#4f9e38'); blob(c.x+14,c.y-4,15,'#4f9e38'); blob(c.x,c.y-16,17,'#5cb043');
     const spots=[[-10,-14],[8,-16],[0,-22],[-16,-6],[14,-8]];
@@ -573,7 +557,7 @@ function makeForest(cv, stageEl){
     ctx.fillStyle='#e05a4a'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,9,6,0,Math.PI,0); ctx.fill();
     ctx.fillStyle='#fff'; ctx.fillRect(c.x-4,c.y-11,2,2); ctx.fillRect(c.x+3,c.y-10,2,2); }
 
-  // ---------- furniture ----------
+  // Furniture
   function drawBirdhouse(c,t){ shadow(c.x,c.y+2,16,8); ctx.fillStyle='#8a5c34'; ctx.fillRect(c.x-3,c.y-40,6,40);
     ctx.fillStyle='#d59b5c'; ctx.fillRect(c.x-15,c.y-64,30,24);
     ctx.fillStyle='#8a5030'; ctx.beginPath(); ctx.moveTo(c.x-20,c.y-64); ctx.lineTo(c.x,c.y-78); ctx.lineTo(c.x+20,c.y-64); ctx.closePath(); ctx.fill();
@@ -588,7 +572,7 @@ function makeForest(cv, stageEl){
     const on=dusk?(0.6+0.4*Math.sin(t*3)):0; if(on){ glow(c.x,c.y-40,22,'#ffd98a',on*0.6); }
     ctx.fillStyle= dusk?'#ffdf9a':'#c9a86a'; ctx.fillRect(c.x-6,c.y-46,12,12); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-7,c.y-48,14,3); }
 
-  // ---------- everyday animals (sleep at dusk) ----------
+  // Everyday animals (sleep at dusk)
   function drawRabbit(c,t){ shadow(c.x,c.y+2,15,7);
     if(dusk){ ctx.fillStyle='#e2dccf'; ctx.beginPath(); ctx.ellipse(c.x,c.y-5,15,8,0,0,7); ctx.fill();
       ctx.beginPath(); ctx.ellipse(c.x+11,c.y-7,6,5,0,0,7); ctx.fill();
@@ -625,7 +609,7 @@ function makeForest(cv, stageEl){
     ctx.fillStyle='#f4c04a'; ctx.beginPath(); ctx.moveTo(c.x+7,y-10); ctx.lineTo(c.x+13,y-9); ctx.lineTo(c.x+7,y-7); ctx.fill();
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+4,y-11,2,2); }
 
-  // ---------- farm animals ----------
+  // Farm animals
   function drawRooster(c,t){ shadow(c.x,c.y+1,12,5);
     if(dusk){ ctx.fillStyle='#c9803f'; ctx.beginPath(); ctx.ellipse(c.x,c.y-7,12,8,0,0,7); ctx.fill();
       ctx.fillStyle='#b06a30'; ctx.beginPath(); ctx.ellipse(c.x+3,c.y-10,6,5,0,0,7); ctx.fill();
@@ -702,7 +686,7 @@ function makeForest(cv, stageEl){
     if(dusk){ closedEye(c.x+10,y-30); zzz(c.x+20,y-40,t); }
     else { ctx.fillStyle='#2b2438'; ctx.beginPath(); ctx.ellipse(c.x+10,y-30,1.6,1.6,0,0,7); ctx.fill(); } }
 
-  // ---------- waterfall, river & river critters ----------
+  // Waterfall, river & river critters
   function drawWaterfall(c,t){
     // falls off the outer (down-right) edge of tile (i,j)
     const ex=c.x+TW/4, ey=c.y+TH/4, w=30, fall=THICK+58;
@@ -720,7 +704,7 @@ function makeForest(cv, stageEl){
     // lip highlight
     ctx.fillStyle= dusk? '#8fc4dc':'#cfeeff';
     ctx.fillRect(ex-w/2, ey-2, w, 3);
-    // mist at the bottom (it falls into open sky — the island floats)
+    // mist at the bottom (it falls into open sky; the island floats)
     for(let k=0;k<7;k++){
       const a=0.28+0.22*Math.sin(t*2+k);
       ctx.globalAlpha=a;
@@ -761,7 +745,7 @@ function makeForest(cv, stageEl){
     if(dusk) glow(bx,by,10,'#7ff0d0',0.35);
   }
 
-  // ---------- butterflies / fireflies ----------
+  // Butterflies / fireflies
   function drawButterfly(c,t,seed){ const bx=c.x+Math.sin(t*1.2+seed)*24, by=c.y-46+Math.cos(t*1.7+seed)*16; const f=Math.sin(t*11+seed);
     const cols=['#ff8fb0','#ffd36a','#a98fff','#ff9d6a']; const col=cols[Math.floor(seed)%4];
     ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(bx-4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(bx+4,by,5,3+2*Math.abs(f),0,0,7); ctx.fill();
@@ -770,7 +754,7 @@ function makeForest(cv, stageEl){
     const on=0.25+0.75*Math.max(0,Math.sin(t*3+seed)); glow(bx,by,16,'#fff2a0',on*0.8);
     ctx.globalAlpha=on; ctx.fillStyle='#fff7c0'; ctx.beginPath(); ctx.ellipse(bx,by,2.5,2.5,0,0,7); ctx.fill(); ctx.globalAlpha=1; }
 
-  // ---------- mythical (active + glowing at dusk) ----------
+  // Mythical (active + glowing at dusk)
   function sparkle(x,y,t,seed){ for(let k=0;k<3;k++){ const a=(0.6+0.4*Math.sin(t*3+seed+k*2)); ctx.globalAlpha=a; ctx.fillStyle='#fff6c8';
     const sx=x+Math.cos(seed+k*2.1)*18, sy=y+Math.sin(seed+k*1.7)*16; ctx.fillRect(sx-1,sy-4,2,8); ctx.fillRect(sx-4,sy-1,8,2); } ctx.globalAlpha=1; }
   function horseBase(c,t,color){ const b=Math.sin(t*2+c.x)*1.4, y=c.y+b; shadow(c.x,c.y+2,24,9);
@@ -797,7 +781,7 @@ function makeForest(cv, stageEl){
     ctx.fillStyle='#3f7f52'; ctx.beginPath(); ctx.moveTo(c.x+9,y-26); ctx.lineTo(c.x+11,y-21); ctx.lineTo(c.x+7,y-22); ctx.fill(); ctx.beginPath(); ctx.moveTo(c.x+15,y-26); ctx.lineTo(c.x+16,y-21); ctx.lineTo(c.x+13,y-22); ctx.fill();
     ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+15,y-19,2,2); sparkle(c.x,y-22,t,c.x+5); }
 
-  // ---------- growth script (each step ≈ one good day) ----------
+  // Growth script (each step ≈ one good day)
   const S=[
     {t:'tree',id:'A',i:2,j:2,lvl:1,label:'A tender sprout breaks the soil'},
     {t:'tree',id:'A',lvl:2,label:'The sprout finds its stem'},
@@ -913,7 +897,7 @@ function makeForest(cv, stageEl){
     if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
     ctx.setTransform(1,0,0,1,0,0);
     const p=P();
-    // one continuous sky across the entire canvas — no seams
+    // one continuous sky across the entire canvas, so there are no seams
     const g=ctx.createLinearGradient(0,0,0,cv.height);
     g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
     ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
@@ -935,12 +919,10 @@ function makeForest(cv, stageEl){
   function start(){ startAnim(level,dusk); }
   return { S, LEN:S.length, phaseOf, phases, startAnim, renderStatic, grow, setLevel, setDusk, spawnPuff };
 }
-/* ============================================================
-   THE HOMESTEAD — a cabin that builds itself as good days add up.
+/* The homestead: a cabin that builds itself as good days add up.
    Ratcheted (never torn down). Builders work on a run, rest otherwise.
    makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
-                             setState(tier,building,dusk), TIERS }
-============================================================ */
+                             setState(tier,building,dusk), TIERS } */
 function makeCabin(cv, boxEl){
   const ctx=cv.getContext('2d');
   const VW=440, VH=300, GY=214;             // virtual size + ground line
@@ -968,7 +950,7 @@ function makeCabin(cv, boxEl){
     ctx.fillStyle=p.g1; rr(46,GY-6,VW-92,40,22);
   }
 
-  // ---- little builders ----
+  // Little builders
   // rare ambient lines while working, and a warm one-time arrival greeting
   const WORK_LINES=['phew','good day!','ouch','nice','one more','solid','*whistles*','heave!','looking good','tap tap'];
   const REST_LINES=['warm here','resting up','take five','back soon','cozy','*yawns*'];
@@ -1038,7 +1020,7 @@ function makeCabin(cv, boxEl){
   function windows(x,y,w,h){ ctx.fillStyle= dusk?'#ffdf9a':'#bfe0ef'; rr(x,y,w,h,2);
     if(dusk) glow(x+w/2,y+h/2,w*1.6,'#ffdf9a',0.5); ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(x+w/2-0.5,y,1,h); ctx.fillRect(x,y+h/2-0.5,w,1); }
 
-  // ---- the cabin, per tier, centered on cx ----
+  // The cabin, per tier, centered on cx
   function cabin(t){
     const cx=248, base=GY;
     if(tier===0){ // bedroll
@@ -1128,12 +1110,12 @@ function makeCabin(cv, boxEl){
 }
 
 
-/* ---- hero: live, interactive forest ---- */
+/* Hero: live, interactive forest */
 const heroCanvas=document.getElementById('heroForest');
 const hero=makeForest(heroCanvas, heroCanvas.parentElement);
 const START_LEVEL=11;                      // opens in a lush late-Sapling (tree, bushes, butterfly)
-const DEMO_CAP=20;                         // let them reach early Grove — the first animal — then hand off
-let heroLevel=START_LEVEL;                  // fresh every visit — no persistence, so it always resets
+const DEMO_CAP=20;                         // let them reach early Grove (the first animal), then hand off
+let heroLevel=START_LEVEL;                  // fresh every visit: no persistence, so it always resets
 let heroDusk=false;
 hero.startAnim(heroLevel, heroDusk);
 setHeroPhase();
@@ -1168,7 +1150,7 @@ dayBtn.addEventListener('click', ()=>{
   hero.setDusk(heroDusk); paintDayBtn();
 });
 
-/* ---- journey vignettes: static snapshots at fixed stages ---- */
+/* Journey vignettes: static snapshots at fixed stages */
 document.querySelectorAll('.vig canvas').forEach(cv=>{
   const f=makeForest(cv, cv.parentElement);        // parent is the fixed .cvbox
   const lvl=parseInt(cv.dataset.lvl,10), dusk=cv.dataset.dusk==='1';
@@ -1182,7 +1164,7 @@ document.querySelectorAll('.vig canvas').forEach(cv=>{
   ro.observe(cv.parentElement);
 });
 
-/* ---- homestead demo ---- */
+/* Homestead demo */
 (function(){
   const cv=document.getElementById('cabinDemo'); if(!cv) return;
   const cab=makeCabin(cv, cv.parentElement);
@@ -1190,9 +1172,7 @@ document.querySelectorAll('.vig canvas').forEach(cv=>{
   setTimeout(()=>{ if(cab.greet) cab.greet(); }, 1200);
 })();
 
-/* keep the hero fitting on resize (its own loop handles redraw, this nudges layout) */
-
-/* ---- scroll-churn: report the furthest section each visitor reaches ---- */
+/* Scroll-churn: report the furthest section each visitor reaches */
 (function(){
   function tr(name){ try{ if(window.umami&&window.umami.track) window.umami.track('reached', {section:name}); }catch(_){} }
   const secs=[...document.querySelectorAll('[data-track]')];
