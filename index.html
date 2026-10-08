@@ -47,9 +47,17 @@
   .pix{font-family:'Pixelify Sans',sans-serif; letter-spacing:.5px}
 
   /* nav */
-  nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
-    background:linear-gradient(180deg,rgba(28,22,48,.72),rgba(28,22,48,0));}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+  /* floating header: the home icon on the left and one solid capsule on the right, no full-width bar */
+  nav{position:fixed; top:0; left:0; right:0; z-index:20; pointer-events:none;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    padding:calc(12px + env(safe-area-inset-top)) clamp(12px,2.4vw,28px) 0}
+  nav > *{pointer-events:auto}
+  .mark{display:block; width:48px; height:48px; border-radius:14px; overflow:hidden;
+    border:1px solid var(--line); box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .mark img{display:block; width:100%; height:100%; image-rendering:pixelated}
+  .capsule{display:flex; align-items:center; gap:6px; padding:5px; border-radius:16px;
+    background:rgba(28,22,48,.94); border:1px solid var(--line); box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .capsule .btn.sm{box-shadow:0 3px 0 #b06d2e}
   .brand{font-family:'Pixelify Sans'; font-size:18px}
   .brand small{font-family:'Nunito'; font-weight:800; font-size:11px;
     color:var(--muted); display:block; margin-top:2px}
@@ -62,13 +70,14 @@
   .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:12px 18px; font-size:14px}
   .btn.ghost:active{background:rgba(255,255,255,.05)}
 
-  .navlinks{display:none; gap:24px}
+  .navlinks{display:none; gap:2px; padding:0 6px}
   @media(min-width:860px){ .navlinks{display:flex} }
-  .navlinks a{text-decoration:none; color:var(--muted); font-weight:800; font-size:14px; transition:color .15s}
-  .navlinks a:hover{color:var(--ink)}
+  .navlinks a{display:inline-flex; align-items:center; min-height:44px; padding:0 12px; border-radius:11px;
+    text-decoration:none; color:var(--ink2,#e7e0d4); font-weight:800; font-size:14px; transition:color .15s, background .15s}
+  .navlinks a:hover{background:rgba(255,255,255,.06)}
   .navlinks a.active{color:var(--honey)}
-  .navtog{display:inline-flex; background:transparent; border:1px solid var(--line); color:var(--ink);
-    font-size:16px; width:44px; height:44px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
+  .navtog{display:inline-flex; background:transparent; border:none; color:var(--ink);
+    font-size:17px; width:44px; height:44px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
   @media(min-width:860px){ .navtog{display:none} }
   .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.95);
     flex-direction:column; align-items:center; justify-content:center; gap:8px}
@@ -83,7 +92,7 @@
 
   /* Intro: a full-screen day island that grows as you scroll, then lifts so the headline arrives below it.
      --p (0 to 1) is the scroll progress, set by the script; without the script the finished state shows. */
-  .intro{position:relative; height:100svh; padding:0; margin-top:-72px}
+  .intro{position:relative; height:100svh; padding:0}
   .js-intro .intro{height:360svh}
   /* a short name card between the full forest and the headline */
   .intro-brand{position:absolute; left:0; right:0; top:60%; bottom:0; display:flex; flex-direction:column;
@@ -96,8 +105,6 @@
   /* the art box shortens as the text arrives; the scene refits inside it, so the island rises and shrinks with the sky intact */
   .intro-art{position:absolute; left:0; right:0; top:0; height:calc(100% - var(--lift,1) * 40%)}
   .intro-art canvas{display:block; width:100%; height:100%}
-  /* solid nav while it sits over the bright sky */
-  body.over-intro nav{background:rgba(28,22,48,.92)}
   /* plum rises from the bottom as the text arrives, and blends into the page below */
   .intro-shade{position:absolute; inset:0; pointer-events:none; opacity:var(--lift,1);
     background:linear-gradient(180deg, rgba(28,22,48,0) 30%, rgba(28,22,48,.86) 50%, #1c1630 60%)}
@@ -233,18 +240,18 @@
 </head>
 <body>
 <script>document.documentElement.classList.add("js-intro")</script>
-<nav><div class="wrap">
-  <div class="brand">Still Here<small>your quiet forest</small></div>
-  <div class="navlinks" id="navlinks">
-    <a href="#journey">The forest</a>
-    <a href="#how">How it works</a>
-    <a href="#about">About</a>
-  </div>
-  <div style="display:flex; align-items:center; gap:10px">
+<nav aria-label="Main">
+  <a class="mark" href="/" aria-label="Still Here, home"><img src="icon-180.png" alt="" width="48" height="48"></a>
+  <div class="capsule">
+    <div class="navlinks" id="navlinks">
+      <a href="#journey">The forest</a>
+      <a href="#how">How it works</a>
+      <a href="#about">About</a>
+    </div>
     <button class="navtog" id="navtog" aria-label="Menu" aria-expanded="false" aria-controls="mobmenu">☰</button>
     <a class="btn primary sm" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="nav">Open app</a>
   </div>
-</div></nav>
+</nav>
 
 <div class="mobmenu" id="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
   <button class="close" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
@@ -1160,7 +1167,6 @@ function makeCabin(cv, boxEl){
     stage.style.setProperty('--lift', (Math.round(lift*40)/40).toFixed(3));
     stage.style.setProperty('--copy', copy.toFixed(3));
     stage.style.setProperty('--hint', clamp(p/.06).toFixed(3));
-    document.body.classList.toggle('over-intro', r.bottom > 72);
   }
   forest.startAnim(reduce ? MAX : 0, false);
   update();
