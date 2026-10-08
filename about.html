@@ -25,12 +25,17 @@
   .pix{font-family:'Pixelify Sans'}
   .wrap{max-width:720px;margin:0 auto;padding:0 22px}
 
-  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
-    background:linear-gradient(180deg,rgba(28,22,48,.75),rgba(28,22,48,0))}
-  nav .wrap{max-width:1040px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
-  .brand{font-family:'Pixelify Sans';font-size:18px}
-  .brand small{font-family:'Nunito';font-weight:800;font-size:11px;color:var(--muted);display:block;margin-top:2px}
-  .navr{display:flex;align-items:center;gap:14px}
+  /* floating header: the home icon on the left and one solid capsule on the right, no full-width bar */
+  nav{position:fixed;top:0;left:0;right:0;z-index:20;pointer-events:none;display:flex;align-items:flex-start;
+    justify-content:space-between;gap:12px;padding:calc(12px + env(safe-area-inset-top)) clamp(12px,2.4vw,28px) 0}
+  nav > *{pointer-events:auto}
+  .mark{display:block;width:48px;height:48px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .mark img{display:block;width:100%;height:100%;image-rendering:pixelated}
+  .capsule{display:flex;align-items:center;gap:6px;padding:5px;border-radius:16px;background:rgba(28,22,48,.94);
+    border:1px solid var(--line);box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .capsule .back{padding:0 12px;border-radius:11px}
+  .capsule .back:hover{background:rgba(255,255,255,.06)}
+  .capsule .btn.primary{box-shadow:0 3px 0 #b06d2e}
   .back{text-decoration:none;color:var(--muted);font-weight:800;font-size:14px;display:inline-flex;align-items:center;min-height:44px}
   .back:hover{color:var(--ink)}
   .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;font-family:'Nunito';font-weight:800;border-radius:13px;border:none;transition:transform .08s ease;min-height:44px}
@@ -87,13 +92,13 @@
 </head>
 <body>
 
-<nav><div class="wrap">
-  <div class="brand">Still Here<small>your quiet forest</small></div>
-  <div class="navr">
+<nav aria-label="Main">
+  <a class="mark" href="/" aria-label="Still Here, home"><img src="/icon-180.png" alt="" width="48" height="48"></a>
+  <div class="capsule">
     <a class="back" href="/">← Home</a>
     <a class="btn primary" href="/app" target="_blank" rel="noopener">Open app</a>
   </div>
-</div></nav>
+</nav>
 
 <div class="hero">
   <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria: a creek, picnic benches, mountains and cloud">

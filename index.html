@@ -47,9 +47,17 @@
   .pix{font-family:'Pixelify Sans',sans-serif; letter-spacing:.5px}
 
   /* nav */
-  nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
-    background:linear-gradient(180deg,rgba(28,22,48,.72),rgba(28,22,48,0));}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+  /* floating header: the home icon on the left and one solid capsule on the right, no full-width bar */
+  nav{position:fixed; top:0; left:0; right:0; z-index:20; pointer-events:none;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    padding:calc(12px + env(safe-area-inset-top)) clamp(12px,2.4vw,28px) 0}
+  nav > *{pointer-events:auto}
+  .mark{display:block; width:48px; height:48px; border-radius:14px; overflow:hidden;
+    border:1px solid var(--line); box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .mark img{display:block; width:100%; height:100%; image-rendering:pixelated}
+  .capsule{display:flex; align-items:center; gap:6px; padding:5px; border-radius:16px;
+    background:rgba(28,22,48,.94); border:1px solid var(--line); box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .capsule .btn.sm{box-shadow:0 3px 0 #b06d2e}
   .brand{font-family:'Pixelify Sans'; font-size:18px}
   .brand small{font-family:'Nunito'; font-weight:800; font-size:11px;
     color:var(--muted); display:block; margin-top:2px}
@@ -62,13 +70,14 @@
   .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--ink); padding:12px 18px; font-size:14px}
   .btn.ghost:active{background:rgba(255,255,255,.05)}
 
-  .navlinks{display:none; gap:24px}
+  .navlinks{display:none; gap:2px; padding:0 6px}
   @media(min-width:860px){ .navlinks{display:flex} }
-  .navlinks a{text-decoration:none; color:var(--muted); font-weight:800; font-size:14px; transition:color .15s}
-  .navlinks a:hover{color:var(--ink)}
+  .navlinks a{display:inline-flex; align-items:center; min-height:44px; padding:0 12px; border-radius:11px;
+    text-decoration:none; color:var(--ink2,#e7e0d4); font-weight:800; font-size:14px; transition:color .15s, background .15s}
+  .navlinks a:hover{background:rgba(255,255,255,.06)}
   .navlinks a.active{color:var(--honey)}
-  .navtog{display:inline-flex; background:transparent; border:1px solid var(--line); color:var(--ink);
-    font-size:16px; width:44px; height:44px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
+  .navtog{display:inline-flex; background:transparent; border:none; color:var(--ink);
+    font-size:17px; width:44px; height:44px; border-radius:11px; cursor:pointer; align-items:center; justify-content:center}
   @media(min-width:860px){ .navtog{display:none} }
   .mobmenu{display:none; position:fixed; inset:0; z-index:30; background:rgba(12,8,22,.95);
     flex-direction:column; align-items:center; justify-content:center; gap:8px}
@@ -81,43 +90,42 @@
   .lead{color:var(--muted); font-size:clamp(15px,2.4vw,18px); line-height:1.6; margin:0}
   .eyebrow{font-weight:800; font-size:14px; color:var(--honey); margin-bottom:10px}
 
-  /* hero */
-  .hero{padding-top:26px}
-  .hero .grid{display:grid; grid-template-columns:1fr; gap:30px; align-items:center}
-  @media(min-width:860px){ .hero .grid{grid-template-columns:1.05fr .95fr; gap:44px} }
-  .hero h1 span{color:var(--honey)}
-  .heroCtas{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
-
-  /* the interactive forest frame */
-  .stagecard{position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
-    box-shadow:0 30px 70px rgba(8,4,20,.55); background:#1c1630;
-    width:100%; height:min(74vh,560px)}
-  @media(max-width:859px){ .stagecard{height:min(78vh,540px); max-width:420px; margin:0 auto} }
-  .stagecard canvas{display:block; width:100%; height:100%}
-  /* phase pill (top right) and day/dusk toggle under it; the nav already carries the brand */
-  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:flex-end;
-    align-items:flex-start; padding:14px 16px; pointer-events:none}
-  .pill{background:rgba(20,15,32,.9); border:1px solid var(--line);
-    border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
-  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf)}
-  .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-    display:flex; flex-direction:column; align-items:center; gap:8px;
-    background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
-  /* dark chip keeps the growth message readable over the pale sky */
-  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s;
-    background:rgba(20,15,32,.88); border-radius:10px; padding:6px 12px; max-width:100%}
-  .grewline b{color:var(--ink)}
-  .growbtn .sprite{width:20px; height:20px; image-rendering:pixelated; vertical-align:-4px; margin-right:6px}
-  .growbtn{width:100%; border:none; cursor:pointer; border-radius:14px;
-    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
-    font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
-  .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
-  .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
-  .daybtn{position:absolute; top:48px; right:16px; pointer-events:auto; cursor:pointer; font-family:'Nunito';
-    background:rgba(20,15,32,.9); border:1px solid var(--line);
-    color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
-  /* invisible 44px hit area around the small toggle */
-  .daybtn::after{content:''; position:absolute; inset:-8px -4px}
+  /* Intro: a full-screen day island that grows as you scroll, then lifts so the headline arrives below it.
+     --p (0 to 1) is the scroll progress, set by the script; without the script the finished state shows. */
+  .intro{position:relative; height:100svh; padding:0}
+  .js-intro .intro{height:360svh}
+  /* a short name card between the full forest and the headline */
+  .intro-brand{position:absolute; left:0; right:0; top:60%; bottom:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:16px; pointer-events:none;
+    opacity:var(--brand,0); transform:translateY(calc((1 - var(--brand-in,1)) * 20px))}
+  .intro-brand img{width:clamp(72px,9vw,104px); height:auto; border-radius:22%; image-rendering:pixelated;
+    box-shadow:0 12px 30px rgba(6,3,16,.5)}
+  .intro-brand span{font-family:'Pixelify Sans',sans-serif; font-weight:600; font-size:clamp(2.4rem,6vw,4.6rem); line-height:1}
+  .intro-stage{position:sticky; top:0; height:100svh; overflow:hidden; background:var(--night)}
+  /* the art box shortens as the text arrives; the scene refits inside it, so the island rises and shrinks with the sky intact */
+  .intro-art{position:absolute; left:0; right:0; top:0; height:calc(100% - var(--lift,1) * 40%)}
+  .intro-art canvas{display:block; width:100%; height:100%}
+  /* plum rises from the bottom as the text arrives, and blends into the page below */
+  .intro-shade{position:absolute; inset:0; pointer-events:none; opacity:var(--lift,1);
+    background:linear-gradient(180deg, rgba(28,22,48,0) 30%, rgba(28,22,48,.86) 50%, #1c1630 60%)}
+  .intro-copy{position:absolute; left:0; right:0; bottom:0; padding:0 20px calc(clamp(28px,6svh,64px) + env(safe-area-inset-bottom));
+    text-align:center; opacity:var(--copy,1); transform:translateY(calc((1 - var(--copy,1)) * 24px))}
+  .intro-copy h1{font-size:clamp(2.1rem, 5.6vw, 4.8rem); line-height:1; max-width:17ch; margin:0 auto 18px; text-wrap:balance}
+  .intro-copy h1 span{color:var(--honey)}
+  .intro-copy .lead{max-width:36ch; margin:0 auto; font-size:clamp(16px,1.9vw,20px)}
+  .intro-copy .ctas{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px 24px; margin-top:24px}
+  .textlink{display:inline-flex; align-items:center; min-height:44px; font-weight:800; color:var(--ink);
+    text-decoration:underline; text-decoration-color:rgba(244,184,96,.6); text-underline-offset:6px}
+  @media (hover:hover){ .textlink:hover{color:var(--honey)} }
+  /* growth readout, like the app's phase pill; it fades as the island lifts */
+  .intro-day{position:absolute; left:50%; top:calc(72px + 18px); transform:translateX(-50%); white-space:nowrap;
+    background:rgba(20,15,32,.9); border:1px solid var(--line); border-radius:999px; padding:7px 14px;
+    font-weight:800; font-size:13px; opacity:calc(1 - var(--lift,1))}
+  .intro-day b{font-family:'Pixelify Sans'; font-weight:600; color:var(--honey)}
+  .intro-hint{position:absolute; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+    background:rgba(20,15,32,.9); border-radius:999px; padding:8px 16px; font-weight:800; font-size:13px; white-space:nowrap;
+    opacity:calc(1 - var(--hint,1))}
+  @media (prefers-reduced-motion: reduce){ .js-intro .intro{height:100svh} }
 
   /* how it works: heading beside a plain list, a quieter recap after the scenes above */
   .howgrid{display:grid; grid-template-columns:1fr; gap:18px}
@@ -183,11 +191,21 @@
     font-weight:800; font-size:13px; color:#2b2438}
   .cal .d.foggy{background:transparent; border:1px dashed var(--line); color:var(--muted)}
 
-  .cabincard{margin-top:26px; border-radius:24px; overflow:hidden; border:1px solid var(--line);
-    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630; max-width:560px}
-  @media(min-width:860px){ .cabincard{margin-left:auto; margin-right:auto} }
-  .cvbox2{position:relative; width:100%; padding-top:64%}
+  /* homestead: text beside a wide scene, then the app's real build ladder */
+  .homegrid{display:grid; gap:28px}
+  @media(min-width:860px){ .homegrid{grid-template-columns:.85fr 1.15fr; gap:44px; align-items:center} }
+  #homestead h2{font-size:clamp(28px,4.4vw,48px); line-height:1.08; margin-bottom:16px; text-wrap:balance}
+  #homestead .lead{font-size:clamp(16px,1.9vw,20px); max-width:40ch}
+  .cabincard{border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630}
+  .cvbox2{position:relative; width:100%; aspect-ratio:440/300}
   .cvbox2 canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .ladder{list-style:none; margin:36px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 18px}
+  @media(min-width:700px){ .ladder{grid-template-columns:repeat(7,1fr)} }
+  .ladder li{border-top:2px solid var(--line); padding-top:10px}
+  .ladder li.reached{border-top-color:var(--honey)}
+  .ladder b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:15px}
+  .ladder span{color:var(--muted); font-size:13px; font-weight:700}
 
   /* about teaser */
   .about{max-width:920px; margin:0 auto; text-align:center}
@@ -207,8 +225,10 @@
     border:1px solid var(--line); border-radius:26px; padding:52px 24px; margin:20px 0}
   .final .lead{max-width:520px; margin:0 auto 26px}
 
-  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:13px}
-  footer .wrap{display:flex; flex-direction:column; gap:18px}
+  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:14px}
+  footer .wrap{display:grid; gap:18px}
+  @media(min-width:860px){ footer .wrap{grid-template-columns:1.4fr 1fr; gap:40px; align-items:start} }
+  .fbadge{display:inline-block; margin-top:12px}
   .fdon{display:flex; flex-wrap:wrap; gap:12px}
   .fdon a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:13.5px;
     border-radius:12px; padding:11px 16px; border:1px solid var(--line); min-height:44px}
@@ -219,18 +239,19 @@
 </style>
 </head>
 <body>
-<nav><div class="wrap">
-  <div class="brand">Still Here<small>your quiet forest</small></div>
-  <div class="navlinks" id="navlinks">
-    <a href="#journey">The forest</a>
-    <a href="#how">How it works</a>
-    <a href="#about">About</a>
-  </div>
-  <div style="display:flex; align-items:center; gap:10px">
+<script>document.documentElement.classList.add("js-intro")</script>
+<nav aria-label="Main">
+  <a class="mark" href="/" aria-label="Still Here, home"><img src="icon-180.png" alt="" width="48" height="48"></a>
+  <div class="capsule">
+    <div class="navlinks" id="navlinks">
+      <a href="#journey">The forest</a>
+      <a href="#how">How it works</a>
+      <a href="#about">About</a>
+    </div>
     <button class="navtog" id="navtog" aria-label="Menu" aria-expanded="false" aria-controls="mobmenu">☰</button>
     <a class="btn primary sm" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="nav">Open app</a>
   </div>
-</div></nav>
+</nav>
 
 <div class="mobmenu" id="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
   <button class="close" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
@@ -240,27 +261,23 @@
   <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app</a>
 </div>
 
-<section class="hero" data-track="s1-hero"><div class="wrap"><div class="grid">
-  <div>
-    <h1>A forest that grows as you <span>keep your oath</span>.</h1>
-    <p class="lead">Turns any habit you're reducing; cigarettes, drinks, screen time, anything you can count, into a living island. Every honest day plants something new.</p>
-    <div class="heroCtas">
-      <a class="btn primary" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="hero">Try Still Here</a>
+<section class="intro" id="intro" data-track="s1-hero">
+  <div class="intro-stage">
+    <div class="intro-art"><canvas id="introForest" role="img" aria-label="A pixel island that grows from bare soil into a full forest as you scroll"></canvas></div>
+    <div class="intro-shade"></div>
+    <div class="intro-day" aria-hidden="true"><b id="introDay">Day 0</b> · <span id="introPhase">Seed</span></div>
+    <div class="intro-hint" aria-hidden="true">Scroll to grow your island ↓</div>
+    <div class="intro-brand" aria-hidden="true"><img src="icon-512.png" alt="" width="104" height="104"><span>Still Here</span></div>
+    <div class="intro-copy">
+      <h1>A forest that grows as you <span>keep your oath</span>.</h1>
+      <p class="lead">Cigarettes, drinks, screen time, anything you can count. Log it honestly, and every good day plants something new on your island.</p>
+      <div class="ctas">
+        <a class="btn primary" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="hero">Plant your first day</a>
+        <a class="textlink" href="#journey">See how it grows</a>
+      </div>
     </div>
   </div>
-
-  <div id="try" class="stagecard">
-    <canvas id="heroForest" width="500" height="600"></canvas>
-    <div class="stagetop">
-      <div class="pill"><span class="dot"></span><span id="heroPhase">Sapling</span></div>
-    </div>
-    <button class="daybtn" id="heroDay">☀ Day</button>
-    <div class="stagebar">
-      <div class="grewline" id="heroGrew" aria-live="polite">This little island is yours to grow. Give it a good day.</div>
-      <button class="growbtn" id="heroGrow"><img class="sprite" src="assets/sprites/tree_sprout.png" alt="">Plant a good day</button>
-    </div>
-  </div>
-</div></div></section>
+</section>
 
 <section data-track="s2-problem"><div class="wrap" style="max-width:720px; text-align:center">
   <h2>Cold turkey doesn't work for everyone.</h2>
@@ -343,13 +360,23 @@
 </div></section>
 
 <section id="homestead" data-track="s5-homestead"><div class="wrap">
-  <div class="eyebrow">A second thing grows too</div>
-  <h2>Keep a run going, and a home takes shape.</h2>
-  <p class="lead" style="max-width:640px">Alongside the forest, little builders raise a home for every good day you string together; a bedroll, a tent, a snug cabin, and finally a warm homestead with a crackling fire. Slip up and nothing is torn down; they just rest by the fire until you're back.</p>
-  <div class="cabincard">
-    <div class="cvbox2"><canvas id="cabinDemo" width="440" height="300"></canvas></div>
+  <div class="homegrid">
+    <div>
+      <div class="eyebrow">A second thing grows too</div>
+      <h2>Good days build a home.</h2>
+      <p class="lead">Little builders raise a home as your good days add up, from a bedroll to a warm homestead with a crackling fire. Keep a run going and they work. Slip, and nothing is torn down; they just rest by the fire until you're back.</p>
+    </div>
+    <div class="cabincard"><div class="cvbox2"><canvas id="cabinDemo" width="440" height="300" role="img" aria-label="Two pixel builders working on a cabin with a porch"></canvas></div></div>
   </div>
-  <p class="mythline">On an off day the builders <b>rest, never scold</b> because progress you've earned should stay earned.</p>
+  <ol class="ladder" aria-label="What the builders raise, by good days">
+    <li class="reached"><b>Bedroll</b><span>at the start</span></li>
+    <li class="reached"><b>Tent</b><span>3 good days</span></li>
+    <li class="reached"><b>Lean-to</b><span>7 good days</span></li>
+    <li class="reached"><b>Cabin frame</b><span>14 good days</span></li>
+    <li class="reached"><b>Snug cabin</b><span>25 good days</span></li>
+    <li class="reached"><b>Cabin with porch</b><span>40 good days</span></li>
+    <li><b>The Homestead</b><span>60 good days</span></li>
+  </ol>
 </div></section>
 
 <section id="how" data-track="s6-how"><div class="wrap">
@@ -391,14 +418,16 @@
 <footer><div class="wrap">
   <div>
     <div class="brand" style="margin-bottom:8px">Still Here</div>
-    <p class="fnote"><b style="color:var(--ink)">Built by Aradnaksi</b> for anyone trying to do a little better each day. No ads, no subscription; but you can always give support by clicking the link below :) </p>
+    <p class="fnote"><b style="color:var(--ink)">Built by Aradnaksi</b> for anyone trying to do a little better each day. No ads, no subscription; but you can always give support by clicking the link below :)</p>
   </div>
-  <div class="fdon">
-    <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="kofi">🌏 Buy me a coffee</a>
-    <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="trakteer">🇮🇩 Traktir cendol</a>
+  <div>
+    <div class="fdon">
+      <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="kofi">🌏 Buy me a coffee</a>
+      <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="trakteer">🇮🇩 Traktir cendol</a>
+    </div>
+    <p class="fnote" style="margin-top:16px"><a href="/">Still Here</a> · © 2026</p>
+    <a class="fbadge" href="https://21st.tools?utm_source=badge&ref=stillhere.day" target="_blank" rel="noopener"><img src="https://21st.tools/api/badge?theme=dark&kind=listing&v=3" alt="Featured on 21st Tools" height="54" /></a>
   </div>
-  <p class="fnote"><a href="/">Still Here</a> · © 2026</p>
-  <a href="https://21st.tools?utm_source=badge&ref=stillhere.day" target="_blank" rel="noopener"><img src="https://21st.tools/api/badge?theme=dark&kind=listing&v=3" alt="Featured on 21st Tools" height="54" /></a>
 </div></footer>
 
 <script>
@@ -1110,45 +1139,46 @@ function makeCabin(cv, boxEl){
 }
 
 
-/* Hero: live, interactive forest */
-const heroCanvas=document.getElementById('heroForest');
-const hero=makeForest(heroCanvas, heroCanvas.parentElement);
-const START_LEVEL=11;                      // opens in a lush late-Sapling (tree, bushes, butterfly)
-const DEMO_CAP=20;                         // let them reach early Grove (the first animal), then hand off
-let heroLevel=START_LEVEL;                  // fresh every visit: no persistence, so it always resets
-let heroDusk=false;
-hero.startAnim(heroLevel, heroDusk);
-setHeroPhase();
-
-function setHeroPhase(){ document.getElementById('heroPhase').textContent = hero.phaseOf(heroLevel); }
-const grewEl=document.getElementById('heroGrew');
-const growBtn=document.getElementById('heroGrow');
-
-function capReached(){
-  growBtn.textContent='Open the app to keep growing';
-  growBtn.classList.add('done');
-  growBtn.onclick=()=>window.open('/app','_blank','noopener');
-}
-
-growBtn.addEventListener('click', ()=>{
-  if(heroLevel>=DEMO_CAP) return;          // handed off to capReached's own handler
-  const step=hero.grow();
-  if(!step){ return; }
-  heroLevel++;
-  setHeroPhase();
-  grewEl.textContent = (step.label||'A new life arrives')+'.';
-  if(heroLevel>=DEMO_CAP){
-    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning: <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+/* Intro: scroll grows the island from bare soil to the full forest, then the headline arrives */
+(function(){
+  const intro=document.getElementById('intro'), stage=intro.querySelector('.intro-stage');
+  const cv=document.getElementById('introForest');
+  const forest=makeForest(cv, cv.parentElement);
+  const MAX=forest.LEN;
+  const dayEl=document.getElementById('introDay'), phaseEl=document.getElementById('introPhase');
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  let level=-1;
+  function show(lvl){
+    if(lvl===level) return; level=lvl;
+    forest.setLevel(lvl);
+    dayEl.textContent='Day '+lvl; phaseEl.textContent=forest.phaseOf(lvl);
   }
-});
-
-const dayBtn=document.getElementById('heroDay');
-function paintDayBtn(){ dayBtn.textContent = heroDusk ? '🌙 Dusk' : '☀ Day'; }
-paintDayBtn();
-dayBtn.addEventListener('click', ()=>{
-  heroDusk=!heroDusk;
-  hero.setDusk(heroDusk); paintDayBtn();
-});
+  // scroll budget: grow to 50%, lift the island by 62%, the name card shows from 56% to 78%, the headline arrives by 90%
+  function update(){
+    const r=intro.getBoundingClientRect();
+    const p=reduce ? 1 : clamp(-r.top / Math.max(1, r.height - innerHeight));
+    show(Math.round(clamp(p/.5) * MAX));
+    const lift=clamp((p-.5)/.12), copy=clamp((p-.8)/.1);
+    const brandIn=clamp((p-.56)/.08);
+    stage.style.setProperty('--brand', (brandIn * (1 - clamp((p-.72)/.06))).toFixed(3));
+    stage.style.setProperty('--brand-in', brandIn.toFixed(3));
+    // the art box height is stepped to 1% so the canvas isn't resized on every pixel of scroll
+    stage.style.setProperty('--lift', (Math.round(lift*40)/40).toFixed(3));
+    stage.style.setProperty('--copy', copy.toFixed(3));
+    stage.style.setProperty('--hint', clamp(p/.06).toFixed(3));
+  }
+  forest.startAnim(reduce ? MAX : 0, false);
+  update();
+  addEventListener('scroll', update, {passive:true});
+  addEventListener('resize', update);
+  // keyboard users who tab to the buttons before scrolling get taken to the finished scene
+  intro.querySelector('.intro-copy').addEventListener('focusin', ()=>{
+    if(reduce) return;
+    const r=intro.getBoundingClientRect();
+    if(+getComputedStyle(stage).getPropertyValue('--copy') < 1) scrollTo({top: scrollY + r.top + (r.height - innerHeight) * .9, behavior:'instant'});
+  });
+})();
 
 /* Journey vignettes: static snapshots at fixed stages */
 document.querySelectorAll('.vig canvas').forEach(cv=>{
