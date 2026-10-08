@@ -183,11 +183,21 @@
     font-weight:800; font-size:13px; color:#2b2438}
   .cal .d.foggy{background:transparent; border:1px dashed var(--line); color:var(--muted)}
 
-  .cabincard{margin-top:26px; border-radius:24px; overflow:hidden; border:1px solid var(--line);
-    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630; max-width:560px}
-  @media(min-width:860px){ .cabincard{margin-left:auto; margin-right:auto} }
-  .cvbox2{position:relative; width:100%; padding-top:64%}
+  /* homestead: text beside a wide scene, then the app's real build ladder */
+  .homegrid{display:grid; gap:28px}
+  @media(min-width:860px){ .homegrid{grid-template-columns:.85fr 1.15fr; gap:44px; align-items:center} }
+  #homestead h2{font-size:clamp(28px,4.4vw,48px); line-height:1.08; margin-bottom:16px; text-wrap:balance}
+  #homestead .lead{font-size:clamp(16px,1.9vw,20px); max-width:40ch}
+  .cabincard{border-radius:24px; overflow:hidden; border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(8,4,20,.5); background:#1c1630}
+  .cvbox2{position:relative; width:100%; aspect-ratio:440/300}
   .cvbox2 canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .ladder{list-style:none; margin:36px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 18px}
+  @media(min-width:700px){ .ladder{grid-template-columns:repeat(7,1fr)} }
+  .ladder li{border-top:2px solid var(--line); padding-top:10px}
+  .ladder li.reached{border-top-color:var(--honey)}
+  .ladder b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:15px}
+  .ladder span{color:var(--muted); font-size:13px; font-weight:700}
 
   /* about teaser */
   .about{max-width:920px; margin:0 auto; text-align:center}
@@ -207,8 +217,10 @@
     border:1px solid var(--line); border-radius:26px; padding:52px 24px; margin:20px 0}
   .final .lead{max-width:520px; margin:0 auto 26px}
 
-  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:13px}
-  footer .wrap{display:flex; flex-direction:column; gap:18px}
+  footer{border-top:1px solid var(--line); padding:40px 0 60px; color:var(--muted); font-size:14px}
+  footer .wrap{display:grid; gap:18px}
+  @media(min-width:860px){ footer .wrap{grid-template-columns:1.4fr 1fr; gap:40px; align-items:start} }
+  .fbadge{display:inline-block; margin-top:12px}
   .fdon{display:flex; flex-wrap:wrap; gap:12px}
   .fdon a{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:13.5px;
     border-radius:12px; padding:11px 16px; border:1px solid var(--line); min-height:44px}
@@ -343,13 +355,23 @@
 </div></section>
 
 <section id="homestead" data-track="s5-homestead"><div class="wrap">
-  <div class="eyebrow">A second thing grows too</div>
-  <h2>Keep a run going, and a home takes shape.</h2>
-  <p class="lead" style="max-width:640px">Alongside the forest, little builders raise a home for every good day you string together; a bedroll, a tent, a snug cabin, and finally a warm homestead with a crackling fire. Slip up and nothing is torn down; they just rest by the fire until you're back.</p>
-  <div class="cabincard">
-    <div class="cvbox2"><canvas id="cabinDemo" width="440" height="300"></canvas></div>
+  <div class="homegrid">
+    <div>
+      <div class="eyebrow">A second thing grows too</div>
+      <h2>Good days build a home.</h2>
+      <p class="lead">Little builders raise a home as your good days add up, from a bedroll to a warm homestead with a crackling fire. Keep a run going and they work. Slip, and nothing is torn down; they just rest by the fire until you're back.</p>
+    </div>
+    <div class="cabincard"><div class="cvbox2"><canvas id="cabinDemo" width="440" height="300" role="img" aria-label="Two pixel builders working on a cabin with a porch"></canvas></div></div>
   </div>
-  <p class="mythline">On an off day the builders <b>rest, never scold</b> because progress you've earned should stay earned.</p>
+  <ol class="ladder" aria-label="What the builders raise, by good days">
+    <li class="reached"><b>Bedroll</b><span>at the start</span></li>
+    <li class="reached"><b>Tent</b><span>3 good days</span></li>
+    <li class="reached"><b>Lean-to</b><span>7 good days</span></li>
+    <li class="reached"><b>Cabin frame</b><span>14 good days</span></li>
+    <li class="reached"><b>Snug cabin</b><span>25 good days</span></li>
+    <li class="reached"><b>Cabin with porch</b><span>40 good days</span></li>
+    <li><b>The Homestead</b><span>60 good days</span></li>
+  </ol>
 </div></section>
 
 <section id="how" data-track="s6-how"><div class="wrap">
@@ -391,14 +413,16 @@
 <footer><div class="wrap">
   <div>
     <div class="brand" style="margin-bottom:8px">Still Here</div>
-    <p class="fnote"><b style="color:var(--ink)">Built by Aradnaksi</b> for anyone trying to do a little better each day. No ads, no subscription; but you can always give support by clicking the link below :) </p>
+    <p class="fnote"><b style="color:var(--ink)">Built by Aradnaksi</b> for anyone trying to do a little better each day. No ads, no subscription; but you can always give support by clicking the link below :)</p>
   </div>
-  <div class="fdon">
-    <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="kofi">🌏 Buy me a coffee</a>
-    <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="trakteer">🇮🇩 Traktir cendol</a>
+  <div>
+    <div class="fdon">
+      <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="kofi">🌏 Buy me a coffee</a>
+      <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="trakteer">🇮🇩 Traktir cendol</a>
+    </div>
+    <p class="fnote" style="margin-top:16px"><a href="/">Still Here</a> · © 2026</p>
+    <a class="fbadge" href="https://21st.tools?utm_source=badge&ref=stillhere.day" target="_blank" rel="noopener"><img src="https://21st.tools/api/badge?theme=dark&kind=listing&v=3" alt="Featured on 21st Tools" height="54" /></a>
   </div>
-  <p class="fnote"><a href="/">Still Here</a> · © 2026</p>
-  <a href="https://21st.tools?utm_source=badge&ref=stillhere.day" target="_blank" rel="noopener"><img src="https://21st.tools/api/badge?theme=dark&kind=listing&v=3" alt="Featured on 21st Tools" height="54" /></a>
 </div></footer>
 
 <script>
