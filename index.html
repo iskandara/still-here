@@ -81,43 +81,37 @@
   .lead{color:var(--muted); font-size:clamp(15px,2.4vw,18px); line-height:1.6; margin:0}
   .eyebrow{font-weight:800; font-size:14px; color:var(--honey); margin-bottom:10px}
 
-  /* hero */
-  .hero{padding-top:26px}
-  .hero .grid{display:grid; grid-template-columns:1fr; gap:30px; align-items:center}
-  @media(min-width:860px){ .hero .grid{grid-template-columns:1.05fr .95fr; gap:44px} }
-  .hero h1 span{color:var(--honey)}
-  .heroCtas{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
-
-  /* the interactive forest frame */
-  .stagecard{position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
-    box-shadow:0 30px 70px rgba(8,4,20,.55); background:#1c1630;
-    width:100%; height:min(74vh,560px)}
-  @media(max-width:859px){ .stagecard{height:min(78vh,540px); max-width:420px; margin:0 auto} }
-  .stagecard canvas{display:block; width:100%; height:100%}
-  /* phase pill (top right) and day/dusk toggle under it; the nav already carries the brand */
-  .stagetop{position:absolute; top:0; left:0; right:0; display:flex; justify-content:flex-end;
-    align-items:flex-start; padding:14px 16px; pointer-events:none}
-  .pill{background:rgba(20,15,32,.9); border:1px solid var(--line);
-    border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px; display:flex; align-items:center; gap:7px}
-  .pill .dot{width:8px; height:8px; border-radius:50%; background:var(--leaf)}
-  .stagebar{position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-    display:flex; flex-direction:column; align-items:center; gap:8px;
-    background:linear-gradient(0deg, rgba(20,15,32,.82), rgba(20,15,32,0))}
-  /* dark chip keeps the growth message readable over the pale sky */
-  .grewline{min-height:16px; font-size:12.5px; font-weight:800; color:var(--honey); text-align:center; transition:.3s;
-    background:rgba(20,15,32,.88); border-radius:10px; padding:6px 12px; max-width:100%}
-  .grewline b{color:var(--ink)}
-  .growbtn .sprite{width:20px; height:20px; image-rendering:pixelated; vertical-align:-4px; margin-right:6px}
-  .growbtn{width:100%; border:none; cursor:pointer; border-radius:14px;
-    background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
-    font-family:'Nunito'; font-weight:800; font-size:15px; padding:14px; box-shadow:0 4px 0 #b06d2e}
-  .growbtn:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
-  .growbtn.done{background:var(--plum3); color:var(--ink); box-shadow:none}
-  .daybtn{position:absolute; top:48px; right:16px; pointer-events:auto; cursor:pointer; font-family:'Nunito';
-    background:rgba(20,15,32,.9); border:1px solid var(--line);
-    color:var(--muted); border-radius:999px; padding:6px 12px; font-weight:800; font-size:11px}
-  /* invisible 44px hit area around the small toggle */
-  .daybtn::after{content:''; position:absolute; inset:-8px -4px}
+  /* Intro: a full-screen day island that grows as you scroll, then lifts so the headline arrives below it.
+     --p (0 to 1) is the scroll progress, set by the script; without the script the finished state shows. */
+  .intro{position:relative; height:100svh; padding:0; margin-top:-72px}
+  .js-intro .intro{height:300svh}
+  .intro-stage{position:sticky; top:0; height:100svh; overflow:hidden; background:var(--night)}
+  /* the art box shortens as the text arrives; the scene refits inside it, so the island rises and shrinks with the sky intact */
+  .intro-art{position:absolute; left:0; right:0; top:0; height:calc(100% - var(--lift,1) * 40%)}
+  .intro-art canvas{display:block; width:100%; height:100%}
+  /* solid nav while it sits over the bright sky */
+  body.over-intro nav{background:rgba(28,22,48,.92)}
+  /* plum rises from the bottom as the text arrives, and blends into the page below */
+  .intro-shade{position:absolute; inset:0; pointer-events:none; opacity:var(--lift,1);
+    background:linear-gradient(180deg, rgba(28,22,48,0) 34%, rgba(28,22,48,.86) 54%, #1c1630 72%)}
+  .intro-copy{position:absolute; left:0; right:0; bottom:0; padding:0 20px calc(clamp(28px,6svh,64px) + env(safe-area-inset-bottom));
+    text-align:center; opacity:var(--copy,1); transform:translateY(calc((1 - var(--copy,1)) * 24px))}
+  .intro-copy h1{font-size:clamp(2.1rem, 5.6vw, 4.8rem); line-height:1; max-width:17ch; margin:0 auto 18px; text-wrap:balance}
+  .intro-copy h1 span{color:var(--honey)}
+  .intro-copy .lead{max-width:36ch; margin:0 auto; font-size:clamp(16px,1.9vw,20px)}
+  .intro-copy .ctas{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px 24px; margin-top:24px}
+  .textlink{display:inline-flex; align-items:center; min-height:44px; font-weight:800; color:var(--ink);
+    text-decoration:underline; text-decoration-color:rgba(244,184,96,.6); text-underline-offset:6px}
+  @media (hover:hover){ .textlink:hover{color:var(--honey)} }
+  /* growth readout, like the app's phase pill; it fades as the text takes over */
+  .intro-day{position:absolute; left:50%; top:calc(72px + 18px); transform:translateX(-50%); white-space:nowrap;
+    background:rgba(20,15,32,.9); border:1px solid var(--line); border-radius:999px; padding:7px 14px;
+    font-weight:800; font-size:13px; opacity:calc(1 - var(--copy,1))}
+  .intro-day b{font-family:'Pixelify Sans'; font-weight:600; color:var(--honey)}
+  .intro-hint{position:absolute; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%);
+    background:rgba(20,15,32,.9); border-radius:999px; padding:8px 16px; font-weight:800; font-size:13px; white-space:nowrap;
+    opacity:calc(1 - var(--hint,1))}
+  @media (prefers-reduced-motion: reduce){ .js-intro .intro{height:100svh} }
 
   /* how it works: heading beside a plain list, a quieter recap after the scenes above */
   .howgrid{display:grid; grid-template-columns:1fr; gap:18px}
@@ -231,6 +225,7 @@
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add("js-intro")</script>
 <nav><div class="wrap">
   <div class="brand">Still Here<small>your quiet forest</small></div>
   <div class="navlinks" id="navlinks">
@@ -252,27 +247,22 @@
   <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app</a>
 </div>
 
-<section class="hero" data-track="s1-hero"><div class="wrap"><div class="grid">
-  <div>
-    <h1>A forest that grows as you <span>keep your oath</span>.</h1>
-    <p class="lead">Turns any habit you're reducing; cigarettes, drinks, screen time, anything you can count, into a living island. Every honest day plants something new.</p>
-    <div class="heroCtas">
-      <a class="btn primary" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="hero">Try Still Here</a>
+<section class="intro" id="intro" data-track="s1-hero">
+  <div class="intro-stage">
+    <div class="intro-art"><canvas id="introForest" role="img" aria-label="A pixel island that grows from bare soil into a full forest as you scroll"></canvas></div>
+    <div class="intro-shade"></div>
+    <div class="intro-day" aria-hidden="true"><b id="introDay">Day 0</b> · <span id="introPhase">Seed</span></div>
+    <div class="intro-hint" aria-hidden="true">Scroll to grow your island ↓</div>
+    <div class="intro-copy">
+      <h1>A forest that grows as you <span>keep your oath</span>.</h1>
+      <p class="lead">Cigarettes, drinks, screen time, anything you can count. Log it honestly, and every good day plants something new on your island.</p>
+      <div class="ctas">
+        <a class="btn primary" href="/app" target="_blank" rel="noopener" data-umami-event="open-app" data-umami-event-loc="hero">Plant your first day</a>
+        <a class="textlink" href="#journey">See how it grows</a>
+      </div>
     </div>
   </div>
-
-  <div id="try" class="stagecard">
-    <canvas id="heroForest" width="500" height="600"></canvas>
-    <div class="stagetop">
-      <div class="pill"><span class="dot"></span><span id="heroPhase">Sapling</span></div>
-    </div>
-    <button class="daybtn" id="heroDay">☀ Day</button>
-    <div class="stagebar">
-      <div class="grewline" id="heroGrew" aria-live="polite">This little island is yours to grow. Give it a good day.</div>
-      <button class="growbtn" id="heroGrow"><img class="sprite" src="assets/sprites/tree_sprout.png" alt="">Plant a good day</button>
-    </div>
-  </div>
-</div></div></section>
+</section>
 
 <section data-track="s2-problem"><div class="wrap" style="max-width:720px; text-align:center">
   <h2>Cold turkey doesn't work for everyone.</h2>
@@ -1134,45 +1124,44 @@ function makeCabin(cv, boxEl){
 }
 
 
-/* Hero: live, interactive forest */
-const heroCanvas=document.getElementById('heroForest');
-const hero=makeForest(heroCanvas, heroCanvas.parentElement);
-const START_LEVEL=11;                      // opens in a lush late-Sapling (tree, bushes, butterfly)
-const DEMO_CAP=20;                         // let them reach early Grove (the first animal), then hand off
-let heroLevel=START_LEVEL;                  // fresh every visit: no persistence, so it always resets
-let heroDusk=false;
-hero.startAnim(heroLevel, heroDusk);
-setHeroPhase();
-
-function setHeroPhase(){ document.getElementById('heroPhase').textContent = hero.phaseOf(heroLevel); }
-const grewEl=document.getElementById('heroGrew');
-const growBtn=document.getElementById('heroGrow');
-
-function capReached(){
-  growBtn.textContent='Open the app to keep growing';
-  growBtn.classList.add('done');
-  growBtn.onclick=()=>window.open('/app','_blank','noopener');
-}
-
-growBtn.addEventListener('click', ()=>{
-  if(heroLevel>=DEMO_CAP) return;          // handed off to capReached's own handler
-  const step=hero.grow();
-  if(!step){ return; }
-  heroLevel++;
-  setHeroPhase();
-  grewEl.textContent = (step.label||'A new life arrives')+'.';
-  if(heroLevel>=DEMO_CAP){
-    setTimeout(()=>{ grewEl.innerHTML='This is just the beginning: <b>a fox, a waterfall, even a dragon</b> are still to come. Open the app to grow your own.'; capReached(); }, 900);
+/* Intro: scroll grows the island from bare soil to the full forest, then the headline arrives */
+(function(){
+  const intro=document.getElementById('intro'), stage=intro.querySelector('.intro-stage');
+  const cv=document.getElementById('introForest');
+  const forest=makeForest(cv, cv.parentElement);
+  const MAX=forest.LEN;
+  const dayEl=document.getElementById('introDay'), phaseEl=document.getElementById('introPhase');
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  let level=-1;
+  function show(lvl){
+    if(lvl===level) return; level=lvl;
+    forest.setLevel(lvl);
+    dayEl.textContent='Day '+lvl; phaseEl.textContent=forest.phaseOf(lvl);
   }
-});
-
-const dayBtn=document.getElementById('heroDay');
-function paintDayBtn(){ dayBtn.textContent = heroDusk ? '🌙 Dusk' : '☀ Day'; }
-paintDayBtn();
-dayBtn.addEventListener('click', ()=>{
-  heroDusk=!heroDusk;
-  hero.setDusk(heroDusk); paintDayBtn();
-});
+  // scroll budget: grow over the first 62%, lift the island and bring in the text by 84%, then hold
+  function update(){
+    const r=intro.getBoundingClientRect();
+    const p=reduce ? 1 : clamp(-r.top / Math.max(1, r.height - innerHeight));
+    show(Math.round(clamp(p/.62) * MAX));
+    const lift=clamp((p-.62)/.14), copy=clamp((p-.7)/.14);
+    // the art box height is stepped to 1% so the canvas isn't resized on every pixel of scroll
+    stage.style.setProperty('--lift', (Math.round(lift*40)/40).toFixed(3));
+    stage.style.setProperty('--copy', copy.toFixed(3));
+    stage.style.setProperty('--hint', clamp(p/.06).toFixed(3));
+    document.body.classList.toggle('over-intro', r.bottom > 72);
+  }
+  forest.startAnim(reduce ? MAX : 0, false);
+  update();
+  addEventListener('scroll', update, {passive:true});
+  addEventListener('resize', update);
+  // keyboard users who tab to the buttons before scrolling get taken to the finished scene
+  intro.querySelector('.intro-copy').addEventListener('focusin', ()=>{
+    if(reduce) return;
+    const r=intro.getBoundingClientRect();
+    if(+getComputedStyle(stage).getPropertyValue('--copy') < 1) scrollTo({top: scrollY + r.top + (r.height - innerHeight) * .9, behavior:'instant'});
+  });
+})();
 
 /* Journey vignettes: static snapshots at fixed stages */
 document.querySelectorAll('.vig canvas').forEach(cv=>{
