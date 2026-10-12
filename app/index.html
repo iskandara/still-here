@@ -154,9 +154,6 @@
   .buy.using{background:transparent; color:var(--leaf); border-color:rgba(143,206,107,.45)}
   .buy.gift{background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311; border-color:transparent}
   .buy:disabled{cursor:default; opacity:.7}
-  .try{background:none; border:none; color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:11.5px;
-    text-decoration:underline; cursor:pointer; min-height:28px; padding:4px 2px; position:relative}
-  .try::after{content:''; position:absolute; inset:-8px -6px}
   .giftdot{position:absolute; top:-3px; right:-3px; width:10px; height:10px; border-radius:50%; background:#e8574a;
     box-shadow:0 0 0 2px rgba(20,15,32,.9)}
   .coinpill{position:relative}
@@ -1765,8 +1762,7 @@ let D;
 function refresh(){
   D=derive();
   // stage pill + push growth/time-of-day to the iso scene
-  const realDusk = (new Date().getHours()>=18 || new Date().getHours()<6);
-  const dusk = previewDusk!=null ? previewDusk : realDusk;
+  const dusk = (new Date().getHours()>=18 || new Date().getHours()<6);
   applyLook();
   document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
   const dot=document.getElementById('stageDot');
@@ -2418,8 +2414,8 @@ function using(g,it){
   const L=prefs.look||{};
   return g.slot ? (L[g.slot]||'')===it.val : !!L[it.flag];
 }
-let previewLook=null, previewDusk=null, previewT=null, pendingBuy=null, pendingBuyT=null;
-function applyLook(){ ISO.setLook(Object.assign({}, previewLook || (prefs && prefs.look) || {})); }
+let pendingBuy=null, pendingBuyT=null;
+function applyLook(){ ISO.setLook(Object.assign({}, (prefs && prefs.look) || {})); }
 function equip(g,it){
   if(g.slot) prefs.look[g.slot]=it.val; else prefs.look[it.flag]=!prefs.look[it.flag];
   persistPrefs(); applyLook(); renderStore();
@@ -2447,17 +2443,6 @@ function storeAction(id){
   toast(it.name+' is yours. It\u2019s on your island now.');
   track('store-bought',{item:it.id});
 }
-// try before you buy: show it on the island for a few seconds, at the right time of day
-function tryItem(id){
-  const {g,it}=storeItem(id)||{}; if(!it || it.locked) return;
-  previewLook=Object.assign({}, prefs.look||{});
-  if(g.slot) previewLook[g.slot]=it.val; else previewLook[it.flag]=true;
-  previewDusk = it.time==='dusk' ? true : it.time==='day' ? false : null;
-  closeSheet(); refresh();
-  toast('Previewing '+it.name+'…');
-  clearTimeout(previewT);
-  previewT=setTimeout(()=>{ previewLook=null; previewDusk=null; refresh(); toast('Preview over. It\u2019s waiting in the store.'); }, 6000);
-}
 function renderStore(){
   if(!storeReady()) return;
   document.getElementById('storeCount').textContent=prefs.coins;
@@ -2467,7 +2452,7 @@ function renderStore(){
     if(g.gift && !eligible) continue;
     html+=`<div class="shopgroup"><h4>${g.group}</h4><p class="gnote">${g.note}</p>`;
     for(const it of g.items){
-      let btn, tryBtn='';
+      let btn;
       if(it.locked){
         btn='<button class="buy" disabled>Coming soon</button>';
       } else if(g.gift){
@@ -2486,12 +2471,11 @@ function renderStore(){
           : short>0
             ? `<button class="buy" disabled><span class="coin"></span>${it.price}</button>`
             : `<button class="buy price" onclick="storeAction('${it.id}')"><span class="coin"></span>${it.price}</button>`;
-        tryBtn=`<button class="try" onclick="tryItem('${it.id}')">Try it</button>`;
       }
       const sub = it.locked ? it.desc+' Arriving in a future update.'
         : (!owns(it) && !g.gift && it.price>(prefs.coins||0)) ? it.desc+' '+(it.price-(prefs.coins||0))+' more coins to go.'
         : it.desc;
-      html+=`<div class="item"><div class="sw" style="background:${it.sw}"></div><div class="t"><b>${it.name}</b><small>${sub}</small></div><div class="acts">${btn}${tryBtn}</div></div>`;
+      html+=`<div class="item"><div class="sw" style="background:${it.sw}"></div><div class="t"><b>${it.name}</b><small>${sub}</small></div><div class="acts">${btn}</div></div>`;
     }
     html+='</div>';
   }
