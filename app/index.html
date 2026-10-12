@@ -97,6 +97,42 @@
   /* invisible 44px hit area around the small pill */
   .stagepill::after{content:''; position:absolute; inset:-8px -4px}
   .stagepill .dot{width:8px;height:8px;border-radius:50%;background:var(--leaf)}
+  .stageRight{display:flex; gap:8px; align-items:flex-start}
+  /* coins: a drawn honey coin, not an emoji, so it matches the pixel world on every device */
+  .coin{display:inline-block; width:14px; height:14px; border-radius:50%; flex:0 0 auto;
+    background:radial-gradient(circle at 35% 30%, #ffe3a3 0 22%, var(--honey) 23% 62%, var(--honey-deep) 63%);
+    box-shadow:inset 0 0 0 1.5px #b06d2e}
+  .coin.big{width:34px; height:34px; box-shadow:inset 0 0 0 3px #b06d2e}
+  .coinpill b{font-family:'Pixelify Sans'; font-weight:600; font-size:13px; color:var(--honey)}
+  .coinpill.bump{animation:coinBump .6s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes coinBump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+  /* challenges pane */
+  .wallet{display:flex; align-items:center; gap:14px; background:var(--plum3); border:1px solid rgba(244,184,96,.3);
+    border-radius:14px; padding:14px 16px; margin-bottom:18px}
+  .wallet .n{font-family:'Pixelify Sans'; font-size:26px; line-height:1; color:var(--honey)}
+  .wallet small{display:block; color:var(--muted); font-size:12px; font-weight:700; margin-top:4px}
+  .chgroup{margin:0 0 18px}
+  .chgroup h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 8px}
+  .chrow{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line)}
+  .chrow:last-child{border-bottom:none}
+  .chrow .t{flex:1; min-width:0}
+  .chrow .t b{display:block; font-size:13.5px; font-weight:800}
+  .chrow .t small{display:block; color:var(--muted); font-size:11.5px; font-weight:700; margin-top:2px; line-height:1.4}
+  .chrow .r{display:flex; align-items:center; gap:6px; font-weight:800; font-size:12.5px; color:var(--honey); white-space:nowrap}
+  .chrow.done .r{color:var(--leaf)}
+  .chrow.na{opacity:.6}
+  .chbar{height:6px; border-radius:6px; background:rgba(0,0,0,.28); margin-top:7px; overflow:hidden}
+  .chbar i{display:block; height:100%; border-radius:6px; background:var(--leaf)}
+  .steps{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .steps span{font-size:11px; font-weight:800; padding:3px 8px; border-radius:8px; border:1px solid var(--line); color:var(--muted)}
+  .steps span.ok{border-color:rgba(143,206,107,.45); color:var(--leaf)}
+  .storecard{border:1px dashed rgba(244,184,96,.45); border-radius:14px; padding:16px; text-align:center; margin-top:4px}
+  .storecard b{font-family:'Pixelify Sans'; font-weight:600; font-size:17px; display:block; margin-bottom:4px}
+  .storecard p{color:var(--muted); font-size:12.5px; line-height:1.5; margin:0}
+  .recent{list-style:none; margin:0; padding:0}
+  .recent li{display:flex; justify-content:space-between; gap:10px; font-size:12.5px; padding:6px 0; color:var(--muted); font-weight:700}
+  .recent li b{color:var(--honey); white-space:nowrap}
 
   /* ambient toast (gentle messages) */
   #toast{
@@ -146,7 +182,8 @@
   .logbtn:active{transform:translateY(4px); box-shadow:0 2px 0 #b06d2e, 0 6px 14px rgba(224,149,74,.25)}
   .logbtn .puff{font-size:18px}
 
-  .subrow{display:flex; gap:10px; margin-top:11px}
+  .subrow{display:flex; gap:8px; margin-top:11px}
+  .subrow .ghost{padding:11px 4px; white-space:nowrap}
   .ghost{
     flex:1; background:transparent; border:1px solid var(--line);
     color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:12.5px;
@@ -485,7 +522,10 @@
     <canvas id="scene"></canvas>
     <div id="stageTop">
       <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
+      <div class="stageRight">
+      <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('challenges')" aria-label="Coins and challenges"><span class="coin"></span><b id="coinCount">0</b></button>
       <button type="button" class="stagepill" onclick="openProgress()" aria-label="See your forest's progress"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
+      </div>
     </div>
     <div id="toast"></div>
     <button id="shareStage" onclick="shareForest(this)" aria-label="Share your forest" title="Share your forest">📸</button>
@@ -532,6 +572,7 @@
 
     <div class="subrow">
       <button class="ghost" onclick="openSheet('sanctuary')">✦ Sanctuary</button>
+      <button class="ghost" onclick="openSheet('challenges')"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> Challenges</button>
       <button class="ghost" onclick="openSheet('settings')">⚙ Oath &amp; tone</button>
     </div>
   </div>
@@ -600,7 +641,7 @@
   <div id="reset">
     <div class="mbox">
       <div class="mtitle">Start the forest over?</div>
-      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil. The homestead resets too. Your account, name, and voice stay. This can't be undone.</div>
+      <div class="mbody">This clears your logged days and grows a fresh forest from bare soil. The homestead resets too. Your account, name, voice and coins stay. This can't be undone.</div>
       <button class="mprimary" onclick="doReset('same')">Start over, keep my oath</button>
       <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
       <button class="mlink" onclick="hideReset()">Cancel, keep my forest</button>
@@ -780,7 +821,23 @@
     <div class="grab"></div>
     <div class="tabbar">
       <button id="tabSanctuary" class="on" onclick="showPane('sanctuary')">Sanctuary</button>
+      <button id="tabChallenges" onclick="showPane('challenges')">Challenges</button>
       <button id="tabSettings" onclick="showPane('settings')">Oath &amp; tone</button>
+    </div>
+
+    <div class="pane" id="paneChallenges">
+      <h3>Challenges</h3>
+      <p class="lead">Earn coins by keeping your oath honestly. Coins are never taken away, and a slip never costs you any.</p>
+      <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="walletCount">0</span> coins</div><small id="walletNote">Your first coin comes with your first check-in.</small></div></div>
+      <div id="chList"></div>
+      <div class="storecard">
+        <b>Store · Coming soon</b>
+        <p>Your coins will decorate the garden and the scenery. Stay tuned, and keep your honest streak going for something exciting.</p>
+      </div>
+      <div class="chgroup" id="chRecentWrap" style="margin-top:18px; display:none">
+        <h4>Recently earned</h4>
+        <ul class="recent" id="chRecent"></ul>
+      </div>
     </div>
 
     <div class="pane on" id="paneSanctuary">
@@ -1289,6 +1346,7 @@ function finishWait(completed){
   if(completed){
     const c=TONE_COPY[tone()]||TONE_COPY.gentle;
     toast(c.held);
+    awardHold();
     try{ if('vibrate' in navigator) navigator.vibrate([40,60,40]); }catch(_){}
   }
 }
@@ -1610,10 +1668,11 @@ function derive(){
   const isGood = v => v!=null && (v<=allowance || (lowFrequency && onTrack));
 
   const totalDays = Math.max(1, daysBetween(oath.start, tk)+1);
-  const states=[];                       // oldest → newest
+  const states=[], days=[];              // oldest → newest; days keeps {k,v,s} for the challenges
   for(let i=totalDays-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
-    const v=dayValue(todayKey(d), byDay);
-    states.push(v==null ? 'foggy' : (isGood(v) ? 'good' : 'bad')); }
+    const k=todayKey(d), v=dayValue(k, byDay);
+    const s=v==null ? 'foggy' : (isGood(v) ? 'good' : 'bad');
+    states.push(s); days.push({k, v, s}); }
   const goodDays = states.filter(s=>s==='good').length;
 
   // current run (trailing good days; a not-yet-logged today doesn't break it) + best run ever
@@ -1647,7 +1706,7 @@ function derive(){
   }
 
   return {allowance, todayCount, periodCount, monthCount, goodDays, paceDaily, growthLevel,
-          cabinTier, currentRun, bestRun, homesteadDays, building, weather, pending, foggy:pending.length>0};
+          cabinTier, currentRun, bestRun, homesteadDays, building, weather, pending, foggy:pending.length>0, days};
 }
 
 
@@ -1733,6 +1792,7 @@ function refresh(){
   } else { cf.classList.remove('show'); pendingKey=null; }
 
   renderSanctuary();
+  evaluateCoins();
 }
 
 /* Gentle voice */
@@ -1769,6 +1829,7 @@ async function logStick(){
   const iso=new Date().toISOString();
   logs.push(iso);
   await persistStick(iso);
+  awardCheckin();
   track('logged');
   ISO.spawnPuff();
   toast(pickLine(LOG_LINES));
@@ -1777,9 +1838,11 @@ async function logStick(){
 async function resolveDay(kind){
   if(!pendingKey) return;
   const key=pendingKey;
+  const closed=()=>{ award('close:'+key, 1, 'You closed '+(daysBetween(key,todayKey())===1?'yesterday':'a day')+' honestly'); awardCheckin(); };
   if(kind==='clean'){
     dayStatus[key]={state:'clean'};
     await persistDayStatus(key, dayStatus[key]);
+    closed();
     toast(pickLine(CLEAN_LINES));
     refresh();
   } else {
@@ -1788,6 +1851,7 @@ async function resolveDay(kind){
     const val=Math.max(0, Math.min(60, parseInt(n)||0));
     dayStatus[key]={state:'estimate', sticks:val};
     await persistDayStatus(key, dayStatus[key]);
+    closed();
     toast('Thank you for closing it honestly.');
     refresh();
   }
@@ -1814,6 +1878,7 @@ async function saveCikiName(){
   try{ await persistPrefs(); }catch(_){}
   hideCikiName();
   renderSanctuary();
+  evaluateCoins();
   if(v) toast(v+' it is. She\u2019s home now. 🤍');
 }
 
@@ -2040,7 +2105,9 @@ function hideReset(){ document.getElementById('reset').classList.remove('show');
 async function doReset(mode){
   hideReset();
   logs=[]; dayStatus={};
-  prefs={ max:0, tone:(prefs && prefs.tone) || 'gentle' };   // keep voice; clear all progress
+  // keep voice and coins (earned coins stay earned, and claimed rewards can't be farmed by resetting)
+  prefs={ max:0, tone:(prefs && prefs.tone) || 'gentle',
+          coins:prefs.coins||0, claimed:prefs.claimed||{}, coinLog:prefs.coinLog||[], coinsSince:prefs.coinsSince };
   if(mode==='new'){
     oath = Object.assign(defaultOath(), { start:todayKey(), configured:false });
     await persistReset();
@@ -2077,10 +2144,153 @@ document.addEventListener('keydown', e=>{
   if(open('scrim')) closeSheet();
 });
 function showPane(which){
-  document.getElementById('paneSanctuary').classList.toggle('on', which==='sanctuary');
-  document.getElementById('paneSettings').classList.toggle('on', which==='settings');
-  document.getElementById('tabSanctuary').classList.toggle('on', which==='sanctuary');
-  document.getElementById('tabSettings').classList.toggle('on', which==='settings');
+  for(const [pane,tab,name] of [['paneSanctuary','tabSanctuary','sanctuary'],['paneChallenges','tabChallenges','challenges'],['paneSettings','tabSettings','settings']]){
+    document.getElementById(pane).classList.toggle('on', which===name);
+    document.getElementById(tab).classList.toggle('on', which===name);
+  }
+  if(which==='challenges') renderChallenges();
+}
+
+/* Coins and challenges.
+   Every reward has an id in prefs.claimed, so it is paid once even across devices and resets.
+   Day-based rewards only look at finished days (never today), so a mis-tap fix can't game them,
+   and only from prefs.coinsSince, so turning coins on doesn't pay out a whole history at once. */
+const RUN_STEPS=[1,3,7,14,21,30];               // then every 30 days: 60, 90, 120...
+const HOLDS_PER_DAY=3;
+const PHASE_STEPS=[['Sapling',1],['Grove',14],['Haven',39]];   // same thresholds as ISO.phaseOf
+function runMilestonesUpTo(n){
+  const out=RUN_STEPS.filter(s=>s<=n);
+  for(let s=60; s<=n; s+=30) out.push(s);
+  return out;
+}
+function coinsReady(){
+  if(!prefs) return false;
+  if(prefs.coins==null) prefs.coins=0;
+  if(!prefs.claimed) prefs.claimed={};
+  if(!prefs.coinLog) prefs.coinLog=[];
+  if(!prefs.coinsSince) prefs.coinsSince=todayKey();
+  return true;
+}
+let coinGains=[], coinFlushT=null;
+function award(id, n, label){
+  if(!coinsReady() || prefs.claimed[id]) return false;
+  prefs.claimed[id]=Date.now();
+  prefs.coins+=n;
+  prefs.coinLog.unshift({n, label, t:Date.now()});
+  if(prefs.coinLog.length>30) prefs.coinLog.length=30;
+  coinGains.push({n, label});
+  clearTimeout(coinFlushT); coinFlushT=setTimeout(flushCoins, 60);
+  return true;
+}
+// one save and one toast for everything earned in the same moment
+function flushCoins(){
+  if(!coinGains.length) return;
+  const total=coinGains.reduce((a,g)=>a+g.n,0);
+  const msg = coinGains.length===1
+    ? `+${total} ${total===1?'coin':'coins'} · ${coinGains[0].label}`
+    : `+${total} coins for ${coinGains.length} challenges`;
+  coinGains=[];
+  persistPrefs();
+  renderCoins(true);
+  // let any message already on screen finish first
+  const t=document.getElementById('toast');
+  setTimeout(()=>toast(msg), t.classList.contains('show') ? 2300 : 0);
+}
+function holdsToday(){
+  const p='hold:'+todayKey()+':';
+  return Object.keys((prefs&&prefs.claimed)||{}).filter(k=>k.startsWith(p)).length;
+}
+function awardCheckin(){ award('checkin:'+todayKey(), 1, 'Daily check-in'); }
+function awardHold(){
+  const n=holdsToday();
+  if(n<HOLDS_PER_DAY) award('hold:'+todayKey()+':'+n, 3, 'You waited out the 10 minutes');
+}
+function companionArrived(c){
+  return c.special ? (D && D.growthLevel>=ISO.CIKI_LEVEL)
+                   : (D && ISO.levelOf(c.type)>0 && D.growthLevel>=ISO.levelOf(c.type));
+}
+// finished days only: everything before today
+function doneDays(){ return D ? D.days.slice(0,-1) : []; }
+function doneRuns(){
+  let best=0, r=0; for(const d of doneDays()){ if(d.s==='good'){ r++; if(r>best) best=r; } else r=0; }
+  return {best, current:r};
+}
+function evaluateCoins(){
+  if(!D || !oath || !oath.configured || !coinsReady()) return;
+  const since=prefs.coinsSince, allowance=D.allowance;
+  // runs of finished good days, lifetime milestones
+  for(const m of runMilestonesUpTo(doneRuns().best)) award('run:'+m, 10, m+'-day run');
+  // day-based: light days and coming back after a slip
+  let prev=null;
+  for(const d of doneDays()){
+    if(d.k>=since){
+      if(allowance>=1 && d.v!=null && d.v<=allowance/2) award('light:'+d.k, 5, 'Light day');
+      if(d.s==='good' && prev==='bad') award('back:'+d.k, 5, 'Back again after a slip');
+    }
+    if(d.s!=='foggy') prev=d.s;
+  }
+  // growth milestones
+  for(const [name,min] of PHASE_STEPS) if(D.growthLevel>=min) award('phase:'+name, 20, 'Your island became a '+name);
+  for(const T of CABIN_TIERS) if(T.t>0 && D.cabinTier>=T.t) award('cabin:'+T.t, 10, 'Builders raised: '+T.name);
+  for(const c of COMPANIONS) if(companionArrived(c)) award('comp:'+c.type, 5, (c.special?(prefs.cikiName||c.name):c.name)+' moved in');
+  if(prefs.cikiName) award('ciki-name', 5, 'You named '+prefs.cikiName);
+  renderCoins(false);
+}
+function renderCoins(bump){
+  const n=(prefs&&prefs.coins)||0;
+  const cc=document.getElementById('coinCount'); if(cc) cc.textContent=n;
+  if(bump){ const p=document.getElementById('coinPill'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
+  if(document.getElementById('paneChallenges').classList.contains('on') &&
+     document.getElementById('sheet').classList.contains('show')) renderChallenges();
+}
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function chRow(title, note, reward, state){
+  // state: 'done' | 'na' | ''
+  const right = state==='done' ? '✓ '+reward : '<span class="coin"></span>'+reward;
+  return `<div class="chrow ${state||''}"><div class="t"><b>${title}</b><small>${note}</small></div><div class="r">${right}</div></div>`;
+}
+function renderChallenges(){
+  if(!coinsReady()) return;
+  const has=id=>!!prefs.claimed[id], tk=todayKey();
+  document.getElementById('walletCount').textContent=prefs.coins;
+  document.getElementById('walletNote').textContent = prefs.coins>0
+    ? 'Saved with your forest. Coins are never taken away.'
+    : 'Your first coin comes with your first check-in.';
+  const allowance=D?D.allowance:0, h=holdsToday();
+  let html='<div class="chgroup"><h4>Every day</h4>';
+  html+=chRow('Daily check-in', has('checkin:'+tk)?'Done for today.':'Log something today, or close yesterday.', '+1', has('checkin:'+tk)?'done':'');
+  html+=chRow('Close a day', 'Answer “How was yesterday?” honestly. +1 for each day you close.', '+1 each', '');
+  html+=chRow('Wait out the 10-minute hold', h+' of '+HOLDS_PER_DAY+' today. Choose “Wait 10 minutes” when you reach your limit.', '+3', h>=HOLDS_PER_DAY?'done':'');
+  html+= allowance>=1
+    ? chRow('Light day', 'A finished day at half your daily allowance or less ('+Math.floor(allowance/2)+' '+unitLabel(Math.floor(allowance/2))+').', '+5', '')
+    : chRow('Light day', 'Needs a daily allowance of at least 1, so it doesn’t apply to your oath.', '+5', 'na');
+  html+=chRow('Back again', 'Your first good day after a day over your limit.', '+5', '');
+  html+='</div>';
+
+  const runs=doneRuns();
+  let next=RUN_STEPS.find(s=>!has('run:'+s));
+  if(next==null){ next=60; while(has('run:'+next)) next+=30; }
+  const pct=Math.min(100, runs.current/next*100);
+  html+='<div class="chgroup"><h4>Runs</h4>';
+  html+=`<div class="chrow"><div class="t"><b>${next}-day run</b><small>${runs.current} of ${next} good days in a row. Today counts once it’s over.</small><div class="chbar"><i style="width:${pct}%"></i></div></div><div class="r"><span class="coin"></span>+10</div></div>`;
+  const shown=RUN_STEPS.concat(runMilestonesUpTo(Math.max(runs.best,60)).filter(s=>s>30));
+  html+='<div class="steps">'+shown.map(s=>`<span class="${has('run:'+s)?'ok':''}">${has('run:'+s)?'✓ ':''}${s} ${s===1?'day':'days'}</span>`).join('')+'<span>then every 30</span></div>';
+  html+='</div>';
+
+  html+='<div class="chgroup"><h4>Milestones</h4>';
+  for(const [name] of PHASE_STEPS) html+=chRow('Island becomes a '+name, ISO.phases().find(p=>p.name===name).desc.split('. ')[0]+'.', '+20', has('phase:'+name)?'done':'');
+  const tiers=CABIN_TIERS.filter(T=>T.t>0), built=tiers.filter(T=>has('cabin:'+T.t)).length;
+  const nextTier=tiers.find(T=>!has('cabin:'+T.t));
+  html+=chRow('Homestead builds', built+' of '+tiers.length+' built.'+(nextTier?' Next: '+nextTier.name+' at '+nextTier.days+' good days.':''), '+10 each', built===tiers.length?'done':'');
+  const arrived=COMPANIONS.filter(c=>has('comp:'+c.type)).length;
+  html+=chRow('Companions', arrived+' of '+COMPANIONS.length+' have moved in.', '+5 each', arrived===COMPANIONS.length?'done':'');
+  html+=chRow('Name Ciki', has('ciki-name')?'Done.':'She arrives once the farm is alive. Give her a name.', '+5', has('ciki-name')?'done':'');
+  html+='</div>';
+  document.getElementById('chList').innerHTML=html;
+
+  const rec=prefs.coinLog||[];
+  document.getElementById('chRecentWrap').style.display=rec.length?'':'none';
+  document.getElementById('chRecent').innerHTML=rec.slice(0,8).map(e=>`<li><span>${esc(e.label)}</span><b>+${e.n}</b></li>`).join('');
 }
 
 /* companions unlocked as the forest grows (level = good days) */
