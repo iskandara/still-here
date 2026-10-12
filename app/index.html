@@ -211,6 +211,10 @@
 
   .subrow{display:flex; gap:8px; margin-top:11px}
   .subrow .ghost{padding:11px 4px; white-space:nowrap}
+  .subrow .ghost.icon{flex:0 0 48px; font-size:17px}
+  .subrow .ghost{min-width:44px}
+  /* very small phones: drop the little icons so all four buttons keep a full tap size */
+  @media (max-width:359px){ .subrow .deco{display:none} .subrow .ghost{font-size:12px} }
   .ghost{
     flex:1; background:transparent; border:1px solid var(--line);
     color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:12.5px;
@@ -598,9 +602,10 @@
     <button class="logbtn" onclick="onLogTap()"><span class="puff">💨</span> <span id="logBtnLabel">I had one</span></button>
 
     <div class="subrow">
-      <button class="ghost" onclick="openSheet('sanctuary')">✦ Sanctuary</button>
-      <button class="ghost" onclick="openSheet('challenges')"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> Challenges</button>
-      <button class="ghost" onclick="openSheet('settings')">⚙ Oath &amp; tone</button>
+      <button class="ghost" onclick="openSheet('sanctuary')"><span class="deco">✦ </span>Sanctuary</button>
+      <button class="ghost" onclick="openSheet('challenges')"><span class="deco"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> </span>Challenges</button>
+      <button class="ghost" id="storeBtn" onclick="openSheet('store')" style="position:relative">Store<span class="giftdot" id="giftDot2" hidden></span></button>
+      <button class="ghost icon" onclick="openSheet('settings')" aria-label="Oath and tone settings" title="Oath &amp; tone">⚙</button>
     </div>
   </div>
 
@@ -2290,7 +2295,8 @@ function evaluateCoins(){
 function renderCoins(bump){
   const n=(prefs&&prefs.coins)||0;
   const cc=document.getElementById('coinCount'); if(cc) cc.textContent=n;
-  const gd=document.getElementById('giftDot'); if(gd) gd.hidden=!giftsUnclaimed();
+  const gift=giftsUnclaimed();
+  for(const id of ['giftDot','giftDot2']){ const gd=document.getElementById(id); if(gd) gd.hidden=!gift; }
   if(document.getElementById('paneStore').classList.contains('on') &&
      document.getElementById('sheet').classList.contains('show')) renderStore();
   if(bump){ const p=document.getElementById('coinPill'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
