@@ -134,6 +134,33 @@
   .recent li{display:flex; justify-content:space-between; gap:10px; font-size:12.5px; padding:6px 0; color:var(--muted); font-weight:700}
   .recent li b{color:var(--honey); white-space:nowrap}
 
+  /* store */
+  .shopgroup{margin:0 0 20px}
+  .shopgroup h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
+  .shopgroup .gnote{color:var(--muted); font-size:11.5px; font-weight:700; margin:0 0 8px}
+  .item{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:none}
+  .item .sw{width:40px; height:40px; border-radius:12px; flex:0 0 40px; border:1px solid var(--line); position:relative; overflow:hidden}
+  .item .t{flex:1; min-width:0}
+  .item .t b{display:block; font-size:13.5px; font-weight:800}
+  .item .t small{display:block; color:var(--muted); font-size:11.5px; font-weight:700; margin-top:2px; line-height:1.4}
+  .item .acts{display:flex; flex-direction:column; align-items:flex-end; gap:4px}
+  .buy{min-height:40px; min-width:84px; padding:8px 12px; border-radius:11px; border:1px solid var(--line); cursor:pointer;
+    font-family:'Nunito'; font-weight:800; font-size:12.5px; background:var(--plum3); color:var(--ink);
+    display:inline-flex; align-items:center; justify-content:center; gap:6px; position:relative}
+  .buy::after{content:''; position:absolute; inset:-2px 0}
+  .buy.price{background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410; border-color:transparent}
+  .buy.confirm{background:var(--leaf); color:#173311; border-color:transparent}
+  .buy.using{background:transparent; color:var(--leaf); border-color:rgba(143,206,107,.45)}
+  .buy.gift{background:linear-gradient(180deg,#8ed36a,#66ad4a); color:#173311; border-color:transparent}
+  .buy:disabled{cursor:default; opacity:.7}
+  .try{background:none; border:none; color:var(--muted); font-family:'Nunito'; font-weight:800; font-size:11.5px;
+    text-decoration:underline; cursor:pointer; min-height:28px; padding:4px 2px; position:relative}
+  .try::after{content:''; position:absolute; inset:-8px -6px}
+  .giftdot{position:absolute; top:-3px; right:-3px; width:10px; height:10px; border-radius:50%; background:#e8574a;
+    box-shadow:0 0 0 2px rgba(20,15,32,.9)}
+  .coinpill{position:relative}
+
   /* ambient toast (gentle messages) */
   #toast{
     position:absolute; left:50%; bottom:18px; transform:translate(-50%,14px);
@@ -254,9 +281,9 @@
   .reset{width:100%; margin-top:16px; background:transparent; border:1px solid rgba(232,146,106,.4);
     color:var(--soft-warn); font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:12px; border-radius:12px; cursor:pointer; min-height:44px}
 
-  .tabbar{display:flex; gap:8px; margin:6px 0 16px}
-  .tabbar button{flex:1; border:none; background:var(--plum3); color:var(--muted);
-    font-family:'Nunito'; font-weight:800; font-size:12.5px; padding:9px; border-radius:11px; cursor:pointer; min-height:44px}
+  .tabbar{display:flex; gap:6px; margin:6px 0 16px}
+  .tabbar button{flex:1; min-width:0; border:none; background:var(--plum3); color:var(--muted); white-space:nowrap;
+    font-family:'Nunito'; font-weight:800; font-size:12px; padding:9px 4px; border-radius:11px; cursor:pointer; min-height:44px}
   .tabbar button.on{background:var(--plum3); color:var(--ink); box-shadow:inset 0 -2px 0 var(--honey)}
   .pane{display:none} .pane.on{display:block}
 
@@ -385,21 +412,21 @@
   .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
 
   /* Crossing-point dialog */
-  #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
+  #gift, #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.74)}
-  #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
-  #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
+  #gift.show, #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
+  #gift .mbox, #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
     border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
     box-shadow:0 24px 60px rgba(6,3,16,.6)}
-  #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle, #logedit .mtitle, #cikiname .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
-  #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody, #logedit .mbody, #cikiname .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
-  #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary, #logedit .mprimary, #cikiname .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+  #gift .mtitle, #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle, #logedit .mtitle, #cikiname .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
+  #gift .mbody, #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody, #logedit .mbody, #cikiname .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
+  #gift .mprimary, #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary, #logedit .mprimary, #cikiname .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
   #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active, #logedit .mprimary:active, #cikiname .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
   #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost, #logedit .mghost, #cikiname .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
     font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
-  #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+  #gift .mlink, #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
     font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:0; cursor:pointer; text-decoration:underline; min-height:44px}
 
   #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
@@ -523,7 +550,7 @@
     <div id="stageTop">
       <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
       <div class="stageRight">
-      <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('challenges')" aria-label="Coins and challenges"><span class="coin"></span><b id="coinCount">0</b></button>
+      <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('store')" aria-label="Coins and store"><span class="coin"></span><b id="coinCount">0</b><span class="giftdot" id="giftDot" hidden></span></button>
       <button type="button" class="stagepill" onclick="openProgress()" aria-label="See your forest's progress"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
       </div>
     </div>
@@ -645,6 +672,15 @@
       <button class="mprimary" onclick="doReset('same')">Start over, keep my oath</button>
       <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
       <button class="mlink" onclick="hideReset()">Cancel, keep my forest</button>
+    </div>
+  </div>
+
+  <div id="gift">
+    <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="giftTitle">
+      <div class="mtitle" id="giftTitle">A thank-you for being here early</div>
+      <div class="mbody">You made an account before the store opened, so two gifts are waiting for you: a smiling sun by day and a sleepy moon at dusk. They're free, and they're yours to keep.</div>
+      <button class="mprimary" onclick="giftToStore()">Claim my gifts</button>
+      <button class="mlink" onclick="hideGift()">Later</button>
     </div>
   </div>
 
@@ -822,6 +858,7 @@
     <div class="tabbar">
       <button id="tabSanctuary" class="on" onclick="showPane('sanctuary')">Sanctuary</button>
       <button id="tabChallenges" onclick="showPane('challenges')">Challenges</button>
+      <button id="tabStore" onclick="showPane('store')">Store</button>
       <button id="tabSettings" onclick="showPane('settings')">Oath &amp; tone</button>
     </div>
 
@@ -831,11 +868,12 @@
       <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="walletCount">0</span> coins</div><small id="walletNote">Your first coin comes with your first check-in.</small></div></div>
       <div id="chList"></div>
       <div class="storecard">
-        <b>Store · Coming soon</b>
-        <p>Your coins will decorate the garden and the scenery. Stay tuned, and keep your honest streak going for something exciting.</p>
+        <b>Spend them in the store</b>
+        <p>Skies, tree colours, fruit, decorations and more for your island.</p>
+        <button class="buy price" style="margin-top:12px" onclick="showPane('store')">Open the store</button>
       </div>
       <div class="chgroup" id="chRecentWrap" style="margin-top:18px; display:none">
-        <h4>Recently earned</h4>
+        <h4>Recent coins</h4>
         <ul class="recent" id="chRecent"></ul>
       </div>
     </div>
@@ -845,6 +883,13 @@
       <p class="lead">As your forest matures, companions come to live in it. The first few arrive on their own. The rare ones, the spirits, are for a later chapter.</p>
       <div class="sanct" id="sanctGrid"></div>
       <span class="soonpill">More companions arriving in a future update</span>
+    </div>
+
+    <div class="pane" id="paneStore">
+      <h3>Store</h3>
+      <p class="lead">Make the island yours. Everything you buy is kept forever, and you can switch it on or off any time.</p>
+      <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="storeCount">0</span> coins</div><small>Earn more in Challenges.</small></div></div>
+      <div id="storeList"></div>
     </div>
 
     <div class="pane" id="paneSettings">
@@ -1155,7 +1200,7 @@ function openFeedback(){
 function hideEnjoy(){ document.getElementById('enjoy').classList.remove('show'); }
 function enjoyToFeedback(){ hideEnjoy(); openFeedback(); }
 function anyModalOpen(){
-  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install','logedit','cikiname'].some(id=>{
+  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install','logedit','cikiname','gift'].some(id=>{
     const el=document.getElementById(id); return el && el.classList.contains('show');
   });
 }
@@ -1715,7 +1760,9 @@ let D;
 function refresh(){
   D=derive();
   // stage pill + push growth/time-of-day to the iso scene
-  const dusk = (new Date().getHours()>=18 || new Date().getHours()<6);
+  const realDusk = (new Date().getHours()>=18 || new Date().getHours()<6);
+  const dusk = previewDusk!=null ? previewDusk : realDusk;
+  applyLook();
   document.getElementById('stageName').textContent = ISO.phaseOf(D.growthLevel);
   const dot=document.getElementById('stageDot');
   dot.style.background = dusk?'var(--honey)':'var(--leaf)';
@@ -1793,6 +1840,7 @@ function refresh(){
 
   renderSanctuary();
   evaluateCoins();
+  maybeShowGift();
 }
 
 /* Gentle voice */
@@ -2107,7 +2155,8 @@ async function doReset(mode){
   logs=[]; dayStatus={};
   // keep voice and coins (earned coins stay earned, and claimed rewards can't be farmed by resetting)
   prefs={ max:0, tone:(prefs && prefs.tone) || 'gentle',
-          coins:prefs.coins||0, claimed:prefs.claimed||{}, coinLog:prefs.coinLog||[], coinsSince:prefs.coinsSince };
+          coins:prefs.coins||0, claimed:prefs.claimed||{}, coinLog:prefs.coinLog||[], coinsSince:prefs.coinsSince,
+          owned:prefs.owned||{}, look:prefs.look||{}, giftEligible:prefs.giftEligible, giftSeen:prefs.giftSeen };
   if(mode==='new'){
     oath = Object.assign(defaultOath(), { start:todayKey(), configured:false });
     await persistReset();
@@ -2135,6 +2184,7 @@ document.addEventListener('keydown', e=>{
   if(e.key!=='Escape') return;
   const open=id=>document.getElementById(id).classList.contains('show');
   if(open('cikiname')) return hideCikiName();
+  if(open('gift')) return hideGift();
   if(open('logedit')) return hideLogEdit();
   if(open('feedback')) return hideFeedback();
   if(open('donate')) return hideDonate();
@@ -2144,11 +2194,12 @@ document.addEventListener('keydown', e=>{
   if(open('scrim')) closeSheet();
 });
 function showPane(which){
-  for(const [pane,tab,name] of [['paneSanctuary','tabSanctuary','sanctuary'],['paneChallenges','tabChallenges','challenges'],['paneSettings','tabSettings','settings']]){
+  for(const [pane,tab,name] of [['paneSanctuary','tabSanctuary','sanctuary'],['paneChallenges','tabChallenges','challenges'],['paneStore','tabStore','store'],['paneSettings','tabSettings','settings']]){
     document.getElementById(pane).classList.toggle('on', which===name);
     document.getElementById(tab).classList.toggle('on', which===name);
   }
   if(which==='challenges') renderChallenges();
+  if(which==='store') renderStore();
 }
 
 /* Coins and challenges.
@@ -2239,6 +2290,9 @@ function evaluateCoins(){
 function renderCoins(bump){
   const n=(prefs&&prefs.coins)||0;
   const cc=document.getElementById('coinCount'); if(cc) cc.textContent=n;
+  const gd=document.getElementById('giftDot'); if(gd) gd.hidden=!giftsUnclaimed();
+  if(document.getElementById('paneStore').classList.contains('on') &&
+     document.getElementById('sheet').classList.contains('show')) renderStore();
   if(bump){ const p=document.getElementById('coinPill'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
   if(document.getElementById('paneChallenges').classList.contains('on') &&
      document.getElementById('sheet').classList.contains('show')) renderChallenges();
@@ -2290,8 +2344,166 @@ function renderChallenges(){
 
   const rec=prefs.coinLog||[];
   document.getElementById('chRecentWrap').style.display=rec.length?'':'none';
-  document.getElementById('chRecent').innerHTML=rec.slice(0,8).map(e=>`<li><span>${esc(e.label)}</span><b>+${e.n}</b></li>`).join('');
+  document.getElementById('chRecent').innerHTML=rec.slice(0,8).map(e=>`<li><span>${esc(e.label)}</span><b>${e.n<0?'\u2212'+(-e.n):'+'+e.n}</b></li>`).join('');
 }
+
+/* Store. Bought items live in prefs.owned (kept forever, even through Start over);
+   what's switched on lives in prefs.look, which the island draws from. */
+// accounts made before this date get the early-supporter gift (smiling sun, sleepy moon)
+const EARLY_GIFT_BEFORE='2026-10-14T00:00:00Z';
+const STORE=[
+  {group:'Gifts', note:'A thank-you for having an account before the store opened.', gift:true, items:[
+    {id:'sunface', name:'Smiling sun', desc:'A happy face on the sun by day.', flag:'sunFace', time:'day', sw:'radial-gradient(circle at 50% 50%,#fff2b0 0 55%,#a9def0 56%)'},
+    {id:'moonface', name:'Sleepy moon', desc:'A dozy face on the moon at dusk.', flag:'moonFace', time:'dusk', sw:'radial-gradient(circle at 50% 50%,#ffe6c0 0 55%,#2b2450 56%)'},
+  ]},
+  {group:'Sky', slot:'sky', note:'Your view from the island.', items:[
+    {id:'sky-classic', val:'', name:'Classic sky', desc:'Blue by day, plum at dusk.', price:0, sw:'linear-gradient(#a9def0,#ffedcf)'},
+    {id:'sky-mars', val:'mars', name:'Mars sky', desc:'A red planet over a dusty orange sky.', price:1500, sw:'radial-gradient(circle at 35% 40%,#de7e52 0 30%,transparent 31%),linear-gradient(#e7a57c,#f8dcc0)'},
+    {id:'sky-saturn', val:'saturn', name:'Saturn sky', desc:'Saturn and its rings rise behind your island.', price:2500, sw:'radial-gradient(ellipse 60% 14% at 40% 45%,#d6b482 0 70%,transparent 72%),radial-gradient(circle at 40% 45%,#e2c08c 0 24%,transparent 25%),linear-gradient(#b9b3e8,#f6e3c4)'},
+  ]},
+  {group:'In the sky', note:'Switch on as many as you like.', items:[
+    {id:'birds', name:'Flock of birds', desc:'Little birds glide across the sky by day.', flag:'birds', time:'day', price:300, sw:'linear-gradient(#a9def0,#d8eef6)'},
+    {id:'kite', name:'Kite', desc:'A red and honey kite tied to the island, by day.', flag:'kite', time:'day', price:350, sw:'linear-gradient(135deg,#e8574a 0 50%,#f4b860 50%)'},
+    {id:'meteor', name:'Meteor shower', desc:'Shooting stars at dusk.', locked:true, sw:'linear-gradient(#1f1d42,#4a3d63)'},
+    {id:'aurora', name:'Aurora', desc:'Northern lights over the island at dusk.', locked:true, sw:'linear-gradient(160deg,#1f1d42 0 30%,#5fd3a0 55%,#8a7fe0 80%)'},
+  ]},
+  {group:'Trees', slot:'trees', note:'Colours for grown trees.', items:[
+    {id:'trees-classic', val:'', name:'Classic green', desc:'Fresh summer leaves.', price:0, sw:'radial-gradient(circle,#5cb043 0 45%,#3f7f2c 46%)'},
+    {id:'trees-autumn', val:'autumn', name:'Autumn', desc:'Warm orange and gold leaves.', price:300, sw:'radial-gradient(circle,#df8434 0 45%,#a4471f 46%)'},
+    {id:'trees-blossom', val:'blossom', name:'Cherry blossom', desc:'Soft pink canopies.', price:350, sw:'radial-gradient(circle,#eda4bf 0 45%,#c9668d 46%)'},
+    {id:'trees-blue', val:'blue', name:'Blue forest', desc:'A little bit of magic.', price:400, sw:'radial-gradient(circle,#5089d0 0 45%,#29538f 46%)'},
+  ]},
+  {group:'Fruit', slot:'fruit', note:'What ripens on your trees.', items:[
+    {id:'fruit-classic', val:'', name:'Apples', desc:'The original red apples.', price:0, sw:'radial-gradient(circle,#e8574a 0 34%,#3a3152 35%)'},
+    {id:'fruit-mango', val:'mango', name:'Mangoes', desc:'Sunny yellow with a red blush.', price:150, sw:'radial-gradient(ellipse 30% 40%,#f0a531 0 90%,#3a3152 95%)'},
+    {id:'fruit-orange', val:'orange', name:'Oranges', desc:'Round, bright and juicy.', price:150, sw:'radial-gradient(circle,#f0861f 0 34%,#3a3152 35%)'},
+    {id:'fruit-durian', val:'durian', name:'Durians', desc:'The king of fruits, spikes and all.', price:250, sw:'radial-gradient(circle,#8f9f33 0 38%,#3a3152 39%)'},
+    {id:'fruit-rambutan', val:'rambutan', name:'Rambutans', desc:'Red and wonderfully hairy.', price:250, sw:'radial-gradient(circle,#d23a3f 0 30%,#f07a6a 31% 38%,#3a3152 39%)'},
+  ]},
+  {group:'On the island', note:'Early decorations; the island adds its own at Haven.', items:[
+    {id:'bench', name:'Bench', desc:'A wooden bench to sit and watch.', flag:'bench', price:200, sw:'linear-gradient(#3a3152 0 40%,#a5703e 40% 55%,#3a3152 55% 65%,#8a5c30 65% 78%,#3a3152 78%)'},
+    {id:'lanterns', name:'Lanterns', desc:'Two lanterns that glow at dusk.', flag:'lanterns', price:300, sw:'radial-gradient(circle at 50% 40%,#ffd77a 0 22%,#3a3152 24%)'},
+  ]},
+  {group:'For Ciki', note:'She arrives once the farm is alive.', items:[
+    {id:'bandana', name:'Red bandana', desc:'A little red bandana for Ciki.', flag:'bandana', price:200, sw:'linear-gradient(160deg,#4b4752 0 45%,#e8574a 45% 70%,#4b4752 70%)'},
+  ]},
+];
+function storeItem(id){ for(const g of STORE) for(const it of g.items) if(it.id===id) return {g, it}; return null; }
+function storeReady(){
+  if(!coinsReady()) return false;
+  if(!prefs.owned) prefs.owned={};
+  if(!prefs.look) prefs.look={};
+  return true;
+}
+// remember eligibility once seen online, so the gift stays claimable offline too
+function giftEligible(){
+  if(prefs && prefs.giftEligible) return true;
+  const ok = !!(backend==='cloud' && authUser && authUser.email && authUser.registration &&
+                new Date(authUser.registration) < new Date(EARLY_GIFT_BEFORE));
+  if(ok && prefs){ prefs.giftEligible=true; persistPrefs(); }
+  return ok;
+}
+function giftsUnclaimed(){
+  if(!storeReady() || !giftEligible()) return false;
+  return STORE[0].items.some(it=>!prefs.owned[it.id]);
+}
+function owns(it){ return it.price===0 || !!prefs.owned[it.id]; }
+function using(g,it){
+  const L=prefs.look||{};
+  return g.slot ? (L[g.slot]||'')===it.val : !!L[it.flag];
+}
+let previewLook=null, previewDusk=null, previewT=null, pendingBuy=null, pendingBuyT=null;
+function applyLook(){ ISO.setLook(Object.assign({}, previewLook || (prefs && prefs.look) || {})); }
+function equip(g,it){
+  if(g.slot) prefs.look[g.slot]=it.val; else prefs.look[it.flag]=!prefs.look[it.flag];
+  persistPrefs(); applyLook(); renderStore();
+}
+function storeAction(id){
+  if(!storeReady()) return;
+  const {g,it}=storeItem(id)||{}; if(!it || it.locked) return;
+  if(g.gift){
+    if(!giftEligible()) return;
+    if(!prefs.owned[it.id]){ prefs.owned[it.id]=Date.now(); prefs.look[it.flag]=true; persistPrefs(); applyLook();
+      toast(it.name+' is yours. Thank you for being here early.'); track('gift-claimed',{item:it.id}); renderStore(); renderCoins(); return; }
+    return equip(g,it);
+  }
+  if(owns(it)) return equip(g,it);
+  if((prefs.coins||0) < it.price) return;
+  // two taps to buy, so a stray tap never spends coins
+  if(pendingBuy!==id){ pendingBuy=id; clearTimeout(pendingBuyT); pendingBuyT=setTimeout(()=>{ pendingBuy=null; renderStore(); }, 3500); renderStore(); return; }
+  pendingBuy=null; clearTimeout(pendingBuyT);
+  prefs.coins-=it.price;
+  prefs.owned[it.id]=Date.now();
+  prefs.coinLog.unshift({n:-it.price, label:'Bought '+it.name, t:Date.now()});
+  if(prefs.coinLog.length>30) prefs.coinLog.length=30;
+  if(g.slot) prefs.look[g.slot]=it.val; else prefs.look[it.flag]=true;
+  persistPrefs(); applyLook(); renderCoins(true); renderStore();
+  toast(it.name+' is yours. It\u2019s on your island now.');
+  track('store-bought',{item:it.id});
+}
+// try before you buy: show it on the island for a few seconds, at the right time of day
+function tryItem(id){
+  const {g,it}=storeItem(id)||{}; if(!it || it.locked) return;
+  previewLook=Object.assign({}, prefs.look||{});
+  if(g.slot) previewLook[g.slot]=it.val; else previewLook[it.flag]=true;
+  previewDusk = it.time==='dusk' ? true : it.time==='day' ? false : null;
+  closeSheet(); refresh();
+  toast('Previewing '+it.name+'…');
+  clearTimeout(previewT);
+  previewT=setTimeout(()=>{ previewLook=null; previewDusk=null; refresh(); toast('Preview over. It\u2019s waiting in the store.'); }, 6000);
+}
+function renderStore(){
+  if(!storeReady()) return;
+  document.getElementById('storeCount').textContent=prefs.coins;
+  const eligible=giftEligible();
+  let html='';
+  for(const g of STORE){
+    if(g.gift && !eligible) continue;
+    html+=`<div class="shopgroup"><h4>${g.group}</h4><p class="gnote">${g.note}</p>`;
+    for(const it of g.items){
+      let btn, tryBtn='';
+      if(it.locked){
+        btn='<button class="buy" disabled>Coming soon</button>';
+      } else if(g.gift){
+        btn = prefs.owned[it.id]
+          ? `<button class="buy ${using(g,it)?'using':''}" onclick="storeAction('${it.id}')">${using(g,it)?'✓ On':'Turn on'}</button>`
+          : `<button class="buy gift" onclick="storeAction('${it.id}')">Claim free</button>`;
+      } else if(owns(it)){
+        const on=using(g,it);
+        btn = g.slot
+          ? `<button class="buy ${on?'using':''}" ${on?'disabled':''} onclick="storeAction('${it.id}')">${on?'✓ In use':'Use'}</button>`
+          : `<button class="buy ${on?'using':''}" onclick="storeAction('${it.id}')">${on?'✓ On':'Turn on'}</button>`;
+      } else {
+        const short=it.price-(prefs.coins||0);
+        btn = pendingBuy===it.id
+          ? `<button class="buy confirm" onclick="storeAction('${it.id}')">Tap to buy</button>`
+          : short>0
+            ? `<button class="buy" disabled><span class="coin"></span>${it.price}</button>`
+            : `<button class="buy price" onclick="storeAction('${it.id}')"><span class="coin"></span>${it.price}</button>`;
+        tryBtn=`<button class="try" onclick="tryItem('${it.id}')">Try it</button>`;
+      }
+      const sub = it.locked ? it.desc+' Arriving in a future update.'
+        : (!owns(it) && !g.gift && it.price>(prefs.coins||0)) ? it.desc+' '+(it.price-(prefs.coins||0))+' more coins to go.'
+        : it.desc;
+      html+=`<div class="item"><div class="sw" style="background:${it.sw}"></div><div class="t"><b>${it.name}</b><small>${sub}</small></div><div class="acts">${btn}${tryBtn}</div></div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('storeList').innerHTML=html;
+}
+// one-time note for early accounts: their gifts are waiting
+let giftT=null;
+function maybeShowGift(){
+  if(giftT || !giftsUnclaimed() || prefs.giftSeen) return;
+  // wait for a quiet moment; only mark it seen once it has actually been shown
+  giftT=setTimeout(()=>{ giftT=null;
+    if(anyModalOpen() || prefs.giftSeen || !giftsUnclaimed()) return;
+    prefs.giftSeen=true; persistPrefs();
+    document.getElementById('gift').classList.add('show'); lockScroll();
+  }, 1400);
+}
+function hideGift(){ dismissOverlay(document.getElementById('gift')); }
+function giftToStore(){ hideGift(); openSheet('store'); }
 
 /* companions unlocked as the forest grows (level = good days) */
 const COMPANIONS=[
@@ -2716,13 +2928,85 @@ const ISO = (function(){
   let level=0, dusk=false, puffs=[];
   let VIS={l:0,t:0,r:VW,b:VH};   // visible region in scene coords (set each frame)
 
-  function P(){ return dusk ? {
+  function P(){ const p = dusk ? {
       skyTop:'#2b2450',skyBot:'#b5786a',sun:'#ffe6c0',grassA:'#4f7a48',grassB:'#456a40',grassEdge:'#374f34',
       dirtR:'#6a4830',dirtL:'#523524',water:'#3f6f92',waterHi:'#6aa0c0',amb:'rgba(30,22,58,.42)'
     } : {
       skyTop:'#a9def0',skyBot:'#ffedcf',sun:'#fff2b0',grassA:'#8ecb63',grassB:'#80bd57',grassEdge:'#5f9a45',
       dirtR:'#b07a48',dirtL:'#8a5c34',water:'#6fc4e8',waterHi:'#a6ddf3',amb:'rgba(0,0,0,0)'
-    }; }
+    };
+    const sky=SKIES[LOOK.sky]; if(sky) Object.assign(p, dusk?sky.dusk:sky.day);
+    return p; }
+
+  /* Store looks: set from the app with setLook(). Everything here is cosmetic. */
+  let LOOK={};
+  const SKIES={
+    mars:  {day:{skyTop:'#e7a57c',skyBot:'#f8dcc0'}, dusk:{skyTop:'#2e1b2c',skyBot:'#a2583f'}},
+    saturn:{day:{skyTop:'#b9b3e8',skyBot:'#f6e3c4'}, dusk:{skyTop:'#1f1d42',skyBot:'#8e6c8a'}},
+  };
+  // leaf shades for grown trees: shadow, mid, main, light (saplings stay green)
+  const LEAVES={
+    autumn:['#a4471f','#c8622a','#df8434','#f2b45a'],
+    blossom:['#c9668d','#de86a8','#eda4bf','#fbcfdd'],
+    blue:['#29538f','#3a6fb6','#5089d0','#8bb8ee'],
+  };
+  function drawPlanet(){
+    // on tall phone screens the sky reaches far above the scene, so drop the planet clear of the name tag
+    const x=VIS.l+Math.min(170,(VIS.r-VIS.l)*0.26), y=VIS.t+150+Math.max(0,-VIS.t)*0.45;
+    if(LOOK.sky==='mars'){
+      blob(x,y,58,dusk?'#b5553a':'#c9653f'); blob(x-14,y-16,40,dusk?'#c96a48':'#de7e52');
+      ctx.fillStyle=dusk?'#8f3f2b':'#a8492f';
+      for(const [dx,dy,r] of [[16,10,9],[-22,18,6],[6,-26,5],[-8,30,4]]){ ctx.beginPath(); ctx.ellipse(x+dx,y+dy,r,r*0.8,0,0,7); ctx.fill(); }
+      ctx.fillStyle='rgba(255,240,230,.55)'; ctx.beginPath(); ctx.ellipse(x-4,y-44,18,6,0,0,7); ctx.fill();
+    } else if(LOOK.sky==='saturn'){
+      const ring=(front)=>{ ctx.save(); ctx.translate(x,y); ctx.rotate(-0.32);
+        ctx.strokeStyle=dusk?'rgba(230,205,170,.85)':'rgba(214,180,130,.9)'; ctx.lineWidth=7;
+        ctx.beginPath(); ctx.ellipse(0,0,108,26,0, front?0:Math.PI, front?Math.PI:Math.PI*2); ctx.stroke();
+        ctx.strokeStyle=dusk?'rgba(200,170,140,.6)':'rgba(190,150,105,.7)'; ctx.lineWidth=3;
+        ctx.beginPath(); ctx.ellipse(0,0,92,21,0, front?0:Math.PI, front?Math.PI:Math.PI*2); ctx.stroke(); ctx.restore(); };
+      ring(false);
+      blob(x,y,56,dusk?'#c8a77c':'#e2c08c');
+      ctx.fillStyle=dusk?'rgba(150,115,85,.5)':'rgba(190,140,90,.45)';
+      for(const dy of [-18,2,20]){ ctx.beginPath(); ctx.ellipse(x,y+dy,54,6,0,0,7); ctx.fill(); }
+      ring(true);
+    }
+  }
+  function drawSunFace(x,y){
+    ctx.fillStyle='#8a5a1f'; ctx.beginPath(); ctx.ellipse(x-13,y-6,3.6,4.6,0,0,7); ctx.ellipse(x+13,y-6,3.6,4.6,0,0,7); ctx.fill();
+    ctx.fillStyle='rgba(255,150,120,.55)'; ctx.beginPath(); ctx.ellipse(x-22,y+6,7,4,0,0,7); ctx.ellipse(x+22,y+6,7,4,0,0,7); ctx.fill();
+    ctx.strokeStyle='#8a5a1f'; ctx.lineWidth=3; ctx.lineCap='round'; ctx.beginPath(); ctx.arc(x,y+2,13,0.2*Math.PI,0.8*Math.PI); ctx.stroke(); ctx.lineCap='butt';
+  }
+  function drawMoonFace(x,y,t){
+    ctx.strokeStyle='#7a6a8c'; ctx.lineWidth=2.6; ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(x-13,y-5,6,0.15*Math.PI,0.85*Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x+13,y-5,6,0.15*Math.PI,0.85*Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x,y+12,4,3,0,0,7); ctx.stroke(); ctx.lineCap='butt';
+    ctx.fillStyle='rgba(255,170,170,.35)'; ctx.beginPath(); ctx.ellipse(x-21,y+5,6,3.5,0,0,7); ctx.ellipse(x+21,y+5,6,3.5,0,0,7); ctx.fill();
+    ctx.font='bold 16px Nunito'; ctx.fillStyle='#f4eefc';
+    for(let k=0;k<2;k++){ const o=((t*0.35+k*0.5)%1); ctx.globalAlpha=(1-o)*0.9; ctx.fillText('z', x+40+o*14, y-30-o*26-k*4); } ctx.globalAlpha=1;
+  }
+  function drawBirds(t){
+    ctx.strokeStyle='#4a4560'; ctx.lineWidth=2.2; ctx.lineCap='round';
+    const span=(VIS.r-VIS.l)+200;
+    for(let k=0;k<5;k++){
+      const x=VIS.l-100+((t*22+k*38+k*k*9)%span), y=VIS.t+70+k*13+Math.sin(t*1.3+k)*6, f=Math.sin(t*7+k*1.7)*5;
+      ctx.beginPath(); ctx.moveTo(x-8,y-f); ctx.quadraticCurveTo(x-3,y-2,x,y); ctx.quadraticCurveTo(x+3,y-2,x+8,y-f); ctx.stroke();
+    }
+    ctx.lineCap='butt';
+  }
+  function drawKite(t){
+    const x=VIS.r-210+Math.sin(t*0.6)*14, y=VIS.t+185+Math.cos(t*0.8)*8, a=Math.sin(t*0.9)*0.12;
+    const anchor=iso(5,5);
+    ctx.strokeStyle='rgba(60,50,70,.45)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,y+22);
+    ctx.quadraticCurveTo(x+30,(y+anchor.y)/2, anchor.x, anchor.y-6); ctx.stroke();
+    ctx.save(); ctx.translate(x,y); ctx.rotate(a);
+    ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.moveTo(0,-24); ctx.lineTo(16,0); ctx.lineTo(0,22); ctx.lineTo(-16,0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#f4b860'; ctx.beginPath(); ctx.moveTo(0,-24); ctx.lineTo(16,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0,22); ctx.lineTo(-16,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='#e8574a'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,22);
+    for(let k=1;k<=4;k++) ctx.lineTo(Math.sin(t*3+k)*7, 22+k*11); ctx.stroke();
+    ctx.restore();
+  }
 
   function diamond(cx,cy,c,tw=TW,th=TH){ ctx.fillStyle=c; ctx.beginPath();
     ctx.moveTo(cx,cy-th/2);ctx.lineTo(cx+tw/2,cy);ctx.lineTo(cx,cy+th/2);ctx.lineTo(cx-tw/2,cy);ctx.closePath();ctx.fill(); }
@@ -2742,13 +3026,19 @@ const ISO = (function(){
     const p=P();
     // The sky gradient is painted across the whole canvas in fitFrame(),
     // so the scene only adds what sits in front of it.
+    drawPlanet();
     blob(VIS.r-120, VIS.t+110, 42, p.sun);
+    if(!dusk && LOOK.sunFace) drawSunFace(VIS.r-120, VIS.t+110);
+    if(dusk && LOOK.moonFace) drawMoonFace(VIS.r-120, VIS.t+110, performance.now()/1000);
     if(dusk){ ctx.fillStyle='#fff';
       for(let i=0;i<40;i++){ const sx=VIS.l+((i*151)%Math.max(1,(VIS.r-VIS.l))), sy=VIS.t+((i*97)%Math.max(1,(originY-VIS.t)));
         if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} }
       ctx.globalAlpha=1; }
     for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VIS.r+140) cl.x=VIS.l-160;
       ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }
+    const nowS=performance.now()/1000;
+    if(!dusk && LOOK.birds) drawBirds(nowS);
+    if(!dusk && LOOK.kite) drawKite(nowS);
     const bC=iso(C-1,R-1);
     ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(originX,bC.y+THICK+24,TW*2.4,TH*1.6,0,0,7); ctx.fill();
     const B=iso(C-1,0),D=iso(0,R-1),Cc=iso(C-1,R-1);
@@ -2766,16 +3056,39 @@ const ISO = (function(){
   // The growing tree
   const FRUITPOS=[[-0.5,0.45],[0.45,0.5],[0,0.7],[-0.72,0.12],[0.72,0.18],[-0.28,0.85],[0.32,0.85],[0,0.28],[-0.45,-0.12],[0.5,-0.05],[-0.65,0.55],[0.62,0.55]];
   function drawFruits(cx,cy,cr,n){ for(let k=0;k<n&&k<FRUITPOS.length;k++){ const px=cx+FRUITPOS[k][0]*cr, py=cy+FRUITPOS[k][1]*cr;
-    ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
-    ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
-    ctx.fillStyle='#ff9a8a'; ctx.fillRect(px-3,py-3,2,2); } }
+    const f=LOOK.fruit;
+    if(f==='mango'){
+      ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-8,2,4);
+      ctx.fillStyle='#f0a531'; ctx.beginPath(); ctx.ellipse(px,py,4.5,6.5,0.35,0,7); ctx.fill();
+      ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px+1.5,py+2.5,2.6,2.6,0,0,7); ctx.fill();
+      ctx.fillStyle='#ffd98a'; ctx.fillRect(px-3,py-4,2,2);
+    } else if(f==='orange'){
+      ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,3); ctx.fillRect(px+1,py-7,3,2);
+      ctx.fillStyle='#f0861f'; ctx.beginPath(); ctx.ellipse(px,py,5.2,5.2,0,0,7); ctx.fill();
+      ctx.fillStyle='#ffb35c'; ctx.fillRect(px-3,py-3,2,2);
+    } else if(f==='durian'){
+      ctx.fillStyle='#5e6b22'; ctx.fillRect(px-1,py-8,2,4);
+      ctx.fillStyle='#8f9f33'; ctx.beginPath(); ctx.ellipse(px,py,6,7,0,0,7); ctx.fill();
+      ctx.fillStyle='#5f6d1f';
+      for(const [dx,dy] of [[-3,-3],[2,-4],[-4,2],[1,1],[4,3],[-1,5]]) ctx.fillRect(px+dx-1,py+dy-1,2,2);
+    } else if(f==='rambutan'){
+      ctx.fillStyle='#d23a3f'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
+      ctx.strokeStyle='#f07a6a'; ctx.lineWidth=1.2; ctx.beginPath();
+      for(let a=0;a<8;a++){ const ang=a*Math.PI/4; ctx.moveTo(px+Math.cos(ang)*5,py+Math.sin(ang)*5); ctx.lineTo(px+Math.cos(ang)*8,py+Math.sin(ang)*8); }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
+      ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
+      ctx.fillStyle='#ff9a8a'; ctx.fillRect(px-3,py-3,2,2);
+    } } }
   function drawTree(c,lvl,fruit,t){
     const sway=Math.sin(t*1.1 + c.x*0.01)*(lvl>=3?2.5:1);
     if(lvl<=0){ shadow(c.x,c.y+2,14,6); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-9,4,9); blob(c.x+sway,c.y-11,5,'#7ccf5b'); return; }
     if(lvl===1){ shadow(c.x,c.y+2,16,7); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-20,4,20);
       blob(c.x-5+sway,c.y-22,8,'#7ccf5b'); blob(c.x+5+sway,c.y-18,7,'#67bf4c'); return; }
     if(lvl===2){ shadow(c.x,c.y+2,18,8); ctx.fillStyle='#7a5230'; ctx.fillRect(c.x-3,c.y-28,6,28);
-      blob(c.x+sway,c.y-32,16,'#4f9e38'); blob(c.x-9+sway,c.y-28,12,'#67bf4c'); blob(c.x+9+sway,c.y-29,12,'#67bf4c'); blob(c.x-2+sway,c.y-40,13,'#7ccf5b');
+      { const L=LEAVES[LOOK.trees]||['#3f7f2c','#4f9e38','#67bf4c','#7ccf5b'];
+        blob(c.x+sway,c.y-32,16,L[1]); blob(c.x-9+sway,c.y-28,12,L[2]); blob(c.x+9+sway,c.y-29,12,L[2]); blob(c.x-2+sway,c.y-40,13,L[3]); }
       drawFruits(c.x+sway,c.y-32,16,fruit); return; }
     const ht=34+(lvl-3)*16, wt=13+(lvl-3)*3, cr=22+(lvl-3)*10;
     shadow(c.x,c.y+3, 30+lvl*6, 12+lvl*2);
@@ -2786,11 +3099,12 @@ const ISO = (function(){
     if(lvl>=4){ ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4;
       ctx.beginPath(); ctx.moveTo(c.x,c.y-ht+10); ctx.lineTo(c.x-14,c.y-ht-4); ctx.moveTo(c.x,c.y-ht+18); ctx.lineTo(c.x+14,c.y-ht+2); ctx.stroke(); }
     const ccx=c.x+sway, ccy=c.y-ht-cr*0.35;
-    blob(ccx,ccy+cr*0.5,cr,'#3f7f2c');
-    blob(ccx-cr*0.55,ccy+cr*0.15,cr*0.72,'#4f9e38');
-    blob(ccx+cr*0.55,ccy+cr*0.2,cr*0.72,'#4f9e38');
-    blob(ccx,ccy-cr*0.12,cr*0.95,'#5cb043');
-    blob(ccx-cr*0.22,ccy-cr*0.5,cr*0.55,'#7ccf5b');
+    const L=LEAVES[LOOK.trees]||['#3f7f2c','#4f9e38','#5cb043','#7ccf5b'];
+    blob(ccx,ccy+cr*0.5,cr,L[0]);
+    blob(ccx-cr*0.55,ccy+cr*0.15,cr*0.72,L[1]);
+    blob(ccx+cr*0.55,ccy+cr*0.2,cr*0.72,L[1]);
+    blob(ccx,ccy-cr*0.12,cr*0.95,L[2]);
+    blob(ccx-cr*0.22,ccy-cr*0.5,cr*0.55,L[3]);
     drawFruits(ccx,ccy,cr,fruit);
   }
 
@@ -3224,6 +3538,7 @@ const ISO = (function(){
       elc(x+14,y-7,8,6,DARK); elc(x+18,y-5,5,4,WHITE);
       g.fillStyle=NOSE; g.beginPath(); g.ellipse(x+22,y-6,1.6,1.6,0,0,7); g.fill();
       elc(x+11,y-11,4,5,DARK2);
+      if(LOOK.bandana){ g.fillStyle='#e8574a'; g.beginPath(); g.moveTo(x+8,y-12); g.lineTo(x+13,y-2); g.lineTo(x+5,y-3); g.closePath(); g.fill(); }
       g.strokeStyle=NOSE; g.lineWidth=1.4; g.beginPath(); g.moveTo(x+14,y-7); g.lineTo(x+18,y-7); g.stroke();
       g.font='bold 12px Nunito'; g.fillStyle='#e9e4f5';
       for(let k=0;k<2;k++){ const o=((t*0.5+k*0.5)%1); g.globalAlpha=(1-o)*0.85; g.fillText('z', x+20+o*8, y-16-o*12-k*2); }
@@ -3243,6 +3558,10 @@ const ISO = (function(){
     g.fillStyle=NOSE; g.beginPath(); g.ellipse(hx+10,hy+2,1.8,1.8,0,0,7); g.fill();
     g.fillStyle=NOSE; g.beginPath(); g.ellipse(hx+3,hy-1,1.5,1.7,0,0,7); g.fill();
     g.fillStyle=WHITE; g.fillRect(hx+2,hy-4,3,2); g.fillStyle='#fff'; g.fillRect(hx+3,hy-2,1,1);
+    // bandana drawn in front, tied at the neck under the chin
+    if(LOOK.bandana){ g.fillStyle='#c9433a'; g.beginPath(); g.moveTo(hx-10,hy+1); g.lineTo(hx+2,hy+7); g.lineTo(hx+1,hy+9); g.lineTo(hx-11,hy+4); g.closePath(); g.fill();
+      g.fillStyle='#e8574a'; g.beginPath(); g.moveTo(hx-9,hy+4); g.lineTo(hx,hy+8); g.lineTo(hx-6,hy+14); g.closePath(); g.fill();
+      g.fillStyle='#f4b860'; g.fillRect(hx-6,hy+7,2,2); }
     if(play){ const bx=hx+10+Math.sin(t*3)*6, by=hy-14+Math.cos(t*3.4)*4, f=Math.sin(t*12);
       g.fillStyle='#ff9dc0'; g.beginPath(); g.ellipse(bx-3,by,4,2.5+2*Math.abs(f),0,0,7); g.fill();
       g.beginPath(); g.ellipse(bx+3,by,4,2.5+2*Math.abs(f),0,0,7); g.fill();
@@ -3263,6 +3582,10 @@ const ISO = (function(){
         unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
       if(f) items.push({d,fn:f}); }
     for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
+    // store decor sits on the tiles the island gives these pieces at Haven, so they never clash
+    const has=type=>STATE.objs.some(o=>o.type===type);
+    if(LOOK.bench && !has('bench')){ const c=iso(0,2); items.push({d:2,fn:()=>drawBench(c)}); }
+    if(LOOK.lanterns && !has('lantern')){ for(const [i,j] of [[2,1],[5,1]]){ const c=iso(i,j); items.push({d:i+j,fn:()=>drawLantern(c,t)}); } }
     if(showCabin){ const hc=iso(0,0); items.push({d:-1,fn:()=>drawHomesteadIso(hc,cabinTier,t)}); }
     if(level>=CIKI_LEVEL){ cikiUpdate(t); items.push({d:ciki.i+ciki.j+0.05, fn:()=>drawCikiScene(t)}); }   // Ciki, once she's arrived
     items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
@@ -3304,7 +3627,8 @@ const ISO = (function(){
   // level at which a given creature/object first appears (1-based); 0 if never
   function levelOf(type){ const i=S.findIndex(x=> x.type===type || (type==='butterfly' && x.t==='flutter') ); return i<0?0:i+1; }
   function setCabin(tier, building){ cabinTier=tier|0; cabinBuilding=!!building; showCabin=tier>=0; }
-  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, CIKI_LEVEL, cikiPortrait, LEN:S.length };
+  function setLook(l){ LOOK=l||{}; }
+  return { setState, spawnPuff, start, phaseOf, steps, phases, levelOf, setCabin, CIKI_LEVEL, cikiPortrait, setLook, LEN:S.length };
 })();
 
 /* Boot */
