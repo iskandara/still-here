@@ -207,6 +207,36 @@
   .ladder b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:15px}
   .ladder span{color:var(--muted); font-size:13px; font-weight:700}
 
+  /* rewards: what earns coins, then a shelf from the store (swatches match the app) */
+  .rewgrid{display:grid; gap:28px}
+  @media(min-width:860px){ .rewgrid{grid-template-columns:.9fr 1.1fr; gap:48px; align-items:start} }
+  #rewards h2{font-size:clamp(28px,4.4vw,48px); line-height:1.08; margin-bottom:16px; text-wrap:balance}
+  #rewards .lead{font-size:clamp(16px,1.9vw,20px); max-width:40ch}
+  .coin{display:inline-block; width:14px; height:14px; border-radius:50%; flex:0 0 auto; vertical-align:-2px;
+    background:radial-gradient(circle at 35% 30%, #ffe3a3 0 22%, var(--honey) 23% 62%, var(--honey-deep) 63%);
+    box-shadow:inset 0 0 0 1.5px #b06d2e}
+  .rewnote{color:var(--muted); font-size:15px; line-height:1.6; margin:18px 0 0; max-width:42ch}
+  .rewnote b{color:var(--ink)}
+  .earn{list-style:none; margin:0; padding:0}
+  .earn li{display:flex; gap:16px; align-items:baseline; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line)}
+  .earn li:last-child{border-bottom:1px solid var(--line)}
+  .earn b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:17px}
+  .earn small{display:block; color:var(--muted); font-size:14px; line-height:1.5; margin-top:2px}
+  .earn .amt{flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:16px; color:var(--honey); white-space:nowrap}
+  .shelfhead{display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between; margin:48px 0 14px}
+  .shelfhead h3{font-family:'Pixelify Sans'; font-size:clamp(20px,2.6vw,26px); margin:0}
+  .shelfhead p{color:var(--muted); font-size:14px; margin:0}
+  .shelf{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  @media(min-width:760px){ .shelf{grid-template-columns:repeat(4,1fr); gap:12px} }
+  .shelf li{display:flex; align-items:center; gap:12px; background:var(--plum2); border:1px solid var(--line); border-radius:16px; padding:12px; min-width:0}
+  .shelf .sw{width:44px; height:44px; flex:0 0 44px; border-radius:12px; border:1px solid var(--line)}
+  .shelf .t{min-width:0}
+  .shelf b{display:block; font-size:14.5px; font-weight:800; line-height:1.25}
+  .shelf span{display:inline-flex; align-items:center; gap:6px; margin-top:3px; font-weight:800; font-size:14px; color:var(--honey)}
+  .shelf li.later span{color:var(--muted); font-weight:700; font-size:13px}
+  .shelf li.later .sw{filter:saturate(.6) brightness(.85)}
+  .rewnote.wide{max-width:62ch}
+
   /* about teaser */
   .about{max-width:920px; margin:0 auto; text-align:center}
   .abouttease{display:grid; grid-template-columns:1fr; gap:22px; margin-top:22px; text-align:left; align-items:center}
@@ -245,6 +275,7 @@
   <div class="capsule">
     <div class="navlinks" id="navlinks">
       <a href="#journey">The forest</a>
+      <a href="#rewards">Rewards</a>
       <a href="#how">How it works</a>
       <a href="#about">About</a>
     </div>
@@ -256,6 +287,7 @@
 <div class="mobmenu" id="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
   <button class="close" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
   <a href="#journey" onclick="toggleMenu(false)">The forest</a>
+  <a href="#rewards" onclick="toggleMenu(false)">Rewards</a>
   <a href="#how" onclick="toggleMenu(false)">How it works</a>
   <a href="#about" onclick="toggleMenu(false)">About</a>
   <a href="/app" target="_blank" rel="noopener" style="color:var(--honey)" data-umami-event="open-app" data-umami-event-loc="mobile-menu">Open the app</a>
@@ -377,6 +409,41 @@
     <li class="reached"><b>Cabin with porch</b><span>40 good days</span></li>
     <li><b>The Homestead</b><span>60 good days</span></li>
   </ol>
+</div></section>
+
+<section id="rewards" data-track="s5b-rewards"><div class="wrap">
+  <div class="rewgrid">
+    <div>
+      <div class="eyebrow">A third thing grows too</div>
+      <h2>Honest days earn coins.</h2>
+      <p class="lead">Check in, wait out a craving, finish a run of good days. Each one drops a few coins in your pocket, and you spend them in the store to make the island your own.</p>
+      <p class="rewnote"><b>Coins are never taken away.</b> A slip doesn't cost you any, and they stay with you even if you start over.</p>
+    </div>
+    <ul class="earn" aria-label="Some ways to earn coins">
+      <li><div><b>Daily check-in</b><small>Log something, or close yesterday.</small></div><span class="amt"><span class="coin"></span>+1</span></li>
+      <li><div><b>Wait out the 10-minute hold</b><small>When you reach your limit. Up to three times a day.</small></div><span class="amt"><span class="coin"></span>+3</span></li>
+      <li><div><b>Light day</b><small>Half your daily allowance or less.</small></div><span class="amt"><span class="coin"></span>+5</span></li>
+      <li><div><b>Back again</b><small>Your first good day after a slip.</small></div><span class="amt"><span class="coin"></span>+5</span></li>
+      <li><div><b>Runs of good days</b><small>At 1, 3, 7, 14, 21 and 30 days, then every 30.</small></div><span class="amt"><span class="coin"></span>+10</span></li>
+      <li><div><b>Island milestones</b><small>Reaching Sapling, Grove and Haven.</small></div><span class="amt"><span class="coin"></span>+20</span></li>
+    </ul>
+  </div>
+
+  <div class="shelfhead">
+    <h3>A peek at the store</h3>
+    <p>Prices are in coins. What you buy is yours to keep, and you can switch any time.</p>
+  </div>
+  <ul class="shelf" aria-label="Some items from the store">
+    <li><div class="sw" style="background:radial-gradient(ellipse 60% 14% at 40% 45%,#d6b482 0 70%,transparent 72%),radial-gradient(circle at 40% 45%,#e2c08c 0 24%,transparent 25%),linear-gradient(#b9b3e8,#f6e3c4)"></div><div class="t"><b>Saturn sky</b><span><span class="coin"></span>2500</span></div></li>
+    <li><div class="sw" style="background:radial-gradient(circle,#eda4bf 0 45%,#c9668d 46%)"></div><div class="t"><b>Cherry blossom</b><span><span class="coin"></span>350</span></div></li>
+    <li><div class="sw" style="background:radial-gradient(ellipse 30% 40%,#f0a531 0 90%,#3a3152 95%)"></div><div class="t"><b>Mangoes</b><span><span class="coin"></span>150</span></div></li>
+    <li><div class="sw" style="background:linear-gradient(135deg,#e8574a 0 50%,#f4b860 50%)"></div><div class="t"><b>Kite</b><span><span class="coin"></span>350</span></div></li>
+    <li><div class="sw" style="background:radial-gradient(circle at 50% 40%,#ffd77a 0 22%,#3a3152 24%)"></div><div class="t"><b>Lanterns</b><span><span class="coin"></span>300</span></div></li>
+    <li><div class="sw" style="background:linear-gradient(160deg,#4b4752 0 45%,#e8574a 45% 70%,#4b4752 70%)"></div><div class="t"><b>A bandana for Ciki</b><span><span class="coin"></span>200</span></div></li>
+    <li class="later"><div class="sw" style="background:linear-gradient(#1f1d42,#4a3d63)"></div><div class="t"><b>Meteor shower</b><span>Coming soon</span></div></li>
+    <li class="later"><div class="sw" style="background:linear-gradient(160deg,#1f1d42 0 30%,#5fd3a0 55%,#8a7fe0 80%)"></div><div class="t"><b>Aurora</b><span>Coming soon</span></div></li>
+  </ul>
+  <p class="rewnote wide">Had an account before the store opened? A smiling sun and a sleepy moon are waiting there for you, as a thank-you.</p>
 </div></section>
 
 <section id="how" data-track="s6-how"><div class="wrap">
