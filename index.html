@@ -207,6 +207,27 @@
   .ladder b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:15px}
   .ladder span{color:var(--muted); font-size:13px; font-weight:700}
 
+  /* insight: plain sentences beside an example of the app's charts */
+  .insgrid{display:grid; gap:28px}
+  @media(min-width:860px){ .insgrid{grid-template-columns:1fr 1fr; gap:48px; align-items:center} }
+  #insight h2{font-size:clamp(28px,4.4vw,48px); line-height:1.08; margin-bottom:16px; text-wrap:balance}
+  #insight .lead{font-size:clamp(16px,1.9vw,20px); max-width:42ch}
+  .insnotes{list-style:none; margin:22px 0 0; padding:0}
+  .insnotes li{padding:12px 0; border-top:1px solid var(--line); color:var(--muted); font-size:15px; line-height:1.5}
+  .insnotes li:last-child{border-bottom:1px solid var(--line)}
+  .insnotes b{color:var(--ink)}
+  .tod .r{display:grid; grid-template-columns:84px 1fr 40px; gap:12px; align-items:center; padding:7px 0; font-size:14px; font-weight:700}
+  .tod i{display:block; height:10px; border-radius:6px; background:rgba(255,255,255,.07); overflow:hidden}
+  .tod i b{display:block; height:100%; border-radius:6px; background:var(--honey)}
+  .tod em{font-style:normal; text-align:right; color:var(--muted)}
+  .tod .peak i b{background:var(--honey-deep)}
+  .tod .peak span, .tod .peak em{color:var(--ink)}
+  .wkd{display:flex; align-items:flex-end; gap:8px; height:110px}
+  .wkd div{flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; min-width:0}
+  .wkd i{display:block; width:100%; max-width:34px; border-radius:5px 5px 2px 2px; background:var(--honey)}
+  .wkd .peak i{background:var(--honey-deep)}
+  .wkd b{font-size:12px; color:var(--muted); font-weight:800; margin-top:6px}
+
   /* rewards: what earns coins, then a shelf from the store (swatches match the app) */
   .rewgrid{display:grid; gap:28px}
   @media(min-width:860px){ .rewgrid{grid-template-columns:.9fr 1.1fr; gap:48px; align-items:start} }
@@ -218,24 +239,17 @@
   .rewnote{color:var(--muted); font-size:15px; line-height:1.6; margin:18px 0 0; max-width:42ch}
   .rewnote b{color:var(--ink)}
   .earn{list-style:none; margin:0; padding:0}
-  .earn li{display:flex; gap:16px; align-items:baseline; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line)}
+  .earn li{display:flex; gap:16px; align-items:center; justify-content:space-between; padding:13px 0; border-top:1px solid var(--line)}
   .earn li:last-child{border-bottom:1px solid var(--line)}
-  .earn b{display:block; font-family:'Pixelify Sans'; font-weight:600; font-size:17px}
-  .earn small{display:block; color:var(--muted); font-size:14px; line-height:1.5; margin-top:2px}
+  .earn b{font-family:'Pixelify Sans'; font-weight:600; font-size:17px}
   .earn .amt{flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:16px; color:var(--honey); white-space:nowrap}
-  .shelfhead{display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between; margin:48px 0 14px}
-  .shelfhead h3{font-family:'Pixelify Sans'; font-size:clamp(20px,2.6vw,26px); margin:0}
-  .shelfhead p{color:var(--muted); font-size:14px; margin:0}
-  .shelf{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  .shelf{list-style:none; margin:32px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
   @media(min-width:760px){ .shelf{grid-template-columns:repeat(4,1fr); gap:12px} }
   .shelf li{display:flex; align-items:center; gap:12px; background:var(--plum2); border:1px solid var(--line); border-radius:16px; padding:12px; min-width:0}
   .shelf .sw{width:44px; height:44px; flex:0 0 44px; border-radius:12px; border:1px solid var(--line)}
   .shelf .t{min-width:0}
   .shelf b{display:block; font-size:14.5px; font-weight:800; line-height:1.25}
   .shelf span{display:inline-flex; align-items:center; gap:6px; margin-top:3px; font-weight:800; font-size:14px; color:var(--honey)}
-  .shelf li.later span{color:var(--muted); font-weight:700; font-size:13px}
-  .shelf li.later .sw{filter:saturate(.6) brightness(.85)}
-  .rewnote.wide{max-width:62ch}
 
   /* about teaser */
   .about{max-width:920px; margin:0 auto; text-align:center}
@@ -274,6 +288,7 @@
   <a class="mark" href="/" aria-label="Still Here, home"><img src="icon-180.png" alt="" width="48" height="48"></a>
   <div class="capsule">
     <div class="navlinks" id="navlinks">
+      <a href="#insight">Insight</a>
       <a href="#journey">The forest</a>
       <a href="#rewards">Rewards</a>
       <a href="#how">How it works</a>
@@ -286,6 +301,7 @@
 
 <div class="mobmenu" id="mobmenu" role="dialog" aria-modal="true" aria-label="Menu">
   <button class="close" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
+  <a href="#insight" onclick="toggleMenu(false)">Insight</a>
   <a href="#journey" onclick="toggleMenu(false)">The forest</a>
   <a href="#rewards" onclick="toggleMenu(false)">Rewards</a>
   <a href="#how" onclick="toggleMenu(false)">How it works</a>
@@ -378,6 +394,34 @@
   </div>
 </div></section>
 
+<section id="insight" data-track="s3b-insight"><div class="wrap">
+  <div class="insgrid">
+    <div>
+      <div class="eyebrow">Insight</div>
+      <h2>Know your tricky moments.</h2>
+      <p class="lead">Every tap keeps its time, so the app can show you when it tends to happen: which part of the day, which day of the week, and whether it is easing off.</p>
+      <ul class="insnotes" aria-label="Example insights">
+        <li>Most land in the <b>evening</b>, 53% of your logs.</li>
+        <li><b>Saturdays</b> are your heaviest, about 8 a day.</li>
+        <li>That's <b>28% lower</b> than the 30 days before.</li>
+      </ul>
+    </div>
+    <div class="panel inspanel">
+      <p class="psub"><span class="sample">Example</span> Time of day, last 30 days</p>
+      <div class="tod">
+        <div class="r"><span>Morning</span><i><b style="width:26%"></b></i><em>14%</em></div>
+        <div class="r"><span>Afternoon</span><i><b style="width:30%"></b></i><em>16%</em></div>
+        <div class="r peak"><span>Evening</span><i><b style="width:100%"></b></i><em>53%</em></div>
+        <div class="r"><span>Late night</span><i><b style="width:30%"></b></i><em>16%</em></div>
+      </div>
+      <p class="psub" style="margin-top:22px">Average a day, by weekday</p>
+      <div class="wkd" role="img" aria-label="Example averages: Monday 3.6, Tuesday 4.8, Wednesday 1.5, Thursday 3.5, Friday 7, Saturday 8, Sunday 5.3">
+        <div><i style="height:45%"></i><b>Mon</b></div><div><i style="height:60%"></i><b>Tue</b></div><div><i style="height:19%"></i><b>Wed</b></div><div><i style="height:44%"></i><b>Thu</b></div><div><i style="height:88%"></i><b>Fri</b></div><div class="peak"><i style="height:100%"></i><b>Sat</b></div><div><i style="height:66%"></i><b>Sun</b></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
 <section id="journey" data-track="s4-forest"><div class="wrap">
   <div class="eyebrow">Watch it come alive</div>
   <h2>From bare soil to a living haven.</h2>
@@ -416,34 +460,22 @@
     <div>
       <div class="eyebrow">A third thing grows too</div>
       <h2>Honest days earn coins.</h2>
-      <p class="lead">Check in, wait out a craving, finish a run of good days. Each one drops a few coins in your pocket, and you spend them in the store to make the island your own.</p>
-      <p class="rewnote"><b>Coins are never taken away.</b> A slip doesn't cost you any, and they stay with you even if you start over.</p>
+      <p class="lead">Spend them in the store on skies, tree colours, fruit and more for your island.</p>
+      <p class="rewnote"><b>Coins are never taken away.</b> A slip never costs you any.</p>
     </div>
     <ul class="earn" aria-label="Some ways to earn coins">
-      <li><div><b>Daily check-in</b><small>Log something, or close yesterday.</small></div><span class="amt"><span class="coin"></span>+1</span></li>
-      <li><div><b>Wait out the 10-minute hold</b><small>When you reach your limit. Up to three times a day.</small></div><span class="amt"><span class="coin"></span>+3</span></li>
-      <li><div><b>Light day</b><small>Half your daily allowance or less.</small></div><span class="amt"><span class="coin"></span>+5</span></li>
-      <li><div><b>Back again</b><small>Your first good day after a slip.</small></div><span class="amt"><span class="coin"></span>+5</span></li>
-      <li><div><b>Runs of good days</b><small>At 1, 3, 7, 14, 21 and 30 days, then every 30.</small></div><span class="amt"><span class="coin"></span>+10</span></li>
-      <li><div><b>Island milestones</b><small>Reaching Sapling, Grove and Haven.</small></div><span class="amt"><span class="coin"></span>+20</span></li>
+      <li><b>Daily check-in</b><span class="amt"><span class="coin"></span>+1</span></li>
+      <li><b>Wait out a craving</b><span class="amt"><span class="coin"></span>+3</span></li>
+      <li><b>Light day, or back after a slip</b><span class="amt"><span class="coin"></span>+5</span></li>
+      <li><b>Runs of 1, 3, 7, 14, 21 and 30 days</b><span class="amt"><span class="coin"></span>+10</span></li>
     </ul>
-  </div>
-
-  <div class="shelfhead">
-    <h3>A peek at the store</h3>
-    <p>Prices are in coins. What you buy is yours to keep, and you can switch any time.</p>
   </div>
   <ul class="shelf" aria-label="Some items from the store">
     <li><div class="sw" style="background:radial-gradient(ellipse 60% 14% at 40% 45%,#d6b482 0 70%,transparent 72%),radial-gradient(circle at 40% 45%,#e2c08c 0 24%,transparent 25%),linear-gradient(#b9b3e8,#f6e3c4)"></div><div class="t"><b>Saturn sky</b><span><span class="coin"></span>2500</span></div></li>
     <li><div class="sw" style="background:radial-gradient(circle,#eda4bf 0 45%,#c9668d 46%)"></div><div class="t"><b>Cherry blossom</b><span><span class="coin"></span>350</span></div></li>
     <li><div class="sw" style="background:radial-gradient(ellipse 30% 40%,#f0a531 0 90%,#3a3152 95%)"></div><div class="t"><b>Mangoes</b><span><span class="coin"></span>150</span></div></li>
     <li><div class="sw" style="background:linear-gradient(135deg,#e8574a 0 50%,#f4b860 50%)"></div><div class="t"><b>Kite</b><span><span class="coin"></span>350</span></div></li>
-    <li><div class="sw" style="background:radial-gradient(circle at 50% 40%,#ffd77a 0 22%,#3a3152 24%)"></div><div class="t"><b>Lanterns</b><span><span class="coin"></span>300</span></div></li>
-    <li><div class="sw" style="background:linear-gradient(160deg,#4b4752 0 45%,#e8574a 45% 70%,#4b4752 70%)"></div><div class="t"><b>A bandana for Ciki</b><span><span class="coin"></span>200</span></div></li>
-    <li class="later"><div class="sw" style="background:linear-gradient(#1f1d42,#4a3d63)"></div><div class="t"><b>Meteor shower</b><span>Coming soon</span></div></li>
-    <li class="later"><div class="sw" style="background:linear-gradient(160deg,#1f1d42 0 30%,#5fd3a0 55%,#8a7fe0 80%)"></div><div class="t"><b>Aurora</b><span>Coming soon</span></div></li>
   </ul>
-  <p class="rewnote wide">Had an account before the store opened? A smiling sun and a sleepy moon are waiting there for you, as a thank-you.</p>
 </div></section>
 
 <section id="how" data-track="s6-how"><div class="wrap">
