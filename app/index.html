@@ -287,6 +287,41 @@
     font-family:'Nunito'; font-weight:800; font-size:12px; padding:9px 4px; border-radius:11px; cursor:pointer; min-height:44px}
   .tabbar button.on{background:var(--plum3); color:var(--ink); box-shadow:inset 0 -2px 0 var(--honey)}
   .pane{display:none} .pane.on{display:block}
+  .subseg{display:none; margin:-4px 0 16px}
+  .subseg.show{display:flex}
+  .subseg button, .rangeseg button{flex:1; position:relative; font-size:12.5px}
+  .minibars{display:inline-flex; align-items:flex-end; gap:1.5px; height:11px; vertical-align:-1px}
+  .minibars i{display:block; width:3px; border-radius:1px; background:var(--leaf)}
+  .minibars i:nth-child(1){height:5px} .minibars i:nth-child(2){height:11px} .minibars i:nth-child(3){height:8px}
+
+  /* insight pane */
+  .rangeseg{margin:0 0 16px}
+  .insgrid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 20px}
+  .inscell{background:var(--plum3); border:1px solid var(--line); border-radius:12px; padding:11px 12px}
+  .inscell .k{font-size:11.5px; color:var(--muted); font-weight:800}
+  .inscell .v{font-family:'Nunito'; font-weight:800; font-size:20px; margin-top:3px; line-height:1.1}
+  .insblock{margin:0 0 22px}
+  .insblock h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
+  .insblock .say{color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.5; margin:0 0 10px}
+  .insblock .say b{color:var(--ink)}
+  .ibar{display:grid; grid-template-columns:96px 1fr 58px; align-items:center; gap:10px; padding:6px 0}
+  .ibar .l{font-size:12.5px; font-weight:800; line-height:1.25}
+  .ibar .l small{display:block; color:var(--muted); font-size:10.5px; font-weight:700}
+  .ibar .tr{height:10px; border-radius:6px; background:rgba(255,255,255,.07); overflow:hidden}
+  .ibar .tr i{display:block; height:100%; border-radius:6px; background:var(--honey)}
+  .ibar.peak .tr i{background:var(--soft-warn)}
+  .ibar .n{font-size:12px; font-weight:800; text-align:right; color:var(--ink); white-space:nowrap}
+  .wk{display:flex; align-items:flex-end; gap:6px; height:118px}
+  .wk .c{flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; min-width:0}
+  .wk .c span{font-size:10.5px; font-weight:800; margin-bottom:3px}
+  .wk .c i{display:block; width:100%; max-width:30px; border-radius:4px 4px 2px 2px; background:var(--honey); min-height:2px}
+  .wk .c i.peak{background:var(--soft-warn)} .wk .c i.none{background:rgba(255,255,255,.07)}
+  .wk .c b{font-size:11px; color:var(--muted); font-weight:800; margin-top:5px}
+  .insfacts{list-style:none; margin:0; padding:0}
+  .insfacts li{padding:11px 0; border-bottom:1px solid var(--line); font-size:13px; line-height:1.5; color:var(--muted); font-weight:700}
+  .insfacts li:last-child{border-bottom:none}
+  .insfacts li b{color:var(--ink)}
+  .insempty{border:1px dashed var(--line); border-radius:14px; padding:18px; text-align:center; color:var(--muted); font-size:13px; font-weight:700; line-height:1.5}
 
   /* Tracker */
   .mstat{cursor:pointer}
@@ -600,8 +635,8 @@
 
     <div class="subrow">
       <button class="ghost" onclick="openSheet('sanctuary')"><span class="deco">✦ </span>Sanctuary</button>
-      <button class="ghost" onclick="openSheet('challenges')"><span class="deco"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> </span>Challenges</button>
-      <button class="ghost" id="storeBtn" onclick="openSheet('store')" style="position:relative">Store<span class="giftdot" id="giftDot2" hidden></span></button>
+      <button class="ghost" onclick="openSheet('challenges')" style="position:relative"><span class="deco"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> </span>Challenges<span class="giftdot" id="giftDot2" hidden></span></button>
+      <button class="ghost" onclick="openSheet('insight')"><span class="deco"><span class="minibars" aria-hidden="true"><i></i><i></i><i></i></span> </span>Insight</button>
       <button class="ghost icon" onclick="openSheet('settings')" aria-label="Oath and tone settings" title="Oath &amp; tone">⚙</button>
     </div>
   </div>
@@ -860,8 +895,13 @@
     <div class="tabbar">
       <button id="tabSanctuary" class="on" onclick="showPane('sanctuary')">Sanctuary</button>
       <button id="tabChallenges" onclick="showPane('challenges')">Challenges</button>
-      <button id="tabStore" onclick="showPane('store')">Store</button>
+      <button id="tabInsight" onclick="showPane('insight')">Insight</button>
       <button id="tabSettings" onclick="showPane('settings')">Oath &amp; tone</button>
+    </div>
+
+    <div class="seg subseg" id="shopSeg" role="group" aria-label="Challenges or store">
+      <button id="segChallenges" onclick="showPane('challenges')">Challenges</button>
+      <button id="segStore" onclick="showPane('store')">Store<span class="giftdot" id="giftDot3" hidden></span></button>
     </div>
 
     <div class="pane" id="paneChallenges">
@@ -892,6 +932,17 @@
       <p class="lead">Make the island yours. Everything you buy is kept forever, and you can switch it on or off any time.</p>
       <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="storeCount">0</span> coins</div><small>Earn more in Challenges.</small></div></div>
       <div id="storeList"></div>
+    </div>
+
+    <div class="pane" id="paneInsight">
+      <h3>Insight</h3>
+      <p class="lead">Patterns from your own logs, to help you spot the tricky moments. Nothing here is a score.</p>
+      <div class="seg rangeseg" id="insRange" role="group" aria-label="Time range">
+        <button data-r="7" onclick="setInsRange(7)">7 days</button>
+        <button data-r="30" class="on" onclick="setInsRange(30)">30 days</button>
+        <button data-r="0" onclick="setInsRange(0)">All time</button>
+      </div>
+      <div id="insBody"></div>
     </div>
 
     <div class="pane" id="paneSettings">
@@ -2195,12 +2246,19 @@ document.addEventListener('keydown', e=>{
   if(open('scrim')) closeSheet();
 });
 function showPane(which){
-  for(const [pane,tab,name] of [['paneSanctuary','tabSanctuary','sanctuary'],['paneChallenges','tabChallenges','challenges'],['paneStore','tabStore','store'],['paneSettings','tabSettings','settings']]){
+  // Challenges and Store share one tab, with a switch between them
+  const shop = which==='challenges' || which==='store';
+  for(const [pane,name] of [['paneSanctuary','sanctuary'],['paneChallenges','challenges'],['paneStore','store'],['paneInsight','insight'],['paneSettings','settings']])
     document.getElementById(pane).classList.toggle('on', which===name);
-    document.getElementById(tab).classList.toggle('on', which===name);
+  for(const [tab,on] of [['tabSanctuary',which==='sanctuary'],['tabChallenges',shop],['tabInsight',which==='insight'],['tabSettings',which==='settings']])
+    document.getElementById(tab).classList.toggle('on', on);
+  document.getElementById('shopSeg').classList.toggle('show', shop);
+  for(const [btn,name] of [['segChallenges','challenges'],['segStore','store']]){
+    const b=document.getElementById(btn); b.classList.toggle('on', which===name); b.setAttribute('aria-pressed', which===name ? 'true' : 'false');
   }
   if(which==='challenges') renderChallenges();
   if(which==='store') renderStore();
+  if(which==='insight') renderInsight();
 }
 
 /* Coins and challenges.
@@ -2292,7 +2350,7 @@ function renderCoins(bump){
   const n=(prefs&&prefs.coins)||0;
   const cc=document.getElementById('coinCount'); if(cc) cc.textContent=n;
   const gift=giftsUnclaimed();
-  for(const id of ['giftDot','giftDot2']){ const gd=document.getElementById(id); if(gd) gd.hidden=!gift; }
+  for(const id of ['giftDot','giftDot2','giftDot3']){ const gd=document.getElementById(id); if(gd) gd.hidden=!gift; }
   if(document.getElementById('paneStore').classList.contains('on') &&
      document.getElementById('sheet').classList.contains('show')) renderStore();
   if(bump){ const p=document.getElementById('coinPill'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
@@ -2660,6 +2718,154 @@ function fmtTime(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.ge
 function dayBack(){
   document.getElementById('trkDay').style.display='none';
   if(dayFrom) openMonthDetail(dayFrom); else trkBack();
+}
+
+/* Insight: patterns from the stored log times and closed days.
+   Day-level numbers only use finished days (today is still going); time-of-day uses every timed log. */
+let insRange=30;
+function setInsRange(r){ insRange=r; renderInsight(); }
+const DAY_PARTS=[
+  {name:'Morning', span:'5am to 12pm', from:5, to:12},
+  {name:'Afternoon', span:'12pm to 5pm', from:12, to:17},
+  {name:'Evening', span:'5pm to 10pm', from:17, to:22},
+  {name:'Late night', span:'10pm to 5am', from:22, to:29},   // wraps past midnight
+];
+function partOf(h){ const x=h<5 ? h+24 : h; return DAY_PARTS.findIndex(p=>x>=p.from && x<p.to); }
+function addDays(k, n){ const d=keyToDate(k); d.setDate(d.getDate()+n); return todayKey(d); }
+function fmtGap(min){
+  min=Math.round(min);
+  if(min<60) return min+'m';
+  if(min<1440){ const h=Math.floor(min/60), m=min%60; return h+'h'+(m? ' '+m+'m' : ''); }
+  const d=Math.floor(min/1440), h=Math.round((min%1440)/60);
+  return d+(d===1?' day':' days')+(h? ' '+h+'h' : '');
+}
+function median(a){ if(!a.length) return null; const b=[...a].sort((x,y)=>x-y), m=b.length>>1; return b.length%2 ? b[m] : (b[m-1]+b[m])/2; }
+const avg1=v=>(Math.round(v*10)/10).toString();
+const pct=(a,b)=>b ? Math.round(a/b*100) : 0;
+
+function knownAvg(keys, byDay){
+  let sum=0, n=0;
+  for(const k of keys){ const v=dayValue(k, byDay); if(v!=null){ sum+=v; n++; } }
+  return {sum, n, avg:n? sum/n : 0};
+}
+
+function renderInsight(){
+  document.querySelectorAll('#insRange button').forEach(b=>{
+    const on=+b.dataset.r===insRange; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const body=document.getElementById('insBody'); if(!body) return;
+  const tk=todayKey(), byDay=sticksByDay(), byTimes=logsByDay();
+  const u=unitLabel(2), allow=dailyAllowance();
+
+  // the stretch of days in view, oldest first
+  let first;
+  if(insRange) first=addDays(tk, -(insRange-1));
+  else {
+    const ks=[...Object.keys(byDay), ...Object.keys(dayStatus||{}), oath.start].filter(Boolean).sort();
+    first=ks[0] || tk;
+  }
+  if(first>tk) first=tk;
+  const keys=[]; for(let k=first; k<=tk; k=addDays(k,1)) keys.push(k);
+  const done=keys.filter(k=>k!==tk);
+  const times=keys.flatMap(k=>byTimes[k]||[]);
+  const known=done.filter(k=>dayValue(k, byDay)!=null);
+  const k0=knownAvg(done, byDay);
+
+  if(times.length<3 && known.length<2){
+    body.innerHTML='<div class="insempty">Not much to read yet. Log as you go and close a few days, and your patterns will show up here.</div>';
+    return;
+  }
+
+  const total=times.length + done.reduce((a,k)=>a+(byDay[k]==null && dayStatus[k] && dayStatus[k].state==='estimate' ? dayStatus[k].sticks : 0), 0);
+  const zero=known.filter(k=>dayValue(k, byDay)===0).length;
+  const within=known.filter(k=>dayValue(k, byDay)<=allow).length;
+  let html=`<div class="insgrid">
+    <div class="inscell"><div class="k">Logged</div><div class="v">${total}</div></div>
+    <div class="inscell"><div class="k">Average a day</div><div class="v">${known.length? avg1(k0.avg) : '·'}</div></div>
+    <div class="inscell"><div class="k">Within allowance</div><div class="v">${known.length? within+' of '+known.length : '·'}</div></div>
+    <div class="inscell"><div class="k">Zero days</div><div class="v">${zero}</div></div>
+  </div>`;
+
+  // time of day
+  if(times.length){
+    const parts=DAY_PARTS.map(()=>0); times.forEach(d=>parts[partOf(d.getHours())]++);
+    const top=parts.indexOf(Math.max(...parts)), mx=Math.max(1,...parts);
+    html+=`<div class="insblock"><h4>Time of day</h4>
+      <p class="say">Most land in the <b>${DAY_PARTS[top].name.toLowerCase()}</b>, ${pct(parts[top],times.length)}% of your timed logs.</p>`+
+      DAY_PARTS.map((p,i)=>`<div class="ibar${i===top?' peak':''}"><div class="l">${p.name}<small>${p.span}</small></div>
+        <div class="tr"><i style="width:${Math.round(parts[i]/mx*100)}%"></i></div><div class="n">${parts[i]} · ${pct(parts[i],times.length)}%</div></div>`).join('')+
+      `</div>`;
+  }
+
+  // day of the week (averages, so a week with two Mondays doesn't skew it)
+  const wk=[0,0,0,0,0,0,0], wn=[0,0,0,0,0,0,0];
+  for(const k of known){ const i=(keyToDate(k).getDay()+6)%7; wk[i]+=dayValue(k, byDay); wn[i]++; }
+  const wa=wk.map((v,i)=>wn[i]? v/wn[i] : null);
+  const NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  if(known.length>=3){
+    const vals=wa.filter(v=>v!=null), mx=Math.max(0.0001,...vals);
+    const hi=wa.indexOf(Math.max(...vals)), lo=wa.indexOf(Math.min(...vals));
+    let say;
+    if(known.length<7) say='Give it a full week to compare days fairly.';
+    else if(wa[hi]===wa[lo]) say='Every day of the week looks about the same.';
+    else say=`<b>${NAMES[hi]}s</b> are your heaviest, about ${avg1(wa[hi])} a day. <b>${NAMES[lo]}s</b> are your lightest, about ${avg1(wa[lo])}.`;
+    html+=`<div class="insblock"><h4>Day of the week</h4><p class="say">${say}</p><div class="wk" role="img" aria-label="Average ${u} for each day of the week">`+
+      wa.map((v,i)=>`<div class="c"><span>${v==null?'':avg1(v)}</span><i class="${v==null||v===0?'none':(i===hi&&known.length>=7?'peak':'')}" style="height:${v==null?2:Math.max(2,Math.round(v/mx*80))}px"></i><b>${NAMES[i].slice(0,3)}</b></div>`).join('')+
+      `</div></div>`;
+  }
+
+  // hour by hour
+  if(times.length){
+    const h=new Array(24).fill(0); times.forEach(d=>h[d.getHours()]++);
+    html+=`<div class="insblock"><h4>Hour by hour</h4><p class="say">${peakHourText(h)}</p><div class="hours" id="insHours"></div></div>`;
+  }
+
+  // a few plain facts
+  const facts=[];
+  const timedDays=keys.filter(k=>(byTimes[k]||[]).length);
+  if(timedDays.length>=2){
+    const firsts=timedDays.map(k=>{ const d=byTimes[k][0]; return d.getHours()*60+d.getMinutes(); });
+    const lasts=timedDays.filter(k=>k!==tk).map(k=>{ const a=byTimes[k], d=a[a.length-1]; return d.getHours()*60+d.getMinutes(); });
+    const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(Math.round(m%60)).padStart(2,'0');
+    if(firsts.length) facts.push(`Your first one of the day usually comes around <b>${hm(median(firsts))}</b>`+(lasts.length? `, and the last around <b>${hm(median(lasts))}</b>.` : '.'));
+  }
+  const gaps=[];
+  for(const k of timedDays){ const a=byTimes[k]; for(let i=1;i<a.length;i++) gaps.push((a[i]-a[i-1])/60000); }
+  if(gaps.length>=3) facts.push(`On days you log more than once, there's usually about <b>${fmtGap(median(gaps))}</b> between one and the next.`);
+  if(times.length>=2){
+    let best=0; for(let i=1;i<times.length;i++) best=Math.max(best,(times[i]-times[i-1])/60000);
+    if(best>=60) facts.push(`Your longest stretch between two logs in this period was <b>${fmtGap(best)}</b>.`);
+  }
+  const wd=knownAvg(known.filter(k=>{ const g=keyToDate(k).getDay(); return g>=1&&g<=5; }), byDay);
+  const we=knownAvg(known.filter(k=>{ const g=keyToDate(k).getDay(); return g===0||g===6; }), byDay);
+  if(wd.n>=3 && we.n>=2){
+    const a=avg1(wd.avg), b=avg1(we.avg);
+    facts.push(a===b ? `Weekdays and weekends look the same, about <b>${a}</b> a day.`
+      : we.avg>wd.avg ? `Weekends run higher: <b>${b}</b> a day, against <b>${a}</b> on weekdays.`
+      : `Weekdays run higher: <b>${a}</b> a day, against <b>${b}</b> at weekends.`);
+  }
+  // trend against the stretch just before, or for all time, the first two weeks against the last two
+  if(insRange){
+    const prev=[]; for(let i=1;i<=insRange;i++) prev.push(addDays(first,-i));
+    const p0=knownAvg(prev, byDay);
+    if(p0.n>=3 && k0.n>=3){
+      const ch=p0.avg ? Math.round((k0.avg-p0.avg)/p0.avg*100) : null;
+      if(ch===null) facts.push(`The ${insRange} days before had none at all, and this stretch averages <b>${avg1(k0.avg)}</b> a day.`);
+      else if(Math.abs(ch)<5) facts.push(`About the same as the ${insRange} days before, around <b>${avg1(k0.avg)}</b> a day.`);
+      else facts.push(`That's <b>${Math.abs(ch)}% ${ch<0?'lower':'higher'}</b> than the ${insRange} days before (${avg1(p0.avg)} a day then, ${avg1(k0.avg)} now).`);
+    }
+  } else if(known.length>=28){
+    const a=knownAvg(known.slice(0,14), byDay), b=knownAvg(known.slice(-14), byDay);
+    facts.push(`Your first two tracked weeks averaged <b>${avg1(a.avg)}</b> a day. Your last two averaged <b>${avg1(b.avg)}</b>.`);
+  }
+  if(typeof coinsReady==='function' && coinsReady()){
+    const holds=Object.keys(prefs.claimed||{}).filter(id=>{ if(!id.startsWith('hold:')) return false; const d=id.split(':')[1]; return d>=first && d<=tk; }).length;
+    if(holds) facts.push(`You waited out the 10-minute hold <b>${holds} ${holds===1?'time':'times'}</b>. That counts up to three a day.`);
+  }
+  if(facts.length) html+=`<div class="insblock"><h4>Worth knowing</h4><ul class="insfacts">${facts.map(f=>'<li>'+f+'</li>').join('')}</ul></div>`;
+
+  body.innerHTML=html;
+  if(times.length){ const h=new Array(24).fill(0); times.forEach(d=>h[d.getHours()]++); renderHours('insHours', h); }
 }
 
 function openMonthDetail(key){
