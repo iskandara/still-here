@@ -15,9 +15,13 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://stillhere.day/og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"AboutPage","@id":"https://stillhere.day/about.html#page","url":"https://stillhere.day/about.html","name":"The story behind Still Here","inLanguage":"en","isPartOf":{"@id":"https://stillhere.day/#website"},"about":{"@id":"https://stillhere.day/#app"},"author":{"@id":"https://stillhere.day/#maker"},"mainEntity":{"@id":"https://stillhere.day/#maker"}},{"@type":"Person","@id":"https://stillhere.day/#maker","name":"Aradnaksi","url":"https://stillhere.day/about.html","sameAs":["https://ko-fi.com/aradnaksi"]}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- fonts load without holding up the first paint; the system font shows until they arrive -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
   :root{--plum:#241d33;--plum2:#2f2743;--plum3:#3a3152;--ink:#f3ede4;--muted:#c3b9d2;
     --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--cendol:#8ed36a;--line:rgba(255,255,255,.09)}
@@ -63,6 +67,7 @@
 
   article{padding:44px 0 10px}
   article p{font-size:17px;line-height:1.78;color:#e7e0d4;margin:0 0 22px}
+  article p a{color:var(--honey);font-weight:800}
   article p.first::first-letter{font-family:'Pixelify Sans';font-size:56px;line-height:.8;float:left;
     color:var(--honey);padding:6px 12px 0 0}
   .quote{font-family:'Pixelify Sans';font-size:clamp(21px,4.4vw,28px);line-height:1.35;color:var(--ink);
@@ -159,6 +164,8 @@
 
   <div class="quote">“Still Here” because a part of me is still at Halls Gap, reminding me why I started this journey.</div>
 
+  <p>If you're trying the same thing, I wrote up <a href="/cut-down-on-smoking.html">how to cut down on smoking</a>, step by step, with what the research says.</p>
+
   <div class="keepgoing">
     <div class="kg-in">
       <h2>Keep the little forest growing</h2>
@@ -191,7 +198,7 @@ If it helps you even a little, a coffee or cendol helps keep the little forest g
     &nbsp;·&nbsp;
     <a href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener">🇮🇩 Traktir cendol</a>
   </p>
-  <p style="margin-top:14px"><a href="/privacy.html">Privacy</a></p>
+  <p style="margin-top:14px"><a href="/cut-down-on-smoking.html">How to cut down on smoking</a> · <a href="/privacy.html">Privacy</a></p>
   <p style="margin-top:14px;opacity:.7">© 2026 Still Here</p>
 </div></footer>
 
