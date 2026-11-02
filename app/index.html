@@ -1018,7 +1018,7 @@ const APPWRITE_PROJECT  = '6a5dbcef0011289fb163';            // Project ID from 
 // database + table IDs
 const AW_DB    = '6a5dc0440033a02989ef';   // your Appwrite database ID
 const AW_STATE = 'state';   // one table holding your whole forest as a single JSON document
-const AW_FEEDBACK = 'feedback';   // collection for user ideas/feedback
+const AW_FEEDBACK = '6ae89810003844be08c3';   // the feedback table's ID (Appwrite gave it a random one)
 
 /* Storage: window.storage if present, else in-memory */
 const mem = {};
@@ -1312,7 +1312,7 @@ async function submitFeedback(){
   const r=await sendFeedback(email, msg);
   btn.disabled=false; btn.textContent='Send it my way';
   if(r.ok){ hideFeedback(); toast('Thank you. I read every word, and it means a lot.'); }
-  else err.textContent = r.msg.toLowerCase().includes('not found')
+  else err.textContent = /not (be )?found/i.test(r.msg)
       ? 'Feedback isn\u2019t set up yet (missing collection).'
       : ('Couldn\u2019t send: '+r.msg);
 }
