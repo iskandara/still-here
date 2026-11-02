@@ -18,8 +18,8 @@
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="icon" href="/icon-180.png">
 <link rel="manifest" href="manifest.json">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e"></script>
-<script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e" data-exclude-search="true"></script>
+<script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0/dist/iife/sdk.js" integrity="sha384-zg3F77gCzZeepXwnoOZi+Pnbz3klhXlLAfgzJJU9SbrJa9uPzlV/B2yLq3re/eKQ" crossorigin="anonymous"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -998,6 +998,17 @@
 </div>
 
 <script>
+/* A password-reset link carries a one-time secret in the URL. Read it once and strip it
+   straight away, so it never reaches analytics, browser history or a shared screenshot. */
+const RESET_LINK=(()=>{
+  try{
+    const q=new URLSearchParams(location.search), userId=q.get('userId'), secret=q.get('secret');
+    if(q.has('secret') || q.has('userId')) history.replaceState(null, '', location.pathname+location.hash);
+    if(userId && secret) return {userId, secret};
+  }catch(_){}
+  return null;
+})();
+
 /* Appwrite config: paste your project values here (Appwrite Console → Settings).
    These are meant to live in the browser; per-document permissions keep your data private.
    Leave as-is to run on-device only. */
@@ -1192,11 +1203,25 @@ async function doRegister(email, password, name, animal){
   if(backend!=='cloud') return {ok:false, msg:'Cloud sync is off. Accounts need a connection.'};
   const snapshot = { oath, logs, dayStatus, prefs, profile:{ name:(name||'').trim(), animal:(animal||'').trim() } };
   try{
-    await aw.account.create(Appwrite.ID.unique(), email.trim(), password, (name||'').trim());
-    try{ await aw.account.deleteSession('current'); }catch(_){}
-    await aw.account.createEmailPasswordSession(email.trim(), password);
+    let converted=false;
+    if(authUser && !authUser.email){
+      // the guest keeps its user id and its forest document; it just gains an email and password
+      try{
+        await aw.account.updateEmail(email.trim(), password);
+        try{ await aw.account.updateName((name||'').trim()); }catch(_){}
+        converted=true;
+      }catch(e){
+        if(/already/i.test((e&&e.message)||'')) throw e;   // email taken: report it, change nothing
+      }
+    }
+    if(!converted){
+      // fallback: a separate new account with its own document
+      await aw.account.create(Appwrite.ID.unique(), email.trim(), password, (name||'').trim());
+      try{ await aw.account.deleteSession('current'); }catch(_){}
+      await aw.account.createEmailPasswordSession(email.trim(), password);
+      stateDocId = null;
+    }
     authUser = await aw.account.get();
-    stateDocId = null;                      // new account gets its own document
     oath=snapshot.oath; logs=snapshot.logs; dayStatus=snapshot.dayStatus; prefs=snapshot.prefs; profile=snapshot.profile;
     await cloudSaveState();                 // write the migrated forest + profile
     track('registered');
@@ -1596,7 +1621,7 @@ function renderProgress(){
 
 function updateHeader(){
   const w=document.getElementById('wordmark'); if(!w) return;
-  const nm = (profile && profile.name) ? (', '+profile.name) : '';
+  const nm = (profile && profile.name) ? (', '+esc(profile.name)) : '';
   w.innerHTML = 'Still Here'+nm+'<small>your quiet forest</small>';
 }
 
@@ -1642,7 +1667,6 @@ async function submitReset(){
   const btn=document.getElementById('rsBtn'); btn.disabled=true; btn.textContent='Saving…';
   try{
     await aw.account.updateRecovery(recoverCtx.userId, recoverCtx.secret, p1);
-    try{ history.replaceState({}, '', location.pathname); }catch(_){}   // strip the token from the URL
     recoverCtx=null; track('recover-completed');
     showAuthView('login');
     const le=document.getElementById('lgEmail'); if(le) le.focus();
@@ -2376,7 +2400,7 @@ function renderChallenges(){
   html+=chRow('Close a day', 'Answer “How was yesterday?” honestly. +1 for each day you close.', '+1 each', '');
   html+=chRow('Wait out the 10-minute hold', h+' of '+HOLDS_PER_DAY+' today. Choose “Wait 10 minutes” when you reach your limit.', '+3', h>=HOLDS_PER_DAY?'done':'');
   html+= allowance>=1
-    ? chRow('Light day', 'A finished day at half your daily allowance or less ('+Math.floor(allowance/2)+' '+unitLabel(Math.floor(allowance/2))+').', '+5', '')
+    ? chRow('Light day', 'A finished day at half your daily allowance or less ('+Math.floor(allowance/2)+' '+esc(unitLabel(Math.floor(allowance/2)))+').', '+5', '')
     : chRow('Light day', 'Needs a daily allowance of at least 1, so it doesn’t apply to your oath.', '+5', 'na');
   html+=chRow('Back again', 'Your first good day after a day over your limit.', '+5', '');
   html+='</div>';
@@ -2579,7 +2603,7 @@ function renderSanctuary(){
       : (D && ISO.levelOf(c.type)>0 && D.growthLevel>=ISO.levelOf(c.type));
     const el=document.createElement('div');
     el.className='crt'+(filled?' filled':'')+(c.special&&filled?' special':'');
-    const cikiName = (prefs.cikiName||'Ciki');
+    const cikiName = esc(prefs.cikiName||'Ciki');
     const label = c.special
       ? (filled ? (cikiName+'<small>'+c.note+'</small>') : 'Locked')
       : (filled?c.name:'Locked');
@@ -2695,7 +2719,7 @@ function openDayDetail(key){
   document.getElementById('dyTitle').textContent=d.toLocaleDateString(undefined,{weekday:'long', day:'numeric', month:'long'});
   const overBy = (count==null)? 0 : count-allow;
   document.getElementById('dyStats').innerHTML=
-    `<div class="dtcell"><div class="k">${unitLabel(2)}</div><div class="v">${count==null?'·':count}</div></div>`+
+    `<div class="dtcell"><div class="k">${esc(unitLabel(2))}</div><div class="v">${count==null?'·':count}</div></div>`+
     `<div class="dtcell"><div class="k">vs allowance ${allow}</div><div class="v" style="color:${overBy<=0?'var(--leaf)':'var(--soft-warn)'}">${count==null?'·':(overBy<=0?'−':'+')+Math.abs(overBy)}</div></div>`+
     `<div class="dtcell"><div class="k">First → last</div><div class="v" style="font-size:13px">${times.length? (fmtTime(times[0])+' → '+fmtTime(times[times.length-1])) : '·'}</div></div>`;
   renderHours('dyHours', hourCounts([key]));
@@ -2755,7 +2779,7 @@ function renderInsight(){
   });
   const body=document.getElementById('insBody'); if(!body) return;
   const tk=todayKey(), byDay=sticksByDay(), byTimes=logsByDay();
-  const u=unitLabel(2), allow=dailyAllowance();
+  const u=esc(unitLabel(2)), allow=dailyAllowance();
 
   // the stretch of days in view, oldest first
   let first;
@@ -2876,7 +2900,7 @@ function openMonthDetail(key){
   document.getElementById('dtTitle').textContent=a.label+(a.inProgress?' · so far':'');
   const target=monthlyEquivalent(oath.target), diff=a.packs-target;
   document.getElementById('dtStats').innerHTML=
-    `<div class="dtcell"><div class="k">${unitLabel(2)}</div><div class="v">${a.sticks}</div></div>`+
+    `<div class="dtcell"><div class="k">${esc(unitLabel(2))}</div><div class="v">${a.sticks}</div></div>`+
     `<div class="dtcell"><div class="k">vs goal ${Math.round(target)}</div><div class="v" style="color:${diff<=0?'var(--leaf)':'var(--soft-warn)'}">${diff<=0?'−':'+'}${Math.abs(Math.round(diff))}</div></div>`+
     `<div class="dtcell"><div class="k">Tracked days</div><div class="v">${a.tracked}</div></div>`+
     `<div class="dtcell"><div class="k">Zero days</div><div class="v">${a.clean}</div></div>`+
@@ -3846,10 +3870,7 @@ const ISO = (function(){
   try{ if(isStandalone()){ const r=document.getElementById('installRow'); if(r) r.style.display='none'; } }catch(_){}
   // arrived from a password-reset email? show the reset form (takes precedence)
   let recovering=false;
-  try{
-    const q=new URLSearchParams(location.search);
-    if(q.get('userId') && q.get('secret')){ recovering=true; showResetForm(q.get('userId'), q.get('secret')); }
-  }catch(_){}
+  if(RESET_LINK){ recovering=true; showResetForm(RESET_LINK.userId, RESET_LINK.secret); }
   // first run: gently invite a guest to make an account (fully skippable)
   try{
     if(recovering){ /* stay on the reset form */ }
