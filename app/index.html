@@ -460,21 +460,21 @@
   .homeStats .hs .l{color:var(--muted); font-size:11px; font-weight:800; margin-top:3px}
 
   /* Crossing-point dialog */
-  #gift, #cross, #donate, #feedback, #enjoy, #reset, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
+  #gift, #cross, #donate, #feedback, #enjoy, #reset, #delforest, #install, #logedit, #cikiname{position:fixed; inset:0; z-index:58; display:none; align-items:center; justify-content:center;
     padding:24px; background:rgba(10,6,20,.74)}
-  #gift.show, #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #install.show, #logedit.show, #cikiname.show{display:flex}
-  #gift .mbox, #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
+  #gift.show, #cross.show, #donate.show, #feedback.show, #enjoy.show, #reset.show, #delforest.show, #install.show, #logedit.show, #cikiname.show{display:flex}
+  #gift .mbox, #cross .mbox, #donate .mbox, #feedback .mbox, #enjoy .mbox, #reset .mbox, #delforest .mbox, #install .mbox, #logedit .mbox, #cikiname .mbox{width:100%; max-width:360px; background:linear-gradient(180deg,var(--plum2),var(--plum));
     border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px;
     box-shadow:0 24px 60px rgba(6,3,16,.6)}
-  #gift .mtitle, #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #install .mtitle, #logedit .mtitle, #cikiname .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
-  #gift .mbody, #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #install .mbody, #logedit .mbody, #cikiname .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
-  #gift .mprimary, #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #install .mprimary, #logedit .mprimary, #cikiname .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
+  #gift .mtitle, #cross .mtitle, #donate .mtitle, #feedback .mtitle, #enjoy .mtitle, #reset .mtitle, #delforest .mtitle, #install .mtitle, #logedit .mtitle, #cikiname .mtitle{font-family:'Pixelify Sans'; font-size:19px; line-height:1.25; margin-bottom:9px}
+  #gift .mbody, #cross .mbody, #donate .mbody, #feedback .mbody, #enjoy .mbody, #reset .mbody, #delforest .mbody, #install .mbody, #logedit .mbody, #cikiname .mbody{color:var(--muted); font-size:13.5px; line-height:1.55; margin-bottom:20px}
+  #gift .mprimary, #cross .mprimary, #donate .mprimary, #feedback .mprimary, #enjoy .mprimary, #reset .mprimary, #delforest .mprimary, #install .mprimary, #logedit .mprimary, #cikiname .mprimary{width:100%; border:none; cursor:pointer; margin-bottom:9px;
     background:linear-gradient(180deg,var(--honey),var(--honey-deep)); color:#3a2410;
     font-family:'Nunito'; font-weight:800; font-size:15.5px; padding:14px; border-radius:13px; box-shadow:0 4px 0 #b06d2e}
-  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #install .mprimary:active, #logedit .mprimary:active, #cikiname .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
+  #cross .mprimary:active, #donate .mprimary:active, #feedback .mprimary:active, #enjoy .mprimary:active, #reset .mprimary:active, #delforest .mprimary:active, #install .mprimary:active, #logedit .mprimary:active, #cikiname .mprimary:active{transform:translateY(3px); box-shadow:0 1px 0 #b06d2e}
   #cross .mghost, #donate .mghost, #feedback .mghost, #enjoy .mghost, #reset .mghost, #install .mghost, #logedit .mghost, #cikiname .mghost{width:100%; background:transparent; border:1px solid var(--line); color:var(--ink);
     font-family:'Nunito'; font-weight:800; font-size:14px; padding:12px; border-radius:12px; cursor:pointer; margin-bottom:9px}
-  #gift .mlink, #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
+  #gift .mlink, #cross .mlink, #donate .mlink, #feedback .mlink, #enjoy .mlink, #reset .mlink, #delforest .mlink, #install .mlink, #logedit .mlink, #cikiname .mlink{display:block; width:100%; text-align:center; background:none; border:none; color:var(--muted);
     font-family:'Nunito'; font-weight:700; font-size:12px; margin-top:0; cursor:pointer; text-decoration:underline; min-height:44px}
 
   #donate .mgreen{width:100%; border:none; cursor:pointer; margin-bottom:9px;
@@ -504,8 +504,11 @@
     border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:14px; font-size:14px; color:var(--muted)}
   #logedit .leRow b{font-family:'Pixelify Sans'; font-size:22px; color:var(--ink)}
   #logedit .leLbl{display:block; font-weight:800; font-size:12.5px; color:var(--muted); margin:0 0 7px}
-  #reset .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
-  #reset .mprimary:active{box-shadow:0 1px 0 #9a4d28}
+  #reset .mprimary, #delforest .mprimary{background:linear-gradient(180deg,#e08a5a,#c96a3c); box-shadow:0 4px 0 #9a4d28}
+  #reset .mprimary:active, #delforest .mprimary:active{box-shadow:0 1px 0 #9a4d28}
+  #delforest .mprimary:disabled{opacity:.6; cursor:wait}
+  #delforest .merr{color:#ffb4a2; font-size:13px; font-weight:700; line-height:1.5; margin:0 0 12px}
+  #delforest .merr:empty{display:none}
 
   /* Ten-minute hold */
   #shareStage{position:absolute; right:14px; bottom:14px; z-index:5; width:44px; height:44px; border-radius:50%;
@@ -721,6 +724,16 @@
       <button class="mprimary" onclick="doReset('same')">Start over, keep my oath</button>
       <button class="mghost" onclick="doReset('new')">Start over with a new oath</button>
       <button class="mlink" onclick="hideReset()">Cancel, keep my forest</button>
+    </div>
+  </div>
+
+  <div id="delforest">
+    <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="delTitle" aria-describedby="delBody">
+      <div class="mtitle" id="delTitle">Delete your forest?</div>
+      <div class="mbody" id="delBody"></div>
+      <div class="merr" id="delErr" role="alert"></div>
+      <button class="mprimary" id="delBtn" onclick="doDeleteForest()">Delete my forest</button>
+      <button class="mlink" id="delCancel" onclick="hideDeleteForest()">Cancel, keep my forest</button>
     </div>
   </div>
 
@@ -1008,6 +1021,10 @@
         <div class="lbl">Your privacy<small>what's stored and how to delete it</small></div>
         <a class="acctbtn" href="/privacy.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Read</a>
       </div>
+      <div class="acctrow">
+        <div class="lbl">Delete my forest<small>erase it from this app and the cloud</small></div>
+        <button class="acctbtn" id="delOpenBtn" onclick="openDeleteForest()">Delete</button>
+      </div>
       <button class="reset" onclick="openReset()">Start the forest over</button>
     </div>
   </div>
@@ -1294,7 +1311,7 @@ function openFeedback(){
 function hideEnjoy(){ document.getElementById('enjoy').classList.remove('show'); }
 function enjoyToFeedback(){ hideEnjoy(); openFeedback(); }
 function anyModalOpen(){
-  return ['donate','feedback','enjoy','cross','onboard','auth','reset','install','logedit','cikiname','gift'].some(id=>{
+  return ['donate','feedback','enjoy','cross','onboard','auth','reset','delforest','install','logedit','cikiname','gift'].some(id=>{
     const el=document.getElementById(id); return el && el.classList.contains('show');
   });
 }
@@ -1525,7 +1542,7 @@ function dismissOverlay(el){
 }
 
 function overlayOpen(){
-  return ['onboard','auth','feedback','reset','enjoy','install','logedit','cikiname'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
+  return ['onboard','auth','feedback','reset','delforest','enjoy','install','logedit','cikiname'].some(id=>{ const el=document.getElementById(id); return el && el.classList.contains('show'); });
 }
 // iOS can leave the page scrolled after the keyboard closes, so put it back
 window.addEventListener('resize', ()=>{ if(!overlayOpen() && window.scrollY!==0) window.scrollTo(0,0); });
@@ -2262,6 +2279,55 @@ async function doReset(mode){
   }
 }
 
+/* Delete my forest: erases the forest record for good and starts a blank guest forest.
+   An Appwrite account can't delete its own login from the browser, so the email
+   sign-in stays until the owner removes it on request (see privacy.html). */
+function openDeleteForest(){
+  const signedIn = backend==='cloud' && !accountIsGuest();
+  document.getElementById('delBody').textContent = signedIn
+    ? 'This permanently deletes your forest: your oath, every logged tap, your coins, store items, names and favourite animal. You’ll be logged out. Your account itself (your email and the name you signed up with) stays until you ask me to remove it at aradnaksi@stillhere.day. This can’t be undone.'
+    : 'This permanently deletes your forest: your oath, every logged tap, your coins, store items and names. You’ll start again with a blank forest. This can’t be undone.';
+  document.getElementById('delErr').textContent='';
+  closeAllSheets();
+  document.getElementById('scrim').classList.remove('show');
+  document.getElementById('delforest').classList.add('show');
+  document.getElementById('delCancel').focus();
+}
+function hideDeleteForest(){
+  document.getElementById('delforest').classList.remove('show');
+}
+async function deleteCloudForest(){
+  // delete every forest record this sign-in can see (normally one)
+  const list = await aw.databases.listDocuments(AW_DB, AW_STATE, [Appwrite.Query.limit(100)]);
+  for(const d of list.documents) await aw.databases.deleteDocument(AW_DB, AW_STATE, d.$id);
+  stateDocId = null;
+  // leave the account (or the old guest) and start a blank guest forest
+  try{ await aw.account.deleteSession('current'); }catch(_){}
+  await aw.account.createAnonymousSession(); authUser = await aw.account.get();
+  await reloadStateFromCloud();
+}
+async function doDeleteForest(){
+  const btn=document.getElementById('delBtn'), err=document.getElementById('delErr');
+  btn.disabled=true; btn.textContent='Deleting…'; err.textContent='';
+  try{
+    if(backend==='cloud'){
+      await deleteCloudForest();
+    } else {
+      oath=defaultOath(); logs=[]; dayStatus={}; prefs={ max:0 }; profile={ name:'', animal:'' };
+      for(const k of ['oath','logs','dayStatus','prefs','profile']) await store.set(k, null);
+    }
+  }catch(e){
+    err.textContent='Couldn’t finish deleting: '+((e&&e.message)?e.message:String(e))+'. Try again, or email aradnaksi@stillhere.day and I’ll do it for you.';
+    btn.disabled=false; btn.textContent='Delete my forest';
+    return;
+  }
+  btn.disabled=false; btn.textContent='Delete my forest';
+  hideDeleteForest();
+  updateHeader(); renderAccount(); updateSyncUI(); updateHomeChip(); refresh();
+  showOnboard(false);
+  toast('Your forest is deleted. You can plant a new one whenever you like.');
+}
+
 function openSheet(which){
   closeAllSheets(); showPane(which);
   document.getElementById('scrim').classList.add('show');
@@ -2283,6 +2349,7 @@ document.addEventListener('keydown', e=>{
   if(open('enjoy')) return hideEnjoy();
   if(open('install')) return hideInstall();
   if(open('reset')) return hideReset();
+  if(open('delforest')) return hideDeleteForest();
   if(open('scrim')) closeSheet();
 });
 function showPane(which){
