@@ -17,7 +17,10 @@
 <meta name="twitter:image" content="https://stillhere.day/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- fonts load without holding up the first paint; the system font shows until they arrive -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
   :root{--plum:#241d33;--plum2:#2f2743;--plum3:#3a3152;--ink:#f3ede4;--muted:#c3b9d2;
     --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--line:rgba(255,255,255,.09)}

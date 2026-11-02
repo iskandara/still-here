@@ -90,6 +90,8 @@
     padding:calc(14px + env(safe-area-inset-top)) 16px 0; pointer-events:none; gap:10px;
   }
   /* dark backing so the name stays readable over the bright daytime sky */
+  /* text for screen readers only: keeps a control's spoken name starting with what's on screen */
+  .vh{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
   .wordmark{
     margin:0;
     font-family:'Pixelify Sans',sans-serif; font-weight:600;
@@ -601,8 +603,8 @@
     <div id="stageTop">
       <h1 class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></h1>
       <div class="stageRight">
-      <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('store')" aria-label="Coins and store"><span class="coin"></span><b id="coinCount">0</b><span class="giftdot" id="giftDot" hidden></span></button>
-      <button type="button" class="stagepill" onclick="openProgress()" aria-label="See your forest's progress"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
+      <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('store')" <span class="coin"></span><span class="vh">Coins: </span><b id="coinCount">0</b><span class="vh">, open the store</span><span class="giftdot" id="giftDot" hidden></span></button>
+      <button type="button" class="stagepill" onclick="openProgress()"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span><span class="vh">, see your forest's progress</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
       </div>
     </div>
     <div id="toast"></div>
@@ -637,12 +639,13 @@
         <div class="v"><span id="tSticks">0</span> <span id="tDenom">/ <span id="tAllow">0</span> <span id="tUnit">times</span></span></div>
         <div class="meter" id="tMeterRow"><i id="tMeter" style="width:0%"></i></div>
       </div>
-      <div class="stat mstat" id="stMonth" onclick="openTracker()" role="button" tabindex="0" aria-label="Open your months"
+      <div class="stat mstat" id="stMonth" onclick="openTracker()" role="button" tabindex="0"
            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTracker();}">
-        <div class="chev">›</div>
+        <div class="chev" aria-hidden="true">›</div>
         <div class="k" id="mLabel">This month</div>
         <div class="v"><span id="mPacks">0</span> <span>/ <span id="mTarget">0</span> <span id="mUnit">times</span></span></div>
         <div class="meter"><i id="mMeter" style="width:0%"></i></div>
+        <span class="vh">, open your months</span>
       </div>
     </div>
 

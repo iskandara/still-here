@@ -20,10 +20,13 @@
 <meta name="twitter:title" content="Still Here: A forest that grows as you cut your habit">
 <meta name="twitter:description" content="A free, no-ads companion for cutting down on any habit. Every good day plants something new.">
 <meta name="twitter:image" content="https://stillhere.day/og.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://stillhere.day/#website","url":"https://stillhere.day/","name":"Still Here","inLanguage":"en"},{"@type":"WebApplication","@id":"https://stillhere.day/#app","name":"Still Here","url":"https://stillhere.day/app/","description":"A free app for cutting down on smoking, vaping or any habit you count. Log honestly, and a small pixel forest grows with every good day. Slips never destroy it.","applicationCategory":"HealthApplication","operatingSystem":"Any (runs in the browser, installable on iPhone and Android)","browserRequirements":"Requires JavaScript","image":"https://stillhere.day/og.png","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://stillhere.day/#maker","name":"Aradnaksi","url":"https://stillhere.day/about.html","sameAs":["https://ko-fi.com/aradnaksi"]},{"@type":"WebSite","@id":"https://stillhere.day/#website","url":"https://stillhere.day/","name":"Still Here","inLanguage":"en","publisher":{"@id":"https://stillhere.day/#maker"}},{"@type":"WebApplication","@id":"https://stillhere.day/#app","name":"Still Here","url":"https://stillhere.day/app/","description":"A free app for cutting down on smoking, vaping or any habit you count. Log honestly, and a small pixel forest grows with every good day. Slips never destroy it.","applicationCategory":"HealthApplication","operatingSystem":"Any (runs in the browser, installable on iPhone and Android)","browserRequirements":"Requires JavaScript","image":"https://stillhere.day/og.png","isAccessibleForFree":true,"author":{"@id":"https://stillhere.day/#maker"},"publisher":{"@id":"https://stillhere.day/#maker"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- fonts load without holding up the first paint; the system font shows until they arrive -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
 <style>
   :root{
     --plum:#241d33; --plum2:#2f2743; --plum3:#3a3152;
@@ -526,7 +529,7 @@
       <a class="kofi" href="https://ko-fi.com/aradnaksi" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="kofi">🌏 Buy me a coffee</a>
       <a class="teer" href="https://teer.id/iskandar_agung3" target="_blank" rel="noopener" data-umami-event="donate-clicked" data-umami-event-via="trakteer">🇮🇩 Traktir cendol</a>
     </div>
-    <p class="fnote" style="margin-top:16px"><a href="/">Still Here</a> · <a href="/privacy.html">Privacy</a> · © 2026</p>
+    <p class="fnote" style="margin-top:16px"><a href="/">Still Here</a> · <a href="/cut-down-on-smoking.html">How to cut down on smoking</a> · <a href="/privacy.html">Privacy</a> · © 2026</p>
     <a class="fbadge" href="https://21st.tools?utm_source=badge&ref=stillhere.day" target="_blank" rel="noopener"><img src="https://21st.tools/api/badge?theme=dark&kind=listing&v=3" alt="Featured on 21st Tools" height="54" /></a>
   </div>
 </div></footer>
