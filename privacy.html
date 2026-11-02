@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Privacy at Still Here: what the app stores and why</title>
+<link rel="canonical" href="https://stillhere.day/privacy.html">
+<link rel="icon" type="image/png" href="/icon-180.png">
+<meta name="description" content="What Still Here stores, where it lives, what the analytics see, and how to get your forest deleted. No ads, and your data is never sold or shared.">
+<meta property="og:title" content="Privacy at Still Here">
+<meta property="og:description" content="What the app stores, where it lives, and how to get it deleted.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://stillhere.day/privacy.html">
+<meta property="og:image" content="https://stillhere.day/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://stillhere.day/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--plum:#241d33;--plum2:#2f2743;--plum3:#3a3152;--ink:#f3ede4;--muted:#c3b9d2;
+    --honey:#f4b860;--honey-deep:#e0954a;--leaf:#8fce6b;--line:rgba(255,255,255,.09)}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  /* a real colour (not just the gradient image) so iOS Safari tints the status-bar strip plum, not white */
+  html{scroll-behavior:smooth;background-color:#1c1630}
+  :focus-visible{outline:3px solid var(--honey);outline-offset:3px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition-duration:.01ms !important}}
+  /* Pixelify's "fi" ligature draws as "A"; plain letters read correctly */
+  body{font-variant-ligatures:none}
+  body{margin:0;font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
+    background:radial-gradient(120% 50% at 50% -5%,#4a3d63,#2a2140 44%,#1c1630);background-attachment:fixed;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+
+  /* same floating header as the story page */
+  nav{position:fixed;top:0;left:0;right:0;z-index:20;pointer-events:none;display:flex;align-items:flex-start;
+    justify-content:space-between;gap:12px;padding:calc(12px + env(safe-area-inset-top)) clamp(12px,2.4vw,28px) 0}
+  nav > *{pointer-events:auto}
+  .mark{display:block;width:48px;height:48px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .mark img{display:block;width:100%;height:100%;image-rendering:pixelated}
+  .capsule{display:flex;align-items:center;gap:6px;padding:5px;border-radius:16px;background:rgba(28,22,48,.94);
+    border:1px solid var(--line);box-shadow:0 10px 30px rgba(6,3,16,.45)}
+  .capsule .back{padding:0 12px;border-radius:11px}
+  .capsule .back:hover{background:rgba(255,255,255,.06)}
+  .capsule .btn.primary{box-shadow:0 3px 0 #b06d2e}
+  .back{text-decoration:none;color:var(--muted);font-weight:800;font-size:14px;display:inline-flex;align-items:center;min-height:44px}
+  .back:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;font-family:'Nunito';font-weight:800;border-radius:13px;border:none;transition:transform .08s ease;min-height:44px}
+  .btn.primary{background:linear-gradient(180deg,var(--honey),var(--honey-deep));color:#3a2410;padding:11px 18px;font-size:14px;box-shadow:0 4px 0 #b06d2e}
+  .btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #b06d2e}
+  .btn.big{font-size:16px;padding:15px 24px}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);padding:14px 20px;font-size:15px}
+
+  /* no photo here: the page opens straight on the heading, clear of the floating header */
+  header{padding:calc(110px + env(safe-area-inset-top)) 0 6px}
+  header h1{font-family:'Pixelify Sans';font-size:clamp(30px,6.5vw,46px);line-height:1.1;margin:0}
+  header .updated{margin:14px 0 0;color:var(--muted);font-size:13px;font-weight:700}
+
+  article{padding:26px 0 10px}
+  article p, article li{font-size:17px;line-height:1.78;color:#e7e0d4}
+  article p{margin:0 0 22px}
+  article ul{margin:0 0 22px;padding-left:22px}
+  article li{margin:0 0 8px}
+  article a{color:var(--honey);font-weight:800}
+  .sub{font-family:'Pixelify Sans';font-size:21px;font-weight:400;color:var(--honey);margin:38px 0 14px}
+
+  /* the short version: the one box on the page, so people who only skim still get the facts */
+  .oath{background:linear-gradient(180deg,var(--plum2),rgba(47,39,67,.35));border:1px solid var(--line);
+    border-radius:20px;padding:24px;margin:10px 0 34px}
+  .oath h2{font-family:'Pixelify Sans';font-size:21px;font-weight:400;color:var(--ink);margin:0 0 12px}
+  .oath ul{margin:0;padding-left:20px}
+  .oath li{font-size:15.5px;line-height:1.7;color:var(--muted);margin:0 0 8px}
+  .oath li:last-child{margin:0}
+
+  .endcard{text-align:center;padding:20px 0 8px}
+  .cta2{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 0 60px;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--honey);font-weight:800}
+</style>
+</head>
+<body>
+
+<nav aria-label="Main">
+  <a class="mark" href="/" aria-label="Still Here, home"><img src="/icon-180.png" alt="" width="48" height="48"></a>
+  <div class="capsule">
+    <a class="back" href="/">← Home</a>
+    <a class="btn primary" href="/app/" target="_blank" rel="noopener">Open app</a>
+  </div>
+</nav>
+
+<header><div class="wrap">
+  <h1>Your forest, your data.</h1>
+  <p class="updated">Privacy at Still Here · Last updated 2 November 2026</p>
+</div></header>
+
+<article><div class="wrap">
+
+  <div class="oath">
+    <h2>The short version</h2>
+    <ul>
+      <li>There are no ads, and I never sell or share your data.</li>
+      <li>Your forest is stored with Appwrite in Singapore so it can sync. Only your sign-in can open it.</li>
+      <li>The analytics don't use cookies. They count clicks and visits, never what you track or how much.</li>
+      <li>Want it all deleted? Email <a href="mailto:aradnaksi@stillhere.day">aradnaksi@stillhere.day</a>.</li>
+    </ul>
+  </div>
+
+  <h2 class="sub">Who runs this</h2>
+
+  <p>Still Here is made by one person: me, Aradnaksi, in my spare time. There's no company behind it. If you have a question about your data, write to me at <a href="mailto:aradnaksi@stillhere.day">aradnaksi@stillhere.day</a> and I'll answer it myself.</p>
+
+  <h2 class="sub">What the app stores</h2>
+
+  <p>The first time you open the app, it creates a guest sign-in for this browser. You don't give a name or an email for that. Your forest is saved under that guest sign-in, and it holds:</p>
+
+  <ul>
+    <li>your oath: what you're cutting down, what you count, your starting rate and your target</li>
+    <li>the date and time of every tap you log</li>
+    <li>which days you stayed within your limit, plus your coins, store items and settings</li>
+    <li>any name you give a companion in your forest</li>
+  </ul>
+
+  <p>If you make an account so your forest follows you to other devices, the app also stores your email, your password, and the name and favourite animal you enter. Appwrite handles the password. I never see it.</p>
+
+  <p>If you send feedback, I get your message and, only if you add it, your email so I can reply.</p>
+
+  <h2 class="sub">Where it lives, and who can see it</h2>
+
+  <p>Everything above is stored with <a href="https://appwrite.io" target="_blank" rel="noopener">Appwrite</a>, a database service, in its Singapore region. Your whole forest is one record, and the app sets it so only your sign-in can read, change or delete it. Other people using Still Here can't see it.</p>
+
+  <p>As the person who runs the project, I can open the database from Appwrite's dashboard. I don't browse people's forests. I'd only open yours if you ask me to, for example to delete it or to fix something that went wrong.</p>
+
+  <p>If the app can't reach Appwrite, it carries on in this browser only and sends nothing anywhere. The sync line in the app's settings shows which one you're on.</p>
+
+  <h2 class="sub">Analytics</h2>
+
+  <p>I use <a href="https://umami.is" target="_blank" rel="noopener">Umami</a> to see whether people find the site and use the app. It doesn't use cookies. For each visit it records the page, the site you came from, your browser, your device type and your country.</p>
+
+  <p>It also counts a few actions, so I can tell which parts are useful: opening the app from the home page, scrolling to a section of the home page, logging a tap, making an account, sharing a picture, getting a store item (which item), tapping a support link, and asking for a password reset.</p>
+
+  <p>Analytics never include your oath, your counts, your name or your email. A logged tap shows up only as "a tap happened", with nothing about what you track.</p>
+
+  <h2 class="sub">Other services your browser talks to</h2>
+
+  <p>Like any website, these services see your IP address and basic browser details when your browser loads something from them:</p>
+
+  <ul>
+    <li><a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a> hosts the site.</li>
+    <li>Google Fonts serves the two typefaces.</li>
+    <li>jsDelivr serves the code the app uses to talk to Appwrite.</li>
+    <li>Appwrite sends the email when you ask for a password reset.</li>
+  </ul>
+
+  <p>If you buy me a coffee or a cendol, that happens on Ko-fi or Trakteer under their own privacy policies. I don't get your card details.</p>
+
+  <h2 class="sub">In your browser</h2>
+
+  <p>Appwrite keeps a sign-in token in your browser so you stay signed in. There are no advertising cookies.</p>
+
+  <p>When you share a picture of your forest, the app draws it on your device and nothing is uploaded. Your goal is left off the picture unless you turn on "Show my goal when sharing" in the settings.</p>
+
+  <h2 class="sub">Keeping and deleting</h2>
+
+  <p>I keep your forest and account until you ask me to delete them. Nothing is deleted automatically.</p>
+
+  <p>"Start the forest over" in the app clears your logged days and your homestead. It keeps your account, your name, your coins and your oath if you choose to.</p>
+
+  <p>When you log out, the app starts a fresh guest forest in that browser. Your account's forest stays safe until you log back in.</p>
+
+  <p>To delete everything, email <a href="mailto:aradnaksi@stillhere.day">aradnaksi@stillhere.day</a> from the address on your account, and I'll delete your account and your forest and reply when it's done. A guest forest isn't linked to an email, so I can't find it from a message. If you'd like a guest forest deleted, make an account first (it moves your forest into the account), then email me.</p>
+
+  <p>You can also ask me for a copy of your forest, or ask me to delete feedback you sent.</p>
+
+  <h2 class="sub">If this page changes</h2>
+
+  <p>If the app starts storing something new or using another service, I'll update this page and the date at the top before it happens.</p>
+
+  <div class="endcard">
+    <div class="cta2">
+      <a class="btn primary big" href="mailto:aradnaksi@stillhere.day">Email me about your data</a>
+      <a class="btn ghost" href="/">← Back to home</a>
+    </div>
+  </div>
+
+</div></article>
+
+<footer><div class="wrap">
+  <p><a href="/">Still Here</a> · <a href="/about.html">The story</a> · © 2026</p>
+</div></footer>
+
+</body>
+</html>
