@@ -10,6 +10,15 @@
 <title>Still Here app: log honestly, grow a forest</title>
 <meta name="description" content="Open the free Still Here app. Set your own limit, log each time with one tap, and watch a pixel forest grow with every good day. Works in your browser; no download needed.">
 <link rel="canonical" href="https://stillhere.day/app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://stillhere.day/app/">
+<meta property="og:title" content="Still Here app: log honestly, grow a forest">
+<meta property="og:description" content="Set your own limit, log each time with one tap, and watch a pixel forest grow with every good day. Free, in your browser.">
+<meta property="og:image" content="https://stillhere.day/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://stillhere.day/og.png">
 
 <!-- iPhone home-screen web app -->
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +28,7 @@
 <meta name="theme-color" content="#241d33">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="icon" href="/icon-180.png">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/app/manifest.json">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="abd575aa-875f-47f1-be1e-66d7279e6a3e" data-exclude-search="true"></script>
 <script src="https://cdn.jsdelivr.net/npm/appwrite@26.1.0/dist/iife/sdk.js" integrity="sha384-zg3F77gCzZeepXwnoOZi+Pnbz3klhXlLAfgzJJU9SbrJa9uPzlV/B2yLq3re/eKQ" crossorigin="anonymous"></script>
 
@@ -82,6 +91,7 @@
   }
   /* dark backing so the name stays readable over the bright daytime sky */
   .wordmark{
+    margin:0;
     font-family:'Pixelify Sans',sans-serif; font-weight:600;
     font-size:15px; letter-spacing:.5px;
     color:var(--ink); line-height:1;
@@ -115,7 +125,7 @@
   .wallet .n{font-family:'Pixelify Sans'; font-size:26px; line-height:1; color:var(--honey)}
   .wallet small{display:block; color:var(--muted); font-size:12px; font-weight:700; margin-top:4px}
   .chgroup{margin:0 0 18px}
-  .chgroup h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 8px}
+  .chgroup h3{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 8px}
   .chrow{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line)}
   .chrow:last-child{border-bottom:none}
   .chrow .t{flex:1; min-width:0}
@@ -138,7 +148,7 @@
 
   /* store */
   .shopgroup{margin:0 0 20px}
-  .shopgroup h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
+  .shopgroup h3{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
   .shopgroup .gnote{color:var(--muted); font-size:11.5px; font-weight:700; margin:0 0 8px}
   .item{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line)}
   .item:last-child{border-bottom:none}
@@ -251,7 +261,7 @@
   }
   .sheet.show{transform:translateY(0)}
   .grab{width:38px; height:4px; border-radius:4px; background:var(--locked); margin:6px auto 14px}
-  .sheet h3{font-family:'Pixelify Sans'; font-weight:600; font-size:17px; margin:2px 0 3px}
+  .sheet h2{font-family:'Pixelify Sans'; font-weight:600; font-size:17px; margin:2px 0 3px}
   .sheet p.lead{color:var(--muted); font-size:12.5px; margin:0 0 16px; line-height:1.45}
 
   .sanct{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:6px}
@@ -303,7 +313,7 @@
   .inscell .k{font-size:11.5px; color:var(--muted); font-weight:800}
   .inscell .v{font-family:'Nunito'; font-weight:800; font-size:20px; margin-top:3px; line-height:1.1}
   .insblock{margin:0 0 22px}
-  .insblock h4{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
+  .insblock h3{font-family:'Pixelify Sans'; font-weight:600; font-size:15px; margin:0 0 4px}
   .insblock .say{color:var(--muted); font-size:12.5px; font-weight:700; line-height:1.5; margin:0 0 10px}
   .insblock .say b{color:var(--ink)}
   .ibar{display:grid; grid-template-columns:96px 1fr 58px; align-items:center; gap:10px; padding:6px 0}
@@ -586,7 +596,7 @@
   <div id="stage">
     <canvas id="scene"></canvas>
     <div id="stageTop">
-      <div class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></div>
+      <h1 class="wordmark" id="wordmark">Still Here<small>your quiet forest</small></h1>
       <div class="stageRight">
       <button type="button" class="stagepill coinpill" id="coinPill" onclick="openSheet('store')" aria-label="Coins and store"><span class="coin"></span><b id="coinCount">0</b><span class="giftdot" id="giftDot" hidden></span></button>
       <button type="button" class="stagepill" onclick="openProgress()" aria-label="See your forest's progress"><span class="dot" id="stageDot"></span><span id="stageName">Seed</span> <span style="opacity:.6" aria-hidden="true">›</span></button>
@@ -833,7 +843,7 @@
 
   <div class="sheet" id="homeSheet">
     <div class="grab"></div>
-    <h3>Your homestead</h3>
+    <h2>Your homestead</h2>
     <p class="lead">Every good day, the builders add a little more. It's never torn down. On an off day they simply rest by the fire, and pick the hammer back up when you're on track again.</p>
     <div class="homeStage" id="homeStage"><canvas id="cabinCv"></canvas>
       <div class="homeTier" id="homeTierPill">Bedroll</div>
@@ -845,7 +855,7 @@
 
   <div class="sheet" id="progSheet">
     <div class="grab"></div>
-    <h3>Your ecosystem</h3>
+    <h2>Your ecosystem</h2>
     <p class="lead">Every good day adds one living thing to your island. Here is everything that has arrived, and what comes next.</p>
     <div class="prog" id="progHead"></div>
     <div class="steplist" id="progList"></div>
@@ -856,7 +866,7 @@
     <div class="grab"></div>
 
     <div id="trkOverview">
-      <h3>Your months</h3>
+      <h2>Your months</h2>
       <p class="lead" id="trkLead">Every bar is one month. The green line is your goal; the faint line above is where you began. Tap a month to open it.</p>
       <div class="chart" id="trkChart"></div>
       <div class="leg">
@@ -868,7 +878,7 @@
 
     <div id="trkDetail" style="display:none">
       <button class="back" onclick="trkBack()">‹ All months</button>
-      <h3 id="dtTitle">Month</h3>
+      <h2 id="dtTitle">Month</h2>
       <div class="dtstats" id="dtStats"></div>
       <div class="cal" id="dtCal"></div>
       <div class="leg" style="margin-top:14px">
@@ -877,17 +887,17 @@
         <span><i style="background:var(--soft-warn)"></i>over</span>
         <span><i style="background:transparent;border:1px dashed var(--locked)"></i>foggy</span>
       </div>
-      <h3 style="margin-top:22px">Your rhythm</h3>
+      <h2 style="margin-top:22px">Your rhythm</h2>
       <p class="lead" id="rhythmLead">When this happens across the day. Tap any date above to see that day on its own.</p>
       <div class="hours" id="dtHours"></div>
     </div>
 
     <div id="trkDay" style="display:none">
       <button class="back" onclick="dayBack()">‹ Back to month</button>
-      <h3 id="dyTitle">Day</h3>
+      <h2 id="dyTitle">Day</h2>
       <div class="dtstats" id="dyStats"></div>
       <div class="hours" id="dyHours"></div>
-      <h3 style="margin-top:20px;font-size:15px">Every log</h3>
+      <h2 style="margin-top:20px;font-size:15px">Every log</h2>
       <div class="times" id="dyTimes"></div>
     </div>
   </div>
@@ -907,7 +917,7 @@
     </div>
 
     <div class="pane" id="paneChallenges">
-      <h3>Challenges</h3>
+      <h2>Challenges</h2>
       <p class="lead">Earn coins by keeping your oath honestly. Coins are never taken away, and a slip never costs you any.</p>
       <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="walletCount">0</span> coins</div><small id="walletNote">Your first coin comes with your first check-in.</small></div></div>
       <div id="chList"></div>
@@ -917,27 +927,27 @@
         <button class="buy price" style="margin-top:12px" onclick="showPane('store')">Open the store</button>
       </div>
       <div class="chgroup" id="chRecentWrap" style="margin-top:18px; display:none">
-        <h4>Recent coins</h4>
+        <h3>Recent coins</h3>
         <ul class="recent" id="chRecent"></ul>
       </div>
     </div>
 
     <div class="pane on" id="paneSanctuary">
-      <h3>The Sanctuary</h3>
+      <h2>The Sanctuary</h2>
       <p class="lead">As your forest matures, companions come to live in it. The first few arrive on their own. The rare ones, the spirits, are for a later chapter.</p>
       <div class="sanct" id="sanctGrid"></div>
       <span class="soonpill">More companions arriving in a future update</span>
     </div>
 
     <div class="pane" id="paneStore">
-      <h3>Store</h3>
+      <h2>Store</h2>
       <p class="lead">Make the island yours. Everything you buy is kept forever, and you can switch it on or off any time.</p>
       <div class="wallet"><span class="coin big"></span><div><div class="n"><span id="storeCount">0</span> coins</div><small>Earn more in Challenges.</small></div></div>
       <div id="storeList"></div>
     </div>
 
     <div class="pane" id="paneInsight">
-      <h3>Insight</h3>
+      <h2>Insight</h2>
       <p class="lead">Patterns from your own logs, to help you spot the tricky moments. Nothing here is a score.</p>
       <div class="seg rangeseg" id="insRange" role="group" aria-label="Time range">
         <button data-r="7" onclick="setInsRange(7)">7 days</button>
@@ -948,7 +958,7 @@
     </div>
 
     <div class="pane" id="paneSettings">
-      <h3>Your oath &amp; tone</h3>
+      <h2>Your oath &amp; tone</h2>
       <p class="lead" id="oathLead">Your promise, and how the forest speaks to you.</p>
       <div class="setrow">
         <div class="lbl" id="oathTitle">Your oath</div>
@@ -2397,7 +2407,7 @@ function renderChallenges(){
     ? 'Saved with your forest. Coins are never taken away.'
     : 'Your first coin comes with your first check-in.';
   const allowance=D?D.allowance:0, h=holdsToday();
-  let html='<div class="chgroup"><h4>Every day</h4>';
+  let html='<div class="chgroup"><h3>Every day</h3>';
   html+=chRow('Daily check-in', has('checkin:'+tk)?'Done for today.':'Log something today, or close yesterday.', '+1', has('checkin:'+tk)?'done':'');
   html+=chRow('Close a day', 'Answer “How was yesterday?” honestly. +1 for each day you close.', '+1 each', '');
   html+=chRow('Wait out the 10-minute hold', h+' of '+HOLDS_PER_DAY+' today. Choose “Wait 10 minutes” when you reach your limit.', '+3', h>=HOLDS_PER_DAY?'done':'');
@@ -2411,13 +2421,13 @@ function renderChallenges(){
   let next=RUN_STEPS.find(s=>!has('run:'+s));
   if(next==null){ next=60; while(has('run:'+next)) next+=30; }
   const pct=Math.min(100, runs.current/next*100);
-  html+='<div class="chgroup"><h4>Runs</h4>';
+  html+='<div class="chgroup"><h3>Runs</h3>';
   html+=`<div class="chrow"><div class="t"><b>${next}-day run</b><small>${runs.current} of ${next} good days in a row. Today counts once it’s over.</small><div class="chbar"><i style="width:${pct}%"></i></div></div><div class="r"><span class="coin"></span>+10</div></div>`;
   const shown=RUN_STEPS.concat(runMilestonesUpTo(Math.max(runs.best,60)).filter(s=>s>30));
   html+='<div class="steps">'+shown.map(s=>`<span class="${has('run:'+s)?'ok':''}">${has('run:'+s)?'✓ ':''}${s} ${s===1?'day':'days'}</span>`).join('')+'<span>then every 30</span></div>';
   html+='</div>';
 
-  html+='<div class="chgroup"><h4>Milestones</h4>';
+  html+='<div class="chgroup"><h3>Milestones</h3>';
   for(const [name] of PHASE_STEPS) html+=chRow('Island becomes a '+name, ISO.phases().find(p=>p.name===name).desc.split('. ')[0]+'.', '+20', has('phase:'+name)?'done':'');
   const tiers=CABIN_TIERS.filter(T=>T.t>0), built=tiers.filter(T=>has('cabin:'+T.t)).length;
   const nextTier=tiers.find(T=>!has('cabin:'+T.t));
@@ -2534,7 +2544,7 @@ function renderStore(){
   let html='';
   for(const g of STORE){
     if(g.gift && !eligible) continue;
-    html+=`<div class="shopgroup"><h4>${g.group}</h4><p class="gnote">${g.note}</p>`;
+    html+=`<div class="shopgroup"><h3>${g.group}</h3><p class="gnote">${g.note}</p>`;
     for(const it of g.items){
       let btn;
       if(it.locked){
@@ -2816,7 +2826,7 @@ function renderInsight(){
   if(times.length){
     const parts=DAY_PARTS.map(()=>0); times.forEach(d=>parts[partOf(d.getHours())]++);
     const top=parts.indexOf(Math.max(...parts)), mx=Math.max(1,...parts);
-    html+=`<div class="insblock"><h4>Time of day</h4>
+    html+=`<div class="insblock"><h3>Time of day</h3>
       <p class="say">Most land in the <b>${DAY_PARTS[top].name.toLowerCase()}</b>, ${pct(parts[top],times.length)}% of your timed logs.</p>`+
       DAY_PARTS.map((p,i)=>`<div class="ibar${i===top?' peak':''}"><div class="l">${p.name}<small>${p.span}</small></div>
         <div class="tr"><i style="width:${Math.round(parts[i]/mx*100)}%"></i></div><div class="n">${parts[i]} · ${pct(parts[i],times.length)}%</div></div>`).join('')+
@@ -2835,7 +2845,7 @@ function renderInsight(){
     if(known.length<7) say='Give it a full week to compare days fairly.';
     else if(wa[hi]===wa[lo]) say='Every day of the week looks about the same.';
     else say=`<b>${NAMES[hi]}s</b> are your heaviest, about ${avg1(wa[hi])} a day. <b>${NAMES[lo]}s</b> are your lightest, about ${avg1(wa[lo])}.`;
-    html+=`<div class="insblock"><h4>Day of the week</h4><p class="say">${say}</p><div class="wk" role="img" aria-label="Average ${u} for each day of the week">`+
+    html+=`<div class="insblock"><h3>Day of the week</h3><p class="say">${say}</p><div class="wk" role="img" aria-label="Average ${u} for each day of the week">`+
       wa.map((v,i)=>`<div class="c"><span>${v==null?'':avg1(v)}</span><i class="${v==null||v===0?'none':(i===hi&&known.length>=7?'peak':'')}" style="height:${v==null?2:Math.max(2,Math.round(v/mx*80))}px"></i><b>${NAMES[i].slice(0,3)}</b></div>`).join('')+
       `</div></div>`;
   }
@@ -2843,7 +2853,7 @@ function renderInsight(){
   // hour by hour
   if(times.length){
     const h=new Array(24).fill(0); times.forEach(d=>h[d.getHours()]++);
-    html+=`<div class="insblock"><h4>Hour by hour</h4><p class="say">${peakHourText(h)}</p><div class="hours" id="insHours"></div></div>`;
+    html+=`<div class="insblock"><h3>Hour by hour</h3><p class="say">${peakHourText(h)}</p><div class="hours" id="insHours"></div></div>`;
   }
 
   // a few plain facts
@@ -2888,7 +2898,7 @@ function renderInsight(){
     const holds=Object.keys(prefs.claimed||{}).filter(id=>{ if(!id.startsWith('hold:')) return false; const d=id.split(':')[1]; return d>=first && d<=tk; }).length;
     if(holds) facts.push(`You waited out the 10-minute hold <b>${holds} ${holds===1?'time':'times'}</b>. That counts up to three a day.`);
   }
-  if(facts.length) html+=`<div class="insblock"><h4>Worth knowing</h4><ul class="insfacts">${facts.map(f=>'<li>'+f+'</li>').join('')}</ul></div>`;
+  if(facts.length) html+=`<div class="insblock"><h3>Worth knowing</h3><ul class="insfacts">${facts.map(f=>'<li>'+f+'</li>').join('')}</ul></div>`;
 
   body.innerHTML=html;
   if(times.length){ const h=new Array(24).fill(0); times.forEach(d=>h[d.getHours()]++); renderHours('insHours', h); }

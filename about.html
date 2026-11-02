@@ -5,7 +5,7 @@
 <title>The story behind Still Here, a gentle app for smoking less</title>
 <link rel="canonical" href="https://stillhere.day/about.html">
 <link rel="icon" type="image/png" href="/icon-180.png">
-<meta name="description" content="How a road trip to Halls Gap became Still Here, a gentle app for smoking less.">
+<meta name="description" content="How a road trip to Halls Gap became Still Here, a free app for smoking less. Log each cigarette with one tap and grow a forest on good days.">
 <meta property="og:title" content="Still Here: the full story">
 <meta property="og:description" content="How a road trip to Halls Gap became a forest that grows as you keep your oath.">
 <meta property="og:type" content="article">
@@ -67,10 +67,10 @@
     color:var(--honey);padding:6px 12px 0 0}
   .quote{font-family:'Pixelify Sans';font-size:clamp(21px,4.4vw,28px);line-height:1.35;color:var(--ink);
     border-left:3px solid var(--honey);padding:6px 0 6px 20px;margin:34px 0}
-  .sub{font-family:'Pixelify Sans';font-size:21px;color:var(--honey);margin:38px 0 14px}
+  .sub{font-family:'Pixelify Sans';font-size:21px;font-weight:400;color:var(--honey);margin:38px 0 14px}
 
   figure{margin:36px 0}
-  figure img{width:100%;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 22px 50px rgba(8,4,20,.5)}
+  figure img{width:100%;height:auto;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 22px 50px rgba(8,4,20,.5)}
   figure figcaption{color:var(--muted);font-size:12.5px;font-weight:700;text-align:center;margin-top:10px}
   .portrait{max-width:360px;margin:36px auto}
   .portrait img{aspect-ratio:3/4;object-fit:cover}
@@ -82,7 +82,7 @@
 
   .keepgoing{background:linear-gradient(180deg,rgba(244,184,96,.1),rgba(47,39,67,.35));
     border:1px solid rgba(244,184,96,.28); border-radius:22px; padding:30px 26px; margin:40px 0 10px; text-align:center}
-  .keepgoing h3{font-family:'Pixelify Sans'; font-size:23px; margin:0 0 12px}
+  .keepgoing h2{font-family:'Pixelify Sans'; font-size:23px; margin:0 0 12px}
   .keepgoing p{color:var(--muted); font-size:15px; line-height:1.7; margin:0 auto 22px; max-width:520px}
   .kg-btns{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}
 
@@ -105,12 +105,15 @@
   <a class="mark" href="/" aria-label="Still Here, home"><img src="/icon-180.png" alt="" width="48" height="48"></a>
   <div class="capsule">
     <a class="back" href="/">← Home</a>
-    <a class="btn primary" href="/app" target="_blank" rel="noopener">Open app</a>
+    <a class="btn primary" href="/app/" target="_blank" rel="noopener">Open app</a>
   </div>
 </nav>
 
 <div class="hero">
-  <img src="assets/hallsgap.jpg" alt="Halls Gap, Victoria: a creek, picnic benches, mountains and cloud">
+  <picture>
+    <source media="(min-width: 700px)" srcset="assets/hallsgap-wide.webp" width="1600" height="1100">
+    <img src="assets/hallsgap-800.webp" width="800" height="1066" fetchpriority="high" alt="Halls Gap, Victoria: a creek, picnic benches, mountains and cloud">
+  </picture>
   <div class="veil"></div>
   <div class="htext"><div class="in">
     <div class="eyebrow">The story behind Still Here</div>
@@ -128,17 +131,17 @@
   <div class="quote">For the first time I can remember, I felt ashamed just for having the thought  of smoking.</div>
 
   <figure class="portrait">
-    <img src="assets/agung.jpg" alt="Me, on a sunny balcony">
+    <img src="assets/agung.webp" width="720" height="960" loading="lazy" alt="Me, on a sunny balcony">
     <figcaption>Hi hehe</figcaption>
   </figure>
 
-  <p class="sub">The one who could just stop</p>
+  <h2 class="sub">The one who could just stop</h2>
 
   <p>I was travelling with my love (she smokes too: smoking hot, and smokes a cig), and we talked about it. She'd been smoking much less on the trip, and she told me she could just stop cold turkey, cigarettes included. That's one of the things I adore about her. Me? I know I don't have that kind of discipline.</p>
 
   <p>From that scenery, and from that conversation, I made a choice: I want to enjoy things without having to smoke so much.</p>
 
-  <p class="sub">The honest numbers</p>
+  <h2 class="sub">The honest numbers</h2>
 
   <p>Right now I smoke about a pack a day (twenty cigarettes, give or take), and honestly, that's concerning. I knew quitting cold turkey wasn't realistic for me, so I had a smaller idea: what if I could go from a pack a day to a pack every three days?</p>
 
@@ -150,7 +153,7 @@
     <p><b>Third</b>, and the big one: how do I make it <i>fun</i>? it should be fun. What if I built a little ecosystem, with small rewards when I keep to my goal and gentle setbacks when I don't?</p>
   </div>
 
-  <p class="sub">A tribute to a place</p>
+  <h2 class="sub">A tribute to a place</h2>
 
   <p>So here it is: a tribute to Halls Gap, the place that gave me that moment of clarity, rebuilt as a small version of that scenery inside an app. Something to remind me of the promise I made to myself.</p>
 
@@ -158,7 +161,7 @@
 
   <div class="keepgoing">
     <div class="kg-in">
-      <h3>Keep the little forest growing</h3>
+      <h2>Keep the little forest growing</h2>
       <p>Still Here is made by one person, in my spare time, and it's completely free: no ads, no subscription, no catch.
 
 If it helps you even a little, a coffee or cendol helps keep the little forest growing. No pressure, though. Using it, sharing it, or simply telling a friend already means a lot.</p>
@@ -174,7 +177,7 @@ If it helps you even a little, a coffee or cendol helps keep the little forest g
     <p style="color:var(--muted);font-size:15.5px;line-height:1.7;max-width:520px;margin:0 auto">If any of this sounds like you, come plant your first day. It's free, there are no ads, and it grows the moment you tap.</p>
     <div class="sig">Made with love</div>
     <div class="cta2">
-      <a class="btn primary big" href="/app" target="_blank" rel="noopener">Open Still Here</a>
+      <a class="btn primary big" href="/app/" target="_blank" rel="noopener">Open Still Here</a>
       <a class="btn ghost" href="/">← Back to home</a>
     </div>
   </div>
