@@ -1053,17 +1053,27 @@ const AW_DB    = '6a5dc0440033a02989ef';   // your Appwrite database ID
 const AW_STATE = 'state';   // one table holding your whole forest as a single JSON document
 const AW_FEEDBACK = '6ae89810003844be08c3';   // the feedback table's ID (Appwrite gave it a random one)
 
-/* Storage: window.storage if present, else in-memory */
+/* On-device storage, used when cloud sync is off: window.storage if present, otherwise
+   localStorage so logs survive a reload. Memory is the last resort (private mode or
+   blocked storage), and only lasts until the page closes. */
 const mem = {};
+const LS_PREFIX = 'stillhere:';
+function lsGet(k){ try{ return localStorage.getItem(LS_PREFIX+k); }catch(_){ return null; } }
+function lsSet(k,s){ try{ if(s==null) localStorage.removeItem(LS_PREFIX+k); else localStorage.setItem(LS_PREFIX+k, s); }catch(_){} }
+function parseOrNull(s){ try{ return s==null ? null : JSON.parse(s); }catch(_){ return null; } }
 const store = {
   async get(k){
     try{ if(window.storage){ const r = await window.storage.get(k); return r? JSON.parse(r.value): null; } }
     catch(e){}
-    return (k in mem)? JSON.parse(mem[k]) : null;
+    const saved = lsGet(k);
+    if(saved!=null) return parseOrNull(saved);
+    return (k in mem)? parseOrNull(mem[k]) : null;
   },
   async set(k,v){
-    const s = JSON.stringify(v); mem[k]=s;
-    try{ if(window.storage){ await window.storage.set(k,s); } }catch(e){}
+    const s = (v==null) ? null : JSON.stringify(v);
+    if(s==null) delete mem[k]; else mem[k]=s;
+    try{ if(window.storage){ await window.storage.set(k, s==null ? 'null' : s); return; } }catch(e){}
+    lsSet(k, s);
   }
 };
 
@@ -2314,8 +2324,9 @@ async function doDeleteForest(){
       await deleteCloudForest();
     } else {
       oath=defaultOath(); logs=[]; dayStatus={}; prefs={ max:0 }; profile={ name:'', animal:'' };
-      for(const k of ['oath','logs','dayStatus','prefs','profile']) await store.set(k, null);
     }
+    // also clear any copy this browser saved while offline
+    for(const k of ['oath','logs','dayStatus','prefs','profile','waitUntil']) await store.set(k, null);
   }catch(e){
     err.textContent='Couldn’t finish deleting: '+((e&&e.message)?e.message:String(e))+'. Try again, or email aradnaksi@stillhere.day and I’ll do it for you.';
     btn.disabled=false; btn.textContent='Delete my forest';
