@@ -594,8 +594,94 @@ function pickTone(t){
 document.getElementById('toneQuote').style.transition='opacity .18s ease';
 
 
+/* 16-bit look. Scenes are drawn as smooth shapes, then turned into pixel art here:
+   each art pixel (U x U scene units) takes the colour most of its area has, every flat colour
+   area gets a light top-left edge and a dark bottom-right edge (with a dithered second band),
+   outer edges get a soft outline, and see-through bits (shadows, glows, mist) are kept as
+   stepped pixels. Callers rebuild about 8 times a second, like a real sprite animation. */
+const PIX=(function(){
+  const U=2, BAY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v=>(v+0.5)/16);
+  const LIGHT=[255,248,224], DARK=[42,29,61], OUT=[29,24,48];
+  const mixc=(c,d,t)=>[c[0]+(d[0]-c[0])*t, c[1]+(d[1]-c[1])*t, c[2]+(d[2]-c[2])*t];
+  const unpack=p=>[p>>16&255,p>>8&255,p&255];
+  const lum=c=>c[0]*0.3+c[1]*0.59+c[2]*0.11;
+  // src: a canvas drawn at scene scale. Returns a small canvas, one pixel per art pixel.
+  function filter(src,opts){
+    opts=opts||{};
+    const W=src.width, H=src.height, w=Math.floor(W/U), h=Math.floor(H/U);
+    const sd=src.getContext('2d',{willReadFrequently:true}).getImageData(0,0,W,H).data;
+    // how common each solid colour is across the whole picture, so edge blends lose ties
+    const freq=new Map();
+    for(let i=0;i<sd.length;i+=4) if(sd[i+3]>=128){ const k=sd[i]<<16|sd[i+1]<<8|sd[i+2]; freq.set(k,(freq.get(k)||0)+1); }
+    const col=new Int32Array(w*h).fill(-1), lvl=new Uint8Array(w*h);   // lvl: 0 empty, 1-3 see-through, 4 solid
+    const ks=new Int32Array(U*U), kc=new Uint8Array(U*U);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      let n=0, solid=0, ta=0, tr=0, tg=0, tb=0, tn=0;
+      for(let dy=0;dy<U;dy++) for(let dx=0;dx<U;dx++){
+        const i=((y*U+dy)*W+(x*U+dx))*4, a=sd[i+3];
+        if(a>=128){ const k=sd[i]<<16|sd[i+1]<<8|sd[i+2]; let j=0; while(j<n&&ks[j]!==k) j++;
+          if(j===n){ ks[n]=k; kc[n]=0; n++; } kc[j]++; solid++; }
+        else if(a>=16){ ta+=a; tr+=sd[i]; tg+=sd[i+1]; tb+=sd[i+2]; tn++; } }
+      const o=y*w+x;
+      if(solid*2>=U*U){
+        let best=-1, bs=-1;
+        for(let j=0;j<n;j++){ const c=unpack(ks[j]);
+          // small dark details (eyes, noses) win their pixel if they cover half of it
+          const s= (lum(c)<80 && kc[j]*2>=U*U) ? 1e9 : kc[j]*1e6+(freq.get(ks[j])||0);
+          if(s>bs){ bs=s; best=ks[j]; } }
+        col[o]=best; lvl[o]=4;
+      } else if((solid+tn)*2>=U*U && tn){
+        col[o]=Math.round(tr/tn)<<16|Math.round(tg/tn)<<8|Math.round(tb/tn);
+        const aa=ta/tn; lvl[o]= aa>=96?3 : aa>=48?2 : 1;
+      }
+    }
+    const out=new ImageData(w,h), d=out.data;
+    const same=(x,y,k)=> x>=0&&y>=0&&x<w&&y<h && lvl[y*w+x]===4 && col[y*w+x]===k;
+    const open=(x,y)=> x<0||y<0||x>=w||y>=h || lvl[y*w+x]<4;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const o=y*w+x; if(!lvl[o]) continue;
+      let c=unpack(col[o]), a=255;
+      if(lvl[o]<4) a=[0,40,95,165][lvl[o]];
+      else {
+        const k=col[o], L=lum(c);
+        const outl=opts.outline!==false && (open(x,y-1)||open(x-1,y)||open(x,y+1)||open(x+1,y));
+        if(outl){ const lo=open(x,y+1)||open(x+1,y); c=mixc(c,OUT, lo?0.5:0.34); }
+        else if(L>=45){
+          const top=!same(x,y-1,k), left=!same(x-1,y,k), bot=!same(x,y+1,k), right=!same(x+1,y,k);
+          const ch=BAY[(y&3)*4+(x&3)]<0.5;
+          if((top||left)&&!(bot||right)) c=mixc(c,LIGHT, top?0.24:0.14);
+          else if(bot||right) c=mixc(c,DARK, bot?0.24:0.16);
+          else if(ch && !same(x,y-2,k)) c=mixc(c,LIGHT,0.11);
+          else if(ch && !same(x,y+2,k)) c=mixc(c,DARK,0.12);
+        }
+        if(opts.texture) c=opts.texture(x,y,k,c)||c;
+      }
+      const p=o*4; d[p]=c[0]; d[p+1]=c[1]; d[p+2]=c[2]; d[p+3]=a;
+    }
+    const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').putImageData(out,0,0);
+    return cv;
+  }
+  // a scratch canvas per size, reused between rebuilds
+  const pads={};
+  function pad(w,h){ const k=w+'x'+h; let c=pads[k];
+    if(!c){ c=pads[k]=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d',{willReadFrequently:true}); }
+    const g=c.getContext('2d',{willReadFrequently:true}); g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,w,h); return g; }
+  function draw(g,art,x,y,sw,sh){ const s=g.imageSmoothingEnabled; g.imageSmoothingEnabled=false; g.drawImage(art,x,y,sw,sh); g.imageSmoothingEnabled=s; }
+  // a banded, dithered gradient, the way 16-bit skies were painted
+  const skies={};
+  function sky(top,bot,w,h){ const k=top+bot+w+'x'+h; if(skies[k]) return skies[k];
+    const A=unpack(parseInt(top.slice(1),16)), B=unpack(parseInt(bot.slice(1),16)), bands=14;
+    const cv=document.createElement('canvas'); cv.width=w; cv.height=h; const g=cv.getContext('2d'), im=g.createImageData(w,h);
+    for(let y=0;y<h;y++){ const v=y/Math.max(1,h-1)*bands, b=Math.floor(v), f=v-b;
+      for(let x=0;x<w;x++){ const bb=Math.min(bands, b+(BAY[(y&3)*4+(x&3)]<f?1:0)), c=mixc(A,B,bb/bands), p=(y*w+x)*4;
+        im.data[p]=c[0]; im.data[p+1]=c[1]; im.data[p+2]=c[2]; im.data[p+3]=255; } }
+    g.putImageData(im,0,0); for(const kk in skies) delete skies[kk]; return skies[k]=cv; }
+  return {U, BAY, filter, pad, draw, sky, unpack, mixc};
+})();
+
 function makeForest(cv, stageEl){
-  const ctx=cv.getContext('2d');
+  let ctx=cv.getContext('2d');
+  const LOOK={}, LEAVES={};   // the landing page shows the classic look only
   const VW=760, VH=620, TW=112, TH=56, C=6, R=6, originX=380, originY=215, THICK=42;
   function iso(i,j){ return { x:originX+(i-j)*(TW/2), y:originY+(i+j)*(TH/2) }; }
 
@@ -624,18 +710,31 @@ function makeForest(cv, stageEl){
   // Ground
   let pondTiles=new Set();
   let clouds=[{x:170,y:85,s:.12,w:120},{x:520,y:62,s:.08,w:90},{x:330,y:140,s:.05,w:70}];
-  function drawGround(){
-    const p=P();
+  function drawGround(t){
+    const p=P(), lk=''+dusk;
     // The sky gradient is painted across the whole canvas in fitFrame(),
     // so the scene only adds what sits in front of it.
-    blob(VIS.r-108, VIS.t+168, 42, p.sun);
+    const sx=VIS.r-108, sy=VIS.t+168;
+    pixelDraw('sun', dusk, [100,100,50,50], sx, sy, ()=>blob(sx, sy, 42, p.sun), {outline:false});
     if(dusk){ ctx.fillStyle='#fff';
       for(let i=0;i<40;i++){ const sx=VIS.l+((i*151)%Math.max(1,(VIS.r-VIS.l))), sy=VIS.t+((i*97)%Math.max(1,(originY-VIS.t)));
         if((i+Math.floor(performance.now()/700))%3===0){ ctx.globalAlpha=.7; ctx.fillRect(sx,sy,2,2);} }
       ctx.globalAlpha=1; }
-    for(const cl of clouds){ cl.x+=cl.s; if(cl.x>VIS.r+140) cl.x=VIS.l-160;
-      ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }
-    const bC=iso(C-1,R-1);
+    clouds.forEach((cl,k)=>{ cl.x+=cl.s; if(cl.x>VIS.r+140) cl.x=VIS.l-160;
+      pixelDraw('cloud'+k, dusk, [cl.w+20,52,10,26], cl.x, cl.y, ()=>{
+        ctx.fillStyle= dusk?'rgba(70,60,90,.5)':'rgba(255,255,255,.85)'; rr(cl.x,cl.y,cl.w,24,12); rr(cl.x+20,cl.y-12,cl.w-40,24,12); }, {outline:false}); });
+    const nowS=performance.now()/1000;
+    if(!dusk && LOOK.birds) drawBirds(nowS);
+    if(!dusk && LOOK.kite) drawKite(nowS);
+    const pk=c=>parseInt(c.slice(1),16), GR=new Set([pk(p.grassA),pk(p.grassB)]), DI=new Set([pk(p.dirtR),pk(p.dirtL)]);
+    // grass gets a speckle of darker and lighter blades, the dirt sides a few strata
+    const tex=(x,y,k,c)=>{ const r=((x*73856093)^(y*19349663))>>>0, h=(r%1000)/1000;
+      if(GR.has(k)) return h<0.07? PIX.mixc(c,[30,60,30],0.18) : h<0.11? PIX.mixc(c,[255,255,220],0.14) : null;
+      if(DI.has(k)) return (y%6===0 && PIX.BAY[(y&3)*4+(x&3)]<0.5) || h<0.08 ? PIX.mixc(c,[40,24,20],0.18) : null; };
+    pixelDraw('island', lk+[...pondTiles].join()+(pondTiles.size? Math.floor(t*4):''), [700,500,350,40], originX, originY, drawIsland, {texture:tex});
+  }
+  function drawIsland(){
+    const p=P(), bC=iso(C-1,R-1);
     ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(originX,bC.y+THICK+24,TW*2.4,TH*1.6,0,0,7); ctx.fill();
     const B=iso(C-1,0),D=iso(0,R-1),Cc=iso(C-1,R-1);
     const bx=B.x+TW/2,by=B.y,dx=D.x-TW/2,dy=D.y,cx=Cc.x,cy=Cc.y+TH/2;
@@ -655,37 +754,129 @@ function makeForest(cv, stageEl){
     ctx.fillStyle='#3f7f2c'; ctx.fillRect(px-1,py-6,2,4);
     ctx.fillStyle='#e8574a'; ctx.beginPath(); ctx.ellipse(px,py,5,5,0,0,7); ctx.fill();
     ctx.fillStyle='#ff9a8a'; ctx.fillRect(px-3,py-3,2,2); } }
+  /* 16-bit pixel art. Each sprite is built once on a small grid (one art pixel = PXU scene units)
+     from shaded shapes, lit from the top left with a little ordered dithering where tones meet,
+     then outlined and drawn crisp. Shapes later in the list sit in front and cast a thin dark
+     line on what is behind them, which gives leaves their clumps and fur its folds. */
+  const PXU=2;
+  const BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v=>(v+0.5)/16);
+  const LIGHT=(()=>{ const v=[-0.55,-0.7,0.45], m=Math.hypot(...v); return v.map(x=>x/m); })();
+  const SPR={};
+  function hexRgb(h){ const n=parseInt(h.slice(1),16); return [n>>16&255,n>>8&255,n&255]; }
+  function mixHex(a,b,t){ const A=hexRgb(a),B=hexRgb(b); return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join(''); }
+  // index 0 is the outline; the rest run dark to light
+  function ramp(cols){ return [mixHex(cols[0],'#1d1830',0.32), ...cols]; }
+  function seeded(key){ let a=0; for(const ch of key) a=(a*31+ch.charCodeAt(0))|0;
+    return ()=>{ a=(a+0x6D2B79F5)|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function lit(nx,ny){ const nz=Math.sqrt(Math.max(0,1-nx*nx-ny*ny)); return (nx*LIGHT[0]+ny*LIGHT[1]+nz*LIGHT[2]+1)/2; }
+  function inPoly(x,y,p){ let c=false; for(let i=0,j=p.length-1;i<p.length;j=i++){
+    if(((p[i][1]>y)!==(p[j][1]>y)) && x<(p[j][0]-p[i][0])*(y-p[i][1])/(p[j][1]-p[i][1])+p[i][0]) c=!c; } return c; }
+  // shapes: {e:[cx,cy,rx,ry]} ellipse, {r:[x,y,w,h]} rounded column, {p:[[x,y],...]} polygon.
+  // Coordinates are in art pixels relative to the sprite's anchor; marks are [x,y,colour] pixels on top.
+  function sprite(key,w,h,ox,oy,shapes,marks){
+    if(SPR[key]) return SPR[key];
+    const N=w*h, z=new Int16Array(N).fill(-1), idx=new Uint8Array(N);
+    shapes.forEach((s,si)=>{ const n=s.ramp.length-1;
+      for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+        const px=x+0.5-ox, py=y+0.5-oy; let v;
+        if(s.e){ const [cx,cy,rx,ry]=s.e, nx=(px-cx)/rx, ny=(py-cy)/ry; if(nx*nx+ny*ny>1) continue; v=lit(nx,ny); }
+        else if(s.r){ const [rx0,ry0,rw,rh]=s.r; if(px<rx0||px>=rx0+rw||py<ry0||py>=ry0+rh) continue; v=lit(((px-rx0)/rw)*2-1,0); }
+        else { if(!inPoly(px,py,s.p)) continue; v=s.v!=null?s.v:0.6; }
+        if(s.g){ const [gx,gy,grx,gry]=s.g, gny=Math.max(-1,Math.min(1,(py-gy)/gry));
+          v=v*0.4+lit(Math.max(-1,Math.min(1,(px-gx)/grx)),gny)*0.6-gny*0.14; }
+        v=Math.max(0,Math.min(1,v+(s.bias||0)));
+        const sc=v*(n-1); let b=Math.floor(sc); const f=sc-b;
+        if(f>0.62) b++; else if(f>0.38 && BAYER[(y&3)*4+(x&3)]<(f-0.38)/0.24) b++;
+        z[y*w+x]=si; idx[y*w+x]=1+Math.min(n-1,b);
+      } });
+    const out=new Uint8Array(idx);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){ const i=y*w+x, zi=z[i]; if(zi<0) continue;
+      let edge=false, behind=false;
+      for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){ const X=x+dx, Y=y+dy;
+        if(X<0||Y<0||X>=w||Y>=h||z[Y*w+X]<0){ edge=true; break; }
+        const zq=z[Y*w+X]; if(zq>zi && shapes[zq].cast!==false && shapes[zi].ramp!==shapes[zq].ramp) behind=true;
+        else if(zq>zi && shapes[zq].cast!==false && dy<=0) behind=true; }
+      if(edge) out[i]=0; else if(behind) out[i]=Math.max(1,idx[i]-1); }
+    const cnv=document.createElement('canvas'); cnv.width=w; cnv.height=h;
+    const g=cnv.getContext('2d'), img=g.createImageData(w,h);
+    for(let i=0;i<N;i++){ if(z[i]<0) continue; const [r,gg,b]=hexRgb(shapes[z[i]].ramp[out[i]]); img.data.set([r,gg,b,255],i*4); }
+    for(const [mx,my,c] of (marks||[])){ const X=Math.round(ox+mx), Y=Math.round(oy+my); if(X<0||Y<0||X>=w||Y>=h) continue;
+      const [r,gg,b]=hexRgb(c); img.data.set([r,gg,b,255],(Y*w+X)*4); }
+    g.putImageData(img,0,0);
+    return SPR[key]={cv:cnv,w,h,ox,oy};
+  }
+  // Draw anything else through the 16-bit filter. fn draws at real scene coordinates around the
+  // anchor (ax,ay); box is [width, height, left, up] in scene units. Rebuilt only when stamp changes.
+  const PC={};
+  function pixelDraw(id,stamp,box,ax,ay,fn,opts){
+    let e=PC[id];
+    if(!e || e.stamp!==stamp){
+      const g=PIX.pad(box[0],box[1]), keep=ctx;
+      g.setTransform(1,0,0,1,box[2]-ax,box[3]-ay); ctx=g;
+      try{ fn(); } finally { ctx=keep; }
+      e=PC[id]={stamp, art:PIX.filter(g.canvas,opts)};
+    }
+    PIX.draw(ctx,e.art,ax-box[2],ay-box[3],box[0],box[1]);
+  }
+  const BOXD=[150,170,75,140];
+  const BOX={home:[260,240,130,190], fall:[110,190,25,10], ciki:[80,80,40,60], fl:[120,150,60,120],
+    dragon:[230,170,115,110], pegasus:[200,170,100,120], unicorn:[200,170,100,120], cow:[150,130,75,90], lantern:[120,120,60,90]};
+  function blit(s,ax,ay){ const sm=ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(s.cv, Math.round(ax-s.ox*PXU), Math.round(ay-s.oy*PXU), s.w*PXU, s.h*PXU); ctx.imageSmoothingEnabled=sm; }
+
+  const GREEN=['#3f7f2c','#4f9e38','#5cb043','#7ccf5b'];
+  const BARK=ramp(['#4a301c','#5c3c22','#6e4a2a','#8a5e37','#a87a4c']);
+  function leafRamp(L){ return ramp([...L, mixHex(L[3],'#fff7d0',0.35)]); }
+  // a leafy mass: a dark base from the big blobs, then small lit clumps front to back
+  function canopy(key,blobs,L,clump){
+    const R=Math.max(...blobs.map(b=>Math.max(Math.abs(b[0])+b[2], Math.abs(b[1])+b[2])));
+    const w=Math.ceil(R*2)+4, h=Math.ceil(R*2)+4, ox=w/2, oy=h/2, LR=leafRamp(L), rnd=seeded(key);
+    const top=Math.min(...blobs.map(b=>b[1]-b[2]*0.82)), bot=Math.max(...blobs.map(b=>b[1]+b[2]*0.82));
+    const G=[0,(top+bot)/2,R,(bot-top)/2];
+    const shapes=blobs.map(b=>({e:[b[0],b[1],b[2],b[2]*0.82],ramp:LR,g:G,bias:-0.22,cast:false}));
+    const inside=(x,y)=>blobs.some(b=>((x-b[0])/b[2])**2+((y-b[1])/(b[2]*0.82))**2<=0.9);
+    const pts=[]; const st=Math.max(2.5,clump);
+    for(let y=top;y<=bot;y+=st*0.8) for(let x=-R;x<=R;x+=st){
+      const cx=x+(rnd()-0.5)*st*0.7, cy=y+(rnd()-0.5)*st*0.6; if(inside(cx,cy)) pts.push([cx,cy,clump*(0.8+rnd()*0.35)]); }
+    pts.sort((a,b)=>a[1]-b[1]);
+    for(const p of pts) shapes.push({e:[p[0],p[1],p[2],p[2]*0.8],ramp:LR,g:G,bias:-0.08});
+    return sprite(key,w,h,ox,oy,shapes);
+  }
   function drawTree(c,lvl,fruit,t){
-    const sway=Math.sin(t*1.1 + c.x*0.01)*(lvl>=3?2.5:1);
-    if(lvl<=0){ shadow(c.x,c.y+2,14,6); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-9,4,9); blob(c.x+sway,c.y-11,5,'#7ccf5b'); return; }
-    if(lvl===1){ shadow(c.x,c.y+2,16,7); ctx.fillStyle='#6f8f45'; ctx.fillRect(c.x-2,c.y-20,4,20);
-      blob(c.x-5+sway,c.y-22,8,'#7ccf5b'); blob(c.x+5+sway,c.y-18,7,'#67bf4c'); return; }
-    if(lvl===2){ shadow(c.x,c.y+2,18,8); ctx.fillStyle='#7a5230'; ctx.fillRect(c.x-3,c.y-28,6,28);
-      blob(c.x+sway,c.y-32,16,'#4f9e38'); blob(c.x-9+sway,c.y-28,12,'#67bf4c'); blob(c.x+9+sway,c.y-29,12,'#67bf4c'); blob(c.x-2+sway,c.y-40,13,'#7ccf5b');
+    const sway=Math.round(Math.sin(t*1.1 + c.x*0.01)*(lvl>=3?2.5:1)/PXU)*PXU;
+    const look=LOOK.trees||'green', L=LEAVES[LOOK.trees]||GREEN, LR=leafRamp(GREEN);
+    if(lvl<=1){ shadow(c.x,c.y+2,lvl?16:14,lvl?7:6);
+      const stem=lvl?10:5;
+      blit(sprite('sprout'+lvl,12,stem+8,6,stem+7,[
+        {r:[-1,-stem,2,stem],ramp:ramp(['#4f6a30','#6f8f45','#8aab58'])},
+        ...(lvl? [{e:[-2.5,-stem-1,4,3.2],ramp:LR},{e:[2.5,-stem+1,3.5,2.8],ramp:LR}] : [{e:[0,-stem-1,2.6,2.1],ramp:LR}])
+      ]), c.x+(lvl?sway:0), c.y); return; }
+    if(lvl===2){ shadow(c.x,c.y+2,18,8);
+      blit(sprite('trunk2',5,15,2.5,14,[{r:[-1.5,-14,3,14],ramp:BARK}]), c.x, c.y);
+      blit(canopy('can2'+look,[[0,0,8],[-4.5,2,6],[4.5,1.5,6],[-1,-4,6.5]],L,2.4), c.x+sway, c.y-32);
       drawFruits(c.x+sway,c.y-32,16,fruit); return; }
     const ht=34+(lvl-3)*16, wt=13+(lvl-3)*3, cr=22+(lvl-3)*10;
     shadow(c.x,c.y+3, 30+lvl*6, 12+lvl*2);
-    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2,c.y-ht,wt,ht);
-    ctx.fillStyle='#8a5e37'; ctx.fillRect(c.x-1,c.y-ht,wt/2,ht);
-    ctx.fillStyle='#5c3c22'; ctx.fillRect(c.x-2,c.y-ht+8,2,ht-12);
-    ctx.fillStyle='#6e4a2a'; ctx.fillRect(c.x-wt/2-3,c.y-4,4,4); ctx.fillRect(c.x+wt/2-1,c.y-4,4,4);
-    if(lvl>=4){ ctx.strokeStyle='#6e4a2a'; ctx.lineWidth=4;
-      ctx.beginPath(); ctx.moveTo(c.x,c.y-ht+10); ctx.lineTo(c.x-14,c.y-ht-4); ctx.moveTo(c.x,c.y-ht+18); ctx.lineTo(c.x+14,c.y-ht+2); ctx.stroke(); }
-    const ccx=c.x+sway, ccy=c.y-ht-cr*0.35;
-    blob(ccx,ccy+cr*0.5,cr,'#3f7f2c');
-    blob(ccx-cr*0.55,ccy+cr*0.15,cr*0.72,'#4f9e38');
-    blob(ccx+cr*0.55,ccy+cr*0.2,cr*0.72,'#4f9e38');
-    blob(ccx,ccy-cr*0.12,cr*0.95,'#5cb043');
-    blob(ccx-cr*0.22,ccy-cr*0.5,cr*0.55,'#7ccf5b');
+    const tw=wt/PXU, th=ht/PXU, bark=[{r:[-tw/2,-th,tw,th],ramp:BARK},
+      {p:[[-tw/2-2,0],[-tw/2,-3],[-tw/2+1,0]],ramp:BARK,v:0.55},{p:[[tw/2+2,0],[tw/2,-3],[tw/2-1,0]],ramp:BARK,v:0.35}];
+    if(lvl>=4) bark.push({p:[[-1,-th+6],[-8,-th-2],[-6,-th-3],[1,-th+3]],ramp:BARK,v:0.6},{p:[[1,-th+10],[8,-th+1],[9,-th+3],[1,-th+13]],ramp:BARK,v:0.4});
+    const rnd=seeded('bark'+lvl), streaks=[];
+    for(let k=0;k<Math.round(th/3);k++){ const x=Math.round(-tw/2+1+rnd()*(tw-2)), y0=Math.round(-th+2+rnd()*(th-4));
+      for(let d=0;d<2+Math.round(rnd()*2);d++) streaks.push([x,y0+d,'#4a301c']); }
+    const W=Math.ceil(tw)+20, H=Math.ceil(th)+6;
+    blit(sprite('trunk'+lvl,W,H,W/2,H-1,bark,streaks), c.x, c.y);
+    const R=cr/PXU, ccx=c.x+sway, ccy=c.y-ht-cr*0.35;
+    blit(canopy('can'+lvl+look,[[0,R*0.5,R],[-R*0.55,R*0.15,R*0.72],[R*0.55,R*0.2,R*0.72],[0,-R*0.12,R*0.95],[-R*0.22,-R*0.5,R*0.55]],L,Math.max(3,R*0.3)), ccx, ccy);
     drawFruits(ccx,ccy,cr,fruit);
   }
 
   // Flora
   function drawBush(c,color){ shadow(c.x,c.y+2,26,10);
-    blob(c.x,c.y-8,22,'#3f7f2c'); blob(c.x-14,c.y-4,15,'#4f9e38'); blob(c.x+14,c.y-4,15,'#4f9e38'); blob(c.x,c.y-16,17,'#5cb043');
-    const spots=[[-10,-14],[8,-16],[0,-22],[-16,-6],[14,-8]];
-    for(const s of spots){ ctx.fillStyle=color; ctx.beginPath(); ctx.ellipse(c.x+s[0],c.y+s[1],4.5,4.5,0,0,7); ctx.fill();
-      ctx.fillStyle='#fff6c8'; ctx.fillRect(c.x+s[0]-1,c.y+s[1]-1,2,2); } }
+    blit(canopy('bush',[[0,-4,11],[-7,-2,7.5],[7,-2,7.5],[0,-8,8.5]],GREEN,2.8), c.x, c.y);
+    const dk=mixHex(color,'#2a2238',0.3), spots=[[-5,-7],[4,-8],[0,-11],[-8,-3],[7,-4]], m=[];
+    for(const [x,y] of spots) m.push([x-1,y-1,dk],[x+1,y-1,dk],[x-1,y+1,dk],[x+1,y+1,dk],[x,y-1,color],[x-1,y,color],[x+1,y,color],[x,y+1,color],[x,y,'#fff6c8']);
+    blit(sprite('flowers'+color,24,16,12,14,[],m), c.x, c.y); }
+
   function drawMushroom(c){ shadow(c.x,c.y+1,9,4); ctx.fillStyle='#f2ead6'; ctx.fillRect(c.x-3,c.y-8,6,8);
     ctx.fillStyle='#e05a4a'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9,9,6,0,Math.PI,0); ctx.fill();
     ctx.fillStyle='#fff'; ctx.fillRect(c.x-4,c.y-11,2,2); ctx.fillRect(c.x+3,c.y-10,2,2); }
@@ -706,21 +897,33 @@ function makeForest(cv, stageEl){
     ctx.fillStyle= dusk?'#ffdf9a':'#c9a86a'; ctx.fillRect(c.x-6,c.y-46,12,12); ctx.fillStyle='#6e472b'; ctx.fillRect(c.x-7,c.y-48,14,3); }
 
   // Everyday animals (sleep at dusk)
+  const FUR=ramp(['#b8ab9e','#d6ccbf','#efe7db','#fbf7f0']), PINK=ramp(['#d98aa0','#f2a7b8','#fbc9d5']);
+  const FOX=ramp(['#8e3f1c','#b45a28','#cf7236','#e58b4a','#f4a868']), CREAM=ramp(['#c49a76','#e6bd96','#f3d7b8','#fff0dc']);
+  const EYE='#2b2438';
   function drawRabbit(c,t){ shadow(c.x,c.y+2,15,7);
-    if(dusk){ ctx.fillStyle='#e2dccf'; ctx.beginPath(); ctx.ellipse(c.x,c.y-5,15,8,0,0,7); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(c.x+11,c.y-7,6,5,0,0,7); ctx.fill();
-      ctx.fillStyle='#d0c6b6'; ctx.fillRect(c.x+2,c.y-12,11,3); closedEye(c.x+11,c.y-7); zzz(c.x+17,c.y-12,t); return; }
-    const hop=Math.abs(Math.sin(t*1.6))*8, y=c.y-hop;
-    ctx.fillStyle='#efe7db'; ctx.beginPath(); ctx.ellipse(c.x,y-9,13,10,0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(c.x+9,y-16,7,7,0,0,7); ctx.fill();
-    ctx.fillRect(c.x+6,y-30,3,10); ctx.fillRect(c.x+11,y-30,3,10); ctx.fillStyle='#f6b9c8'; ctx.beginPath(); ctx.ellipse(c.x-11,y-8,4,4,0,0,7); ctx.fill();
-    ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+12,y-17,2,2); }
-  function drawFox(c,t){ const b=dusk?0:Math.sin(t*1.3)*1.5; shadow(c.x,c.y+2,26,10);
-    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x,c.y-9+b,22,12,0,0,7); ctx.fill();
-    ctx.fillStyle='#e6bd96'; ctx.beginPath(); ctx.ellipse(c.x-18,c.y-9+b,9,7,0,0,7); ctx.fill();
-    ctx.fillStyle='#cf7236'; ctx.beginPath(); ctx.ellipse(c.x+16,c.y-13+b,9,8,0,0,7); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(c.x+12,c.y-22+b); ctx.lineTo(c.x+15,c.y-14+b); ctx.lineTo(c.x+9,c.y-15+b); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(c.x+22,c.y-22+b); ctx.lineTo(c.x+23,c.y-14+b); ctx.lineTo(c.x+18,c.y-15+b); ctx.fill();
-    if(dusk){ closedEye(c.x+20,c.y-13); zzz(c.x+26,c.y-20,t); } else { ctx.fillStyle='#2b2438'; ctx.fillRect(c.x+20,c.y-13+b,2,2); } }
+    if(dusk){
+      blit(sprite('rabbitSleep',22,11,10,10,[
+        {e:[-6.6,-3.4,1.8,1.8],ramp:FUR},{e:[-0.5,-3.6,7,4.2],ramp:FUR},
+        {e:[5.4,-3.8,3.4,3],ramp:FUR},{e:[1.6,-6.6,4,1.3],ramp:FUR}],
+        [[5.4,-4,EYE],[6.4,-4,EYE],[8.4,-3.2,'#e58a9f']]), c.x, c.y);
+      zzz(c.x+17,c.y-12,t); return; }
+    const hop=Math.round(Math.abs(Math.sin(t*1.6))*8/PXU)*PXU;
+    blit(sprite('rabbit',20,19,9,18,[
+      {e:[3.6,-12.6,1.4,3.6],ramp:FUR},
+      {e:[-0.5,-4.6,6.6,5],ramp:FUR},{e:[-6.2,-4.4,2.1,2.1],ramp:PINK},
+      {e:[4.6,-8.2,3.8,3.5],ramp:FUR},
+      {e:[6.3,-12.8,1.4,3.6],ramp:FUR},{e:[6.3,-12.6,0.5,2.4],ramp:PINK,cast:false}],
+      [[6.4,-8.8,EYE],[8.2,-7.4,'#e58a9f'],[1.5,-0.6,'#d6ccbf'],[3.5,-0.6,'#d6ccbf']]), c.x, c.y-hop); }
+  function drawFox(c,t){ const b=dusk?0:Math.round(Math.sin(t*1.3)*1.5/PXU)*PXU; shadow(c.x,c.y+2,26,10);
+    const shapes=[
+      {e:[-9.5,-4,5.5,3.6],ramp:FOX},{e:[-13.2,-4.2,2.6,2.4],ramp:CREAM},
+      {e:[0,-4.6,10.5,5.6],ramp:FOX},{e:[4.5,-2.6,3,2.2],ramp:CREAM,cast:false},
+      {p:[[5.2,-9.4],[6.4,-13.6],[8.6,-9.6]],ramp:FOX,v:0.75},{p:[[9.4,-9.6],[11.4,-13.6],[12.4,-9]],ramp:FOX,v:0.5},
+      {e:[8.6,-6.6,4.6,3.9],ramp:FOX},{e:[11.4,-5.2,2.4,1.6],ramp:CREAM,cast:false}];
+    const marks=dusk? [[9.5,-7,EYE],[10.5,-7,EYE],[13.4,-5.6,EYE]] : [[10.2,-7.4,EYE],[13.4,-5.6,EYE],[6.6,-12.2,'#5a2a16'],[11.2,-12.2,'#5a2a16']];
+    blit(sprite(dusk?'foxSleep':'fox',32,16,17,15,shapes,marks), c.x, c.y+b);
+    if(dusk) zzz(c.x+26,c.y-20,t); }
+
   function drawDeer(c,t){ shadow(c.x,c.y+2,24,10);
     if(dusk){ ctx.fillStyle='#a97e50'; ctx.beginPath(); ctx.ellipse(c.x,c.y-8,18,10,0,0,7); ctx.fill();
       ctx.fillRect(c.x+12,c.y-16,5,10); ctx.beginPath(); ctx.ellipse(c.x+16,c.y-16,7,6,0,0,7); ctx.fill();
@@ -997,21 +1200,24 @@ function makeForest(cv, stageEl){
   let STATE=apply(0);
 
   function drawScene(t){
-    pondTiles=STATE.ponds; drawGround();
+    const tq=Math.floor(t*8)/8, lk=''+dusk;
+    pondTiles=STATE.ponds; drawGround(t);
     const p=P(); if(p.amb!=='rgba(0,0,0,0)'){ ctx.fillStyle=p.amb; ctx.fillRect(VIS.l,VIS.t,VIS.r-VIS.l,VIS.b-VIS.t); }
     const items=[];
     for(const id in STATE.trees){ const tr=STATE.trees[id], c=iso(tr.i,tr.j); items.push({d:tr.i+tr.j,fn:()=>drawTree(c,tr.lvl,tr.fruit,t)}); }
-    for(const o of STATE.objs){ const c=iso(o.i,o.j), d=o.i+o.j;
-      const f={bush:()=>drawBush(c,o.color),mushroom:()=>drawMushroom(c),birdhouse:()=>drawBirdhouse(c,t),bench:()=>drawBench(c),
-        wheelbarrow:()=>drawWheelbarrow(c),lantern:()=>drawLantern(c,t),rabbit:()=>drawRabbit(c,t),fox:()=>drawFox(c,t),
-        deer:()=>drawDeer(c,t),bird:()=>drawBird(c,t),rooster:()=>drawRooster(c,t),sheep:()=>drawSheep(c,t),cow:()=>drawCow(c,t),
-        kangaroo:()=>drawKangaroo(c,t),cockatoo:()=>drawCockatoo(c,t),
-        frog:()=>drawFrog(c,t),fish:()=>drawFish(c,t,o.i+o.j),dragonfly:()=>drawDragonfly(c,t,o.i*2+o.j),
-        unicorn:()=>drawUnicorn(c,t),pegasus:()=>drawPegasus(c,t),dragon:()=>drawDragon(c,t)}[o.type];
-      if(f) items.push({d,fn:f}); }
-    for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>drawWaterfall(c,t)}); }
+    const HAND={bush:1,rabbit:1,fox:1}, STILL={mushroom:1,bench:1,wheelbarrow:1};
+    for(const o of STATE.objs){ const c=iso(o.i,o.j), d=o.i+o.j, T=tq;
+      const f={bush:()=>drawBush(c,o.color),mushroom:()=>drawMushroom(c),birdhouse:()=>drawBirdhouse(c,T),bench:()=>drawBench(c),
+        wheelbarrow:()=>drawWheelbarrow(c),lantern:()=>drawLantern(c,T),rabbit:()=>drawRabbit(c,t),fox:()=>drawFox(c,t),
+        deer:()=>drawDeer(c,T),bird:()=>drawBird(c,T),rooster:()=>drawRooster(c,T),sheep:()=>drawSheep(c,T),cow:()=>drawCow(c,T),
+        kangaroo:()=>drawKangaroo(c,T),cockatoo:()=>drawCockatoo(c,T),
+        frog:()=>drawFrog(c,T),fish:()=>drawFish(c,T,o.i+o.j),dragonfly:()=>drawDragonfly(c,T,o.i*2+o.j),
+        unicorn:()=>drawUnicorn(c,T),pegasus:()=>drawPegasus(c,T),dragon:()=>drawDragon(c,T)}[o.type];
+      if(!f) continue;
+      items.push({d, fn: HAND[o.type] ? f : ()=>pixelDraw(o.type+o.i+','+o.j, (STILL[o.type]?'':tq)+lk, BOX[o.type]||BOXD, c.x, c.y, f)}); }
+    for(const w of STATE.falls){ const c=iso(w.i,w.j); items.push({d:w.i+w.j+0.5,fn:()=>pixelDraw('fall'+w.i+','+w.j, tq+lk, BOX.fall, c.x, c.y, ()=>drawWaterfall(c,tq))}); }
     items.sort((a,b)=>a.d-b.d); for(const it of items) it.fn();
-    for(const fl of STATE.flutters){ (dusk?drawFirefly:drawButterfly)(iso(fl.i,fl.j),t,fl.seed); }
+    STATE.flutters.forEach((fl,k)=>{ const c=iso(fl.i,fl.j); pixelDraw('fl'+k, tq+lk, BOX.fl, c.x, c.y, ()=>(dusk?drawFirefly:drawButterfly)(c,tq,fl.seed)); });
   }
 
   // log-stick puff over the main tree
@@ -1030,11 +1236,11 @@ function makeForest(cv, stageEl){
     if(cv.width!==Math.round(cw*DPR)||cv.height!==Math.round(ch*DPR)){ cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR); cv.style.width=cw+'px'; cv.style.height=ch+'px'; }
     ctx.setTransform(1,0,0,1,0,0);
     const p=P();
-    // one continuous sky across the entire canvas, so there are no seams
-    const g=ctx.createLinearGradient(0,0,0,cv.height);
-    g.addColorStop(0,p.skyTop); g.addColorStop(1,p.skyBot);
-    ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
-    const scale=Math.min(cw/VW, ch/VH)*DPR;
+    const scale=Math.min(cw/VW, ch/VH)*DPR, su=scale*PIX.U;
+    // one continuous sky across the entire canvas, so there are no seams: banded and dithered like 16-bit skies
+    const sw=Math.ceil(cv.width/su), sh=Math.ceil(cv.height/su);
+    PIX.draw(ctx, PIX.sky(p.skyTop,p.skyBot,sw,sh), 0,0, sw*su, sh*su);
+
     const ox=(cv.width-VW*scale)/2, oy=(cv.height-VH*scale)/2;
     ctx.setTransform(scale,0,0,scale,ox,oy);
     VIS={ l:-ox/scale, t:-oy/scale, r:(cv.width-ox)/scale, b:(cv.height-oy)/scale };
@@ -1057,7 +1263,7 @@ function makeForest(cv, stageEl){
    makeCabin(cv, boxEl) -> { render(tier,building,dusk), startAnim(tier,building,dusk),
                              setState(tier,building,dusk), TIERS } */
 function makeCabin(cv, boxEl){
-  const ctx=cv.getContext('2d');
+  const main=cv.getContext('2d'); let ctx=main;
   const VW=440, VH=300, GY=214;             // virtual size + ground line
   let tier=0, building=true, dusk=false, animating=false;
 
@@ -1211,19 +1417,27 @@ function makeCabin(cv, boxEl){
     }
   }
 
+  let art=null, artKey='';
   function paint(t){
-    // sky
     const sky = dusk
       ? ['#2b2450','#b5786a'] : ['#a9def0','#ffedcf'];
-    const g=ctx.createLinearGradient(0,0,0,cv.height); g.addColorStop(0,sky[0]); g.addColorStop(1,sky[1]);
-    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
     const DPR=Math.min(2,window.devicePixelRatio||1);
-    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR;
-    ctx.setTransform(scale,0,0,scale,(cv.width-VW*scale)/2,(cv.height-VH*scale)/2);
-    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,VW,VH); }
-    ground(); cabin(t);
-    if(building){ builderWork(150,GY-14,t,0); builderWork(320,GY-12,t,2.1); }
-    else { campfire(180,GY-2,t,dusk); builderRest(150,GY-14,t,0,dusk); builderRest(210,GY-14,t,1.5,dusk); }
+    const scale=Math.min(cv.width/(VW*DPR), cv.height/(VH*DPR))*DPR, U=PIX.U;
+    ctx.setTransform(1,0,0,1,0,0);
+    PIX.draw(ctx, PIX.sky(sky[0],sky[1],Math.ceil(cv.width/(scale*U)),Math.ceil(cv.height/(scale*U))), 0,0, Math.ceil(cv.width/(scale*U))*scale*U, Math.ceil(cv.height/(scale*U))*scale*U);
+    // the scene itself is rebuilt as pixel art about 8 times a second
+    const tq=Math.floor(t*8)/8, key=tq+'|'+tier+building+dusk;
+    if(!art || key!==artKey){
+      ctx=PIX.pad(VW,VH);                      // the scene only; the sky behind it is already pixelled
+      ground(); cabin(tq);
+      if(building){ builderWork(150,GY-14,tq,0); builderWork(320,GY-12,tq,2.1); }
+      else { campfire(180,GY-2,tq,dusk); builderRest(150,GY-14,tq,0,dusk); builderRest(210,GY-14,tq,1.5,dusk); }
+      const pad=ctx.canvas; ctx=main; art=PIX.filter(pad); artKey=key;
+    }
+    const ox=(cv.width-VW*scale)/2, oy=(cv.height-VH*scale)/2;
+    if(dusk){ ctx.fillStyle='rgba(30,22,58,.35)'; ctx.fillRect(0,0,cv.width,cv.height); }
+    PIX.draw(ctx, art, ox, oy, VW*scale, VH*scale);
+    ctx.setTransform(scale,0,0,scale,ox,oy);
     maybeQuip(t); drawBubble();
   }
 
