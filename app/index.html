@@ -219,6 +219,10 @@
   }
   .logbtn:active{transform:translateY(4px); box-shadow:0 2px 0 #b06d2e, 0 6px 14px rgba(224,149,74,.25)}
   .logbtn .puff{font-size:18px}
+  .pi{display:inline-block; width:16px; height:16px; vertical-align:-3px; image-rendering:pixelated}
+  .pi.big{width:24px; height:24px; vertical-align:middle}
+  .logbtn .pi{width:24px; height:24px; vertical-align:-6px}
+  .crt .crt-pi{width:48px; height:48px; vertical-align:middle}
 
   .subrow{display:flex; gap:8px; margin-top:11px}
   .subrow .ghost{padding:11px 4px; white-space:nowrap}
@@ -608,7 +612,7 @@
       </div>
     </div>
     <div id="toast"></div>
-    <button id="shareStage" onclick="shareForest(this)" aria-label="Share your forest" title="Share your forest">📸</button>
+    <button id="shareStage" onclick="shareForest(this)" aria-label="Share your forest" title="Share your forest"><img class="pi big" src="../assets/icons/camera.png" alt=""></button>
     <div id="waitPill">
       <span class="wt">Holding on · <b id="waitTime">10:00</b></span>
       <button onclick="logNowFromWait()">Log now</button>
@@ -627,9 +631,9 @@
     </div>
 
     <button class="homechip" id="homeChip" onclick="openHomestead()">
-      <span class="hc-run"><span class="hc-fire">🔥</span> <b id="hcRun">0</b> <span id="hcRunLbl">day run</span></span>
+      <span class="hc-run"><span class="hc-fire"><img class="pi" src="../assets/icons/fire.png" alt=""></span> <b id="hcRun">0</b> <span id="hcRunLbl">day run</span></span>
       <span class="hc-div">·</span>
-      <span class="hc-cabin">🏡 <b id="hcCabin">Bedroll</b></span>
+      <span class="hc-cabin"><img class="pi" src="../assets/icons/cabin.png" alt=""> <b id="hcCabin">Bedroll</b></span>
       <span class="hc-go">›</span>
     </button>
 
@@ -649,13 +653,13 @@
       </div>
     </div>
 
-    <button class="logbtn" onclick="onLogTap()"><span class="puff">💨</span> <span id="logBtnLabel">I had one</span></button>
+    <button class="logbtn" onclick="onLogTap()"><span class="puff"><img class="pi" src="../assets/icons/puff.png" alt=""></span> <span id="logBtnLabel">I had one</span></button>
 
     <div class="subrow">
-      <button class="ghost" onclick="openSheet('sanctuary')"><span class="deco">✦ </span>Sanctuary</button>
+      <button class="ghost" onclick="openSheet('sanctuary')"><span class="deco"><img class="pi" src="../assets/icons/sparkle.png" alt=""> </span>Sanctuary</button>
       <button class="ghost" onclick="openSheet('challenges')" style="position:relative"><span class="deco"><span class="coin" style="width:12px;height:12px;vertical-align:-1px"></span> </span>Challenges<span class="giftdot" id="giftDot2" hidden></span></button>
       <button class="ghost" onclick="openSheet('insight')"><span class="deco"><span class="minibars" aria-hidden="true"><i></i><i></i><i></i></span> </span>Insight</button>
-      <button class="ghost icon" onclick="openSheet('settings')" aria-label="Oath and tone settings" title="Oath &amp; tone">⚙</button>
+      <button class="ghost icon" onclick="openSheet('settings')" aria-label="Oath and tone settings" title="Oath &amp; tone"><img class="pi big" src="../assets/icons/gear.png" alt=""></button>
     </div>
   </div>
 
@@ -675,9 +679,9 @@
     <div class="mbox">
       <div class="mtitle">Support Still Here</div>
       <div class="mbody">No ads, no subscription. Just a forest that keeps growing. Grateful if this has helped you. Let's grow a forest together with me.</div>
-      <button class="mprimary" onclick="goDonate('kofi')">🌏 Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
-      <button class="mgreen" onclick="goDonate('trakteer')">🇮🇩 Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
-      <button class="mghost" onclick="openFeedback()">💬 Got an idea? Tell me</button>
+      <button class="mprimary" onclick="goDonate('kofi')"><img class="pi" src="../assets/icons/globe.png" alt=""> Buy me a coffee<span class="msub">Card or PayPal · worldwide</span></button>
+      <button class="mgreen" onclick="goDonate('trakteer')"><img class="pi" src="../assets/icons/flagid.png" alt=""> Traktir cendol<span class="msub">QRIS, GoPay, OVO, DANA</span></button>
+      <button class="mghost" onclick="openFeedback()"><img class="pi" src="../assets/icons/chat.png" alt=""> Got an idea? Tell me</button>
       <button class="mlink" onclick="hideDonate()">Maybe later</button>
     </div>
   </div>
@@ -715,7 +719,7 @@
       <div class="mbody" style="text-align:center">Add Still Here to your home screen so it opens like a real app: full-screen, and always right there when you need it.</div>
       <div style="text-align:center"><span class="plat" id="inPlat">Your device</span></div>
       <ol class="insteps" id="inSteps"></ol>
-      <button class="mprimary" id="inNow" onclick="installNow()" style="display:none; margin-top:16px">➕ Add to Home Screen</button>
+      <button class="mprimary" id="inNow" onclick="installNow()" style="display:none; margin-top:16px"><img class="pi" src="../assets/icons/plus.png" alt=""> Add to Home Screen</button>
       <button class="mlink" onclick="hideInstall()">I'll do it later</button>
     </div>
   </div>
@@ -751,7 +755,7 @@
 
   <div id="enjoy">
     <div class="mbox">
-      <div class="mtitle">Seven days strong 🌱</div>
+      <div class="mtitle">Seven days strong <img class="pi" src="../assets/icons/sprout.png" alt=""></div>
       <div class="mbody">You've kept your oath a whole week, and the builders noticed. If you've a moment, I'd love to hear what's working, or what you'd change. It's just me building this, and your words steer it.</div>
       <button class="mprimary" onclick="enjoyToFeedback()">Share a thought</button>
       <button class="mlink" onclick="hideEnjoy()">Maybe another time</button>
@@ -1006,7 +1010,7 @@
       </div>
       <div class="acctrow">
         <div class="lbl">Support this project<small>keeps the forest growing for everyone</small></div>
-        <button class="acctbtn primary" onclick="openDonate()">♥ Support</button>
+        <button class="acctbtn primary" onclick="openDonate()"><img class="pi" src="../assets/icons/heart.png" alt=""> Support</button>
       </div>
       <div class="acctrow">
         <div class="lbl">Show my goal when sharing<small>off by default, your forest is enough</small></div>
@@ -1353,7 +1357,7 @@ async function submitFeedback(){
   const email=(document.getElementById('fbEmail').value||'').trim();
   const msg=(document.getElementById('fbMsg').value||'').trim();
   const err=document.getElementById('fbErr'); err.textContent='';
-  if(msg.length<2){ err.textContent='Add a few words first 🙂'; return; }
+  if(msg.length<2){ err.innerHTML='Add a few words first '+icon('smile'); return; }
   const btn=document.getElementById('fbSend'); btn.disabled=true; btn.textContent='Sending…';
   const r=await sendFeedback(email, msg);
   btn.disabled=false; btn.textContent='Send it my way';
@@ -1716,7 +1720,7 @@ async function submitReset(){
     recoverCtx=null; track('recover-completed');
     showAuthView('login');
     const le=document.getElementById('lgEmail'); if(le) le.focus();
-    toast('Password updated. Log in with your new one. 🌱');
+    toast('Password updated. Log in with your new one.','sprout');
   }catch(e){ err.textContent=(e&&e.message)?e.message:'Could not reset. The link may have expired. Request a new one.'; btn.disabled=false; btn.textContent='Set new password'; return; }
   btn.disabled=false; btn.textContent='Set new password';
 }
@@ -1988,8 +1992,10 @@ const CLEAN_LINES={
 };
 function pickLine(set){ const arr=set[tone()]||set.gentle; return arr[Math.floor(Math.random()*arr.length)]; }
 let toastT;
-function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+// hand-built 16x16 pixel icons in assets/icons, used in place of emoji
+function icon(name, cls){ return '<img class="'+(cls||'pi')+'" src="../assets/icons/'+name+'.png" alt="">'; }
+function toast(msg, ic){
+  const t=document.getElementById('toast'); t.textContent=msg; if(ic) t.insertAdjacentHTML('beforeend',' '+icon(ic)); t.classList.add('show');
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
@@ -2049,7 +2055,7 @@ async function saveCikiName(){
   hideCikiName();
   renderSanctuary();
   evaluateCoins();
-  if(v) toast(v+' it is. She\u2019s home now. 🤍');
+  if(v) toast(v+' it is. She\u2019s home now.','heartw');
 }
 
 /* Share your forest (a picture for Instagram).
@@ -2161,7 +2167,7 @@ async function shareForest(btn){
       const a=document.createElement('a'); a.href=url; a.download='my-still-here-forest.png'; a.click();
       setTimeout(()=>URL.revokeObjectURL(url), 5000);
       track('shared', {via:'download'});
-      toast('Saved. Share it wherever you like. 🌱');
+      toast('Saved. Share it wherever you like.','sprout');
     }
   }catch(e){
     if(!(e && e.name==='AbortError')) toast('Couldn\u2019t make the image. Please try again.');
@@ -2676,21 +2682,21 @@ function giftToStore(){ hideGift(); openSheet('store'); }
 
 /* companions unlocked as the forest grows (level = good days) */
 const COMPANIONS=[
-  {g:'🐕', name:'Ciki',     type:'ciki', special:true, note:'runs free 🤍'},
-  {g:'🦋', name:'Flit',     type:'butterfly'},
-  {g:'🐓', name:'Rooster',  type:'rooster'},
-  {g:'🐇', name:'Rabbit',   type:'rabbit'},
-  {g:'🐸', name:'Frog',     type:'frog'},
-  {g:'🐦', name:'Robin',    type:'bird'},
-  {g:'🐑', name:'Sheep',    type:'sheep'},
-  {g:'🐄', name:'Cow',      type:'cow'},
-  {g:'🦘', name:'Kangaroo', type:'kangaroo'},
-  {g:'🦜', name:'Cockatoo', type:'cockatoo'},
-  {g:'🦊', name:'Fox',      type:'fox'},
-  {g:'🐟', name:'Fish',     type:'fish'},
-  {g:'🦌', name:'Deer',     type:'deer'},
-  {g:'🦄', name:'Unicorn',  type:'unicorn'},
-  {g:'🐉', name:'Dragon',   type:'dragon'},
+  {g:'dog', name:'Ciki',     type:'ciki', special:true, note:'runs free'},
+  {g:'butterfly', name:'Flit',     type:'butterfly'},
+  {g:'rooster', name:'Rooster',  type:'rooster'},
+  {g:'rabbit', name:'Rabbit',   type:'rabbit'},
+  {g:'frog', name:'Frog',     type:'frog'},
+  {g:'bird', name:'Robin',    type:'bird'},
+  {g:'sheep', name:'Sheep',    type:'sheep'},
+  {g:'cow', name:'Cow',      type:'cow'},
+  {g:'kangaroo', name:'Kangaroo', type:'kangaroo'},
+  {g:'cockatoo', name:'Cockatoo', type:'cockatoo'},
+  {g:'fox', name:'Fox',      type:'fox'},
+  {g:'fish', name:'Fish',     type:'fish'},
+  {g:'deer', name:'Deer',     type:'deer'},
+  {g:'unicorn', name:'Unicorn',  type:'unicorn'},
+  {g:'dragon', name:'Dragon',   type:'dragon'},
 ];
 function renderSanctuary(){
   const grid=document.getElementById('sanctGrid'); grid.innerHTML='';
@@ -2702,9 +2708,9 @@ function renderSanctuary(){
     el.className='crt'+(filled?' filled':'')+(c.special&&filled?' special':'');
     const cikiName = esc(prefs.cikiName||'Ciki');
     const label = c.special
-      ? (filled ? (cikiName+'<small>'+c.note+'</small>') : 'Locked')
+      ? (filled ? (cikiName+'<small>'+c.note+' '+icon('heartw')+'</small>') : 'Locked')
       : (filled?c.name:'Locked');
-    el.innerHTML=`<div class="glyph">${c.g}</div><div class="lock">${label}</div>`;
+    el.innerHTML=`<div class="glyph">${icon(c.g,'pi crt-pi')}</div><div class="lock">${label}</div>`;
     if(c.special && filled){ el.style.cursor='pointer'; el.title='Rename'; el.onclick=openCikiName; }
     grid.appendChild(el);
   }
